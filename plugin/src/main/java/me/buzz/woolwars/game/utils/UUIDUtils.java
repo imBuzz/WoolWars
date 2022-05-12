@@ -2,7 +2,7 @@ package me.buzz.woolwars.game.utils;
 
 import java.util.UUID;
 
-public class UUIDUtils {
+public final class UUIDUtils {
 
     public static String getNewUUID() {
         String uuid = UUID.randomUUID().toString();
