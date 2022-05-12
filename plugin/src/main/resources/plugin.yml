@@ -1,0 +1,6 @@
+name: WoolWars
+version: '${project.version}'
+main: me.buzz.woolwars.WoolWars
+api-version: 1.18
+authors: [ ImBuzz ]
+description: WoolWars Plugin Controller
