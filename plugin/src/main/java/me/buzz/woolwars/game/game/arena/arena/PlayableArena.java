@@ -1,10 +1,11 @@
 package me.buzz.woolwars.game.game.arena.arena;
 
-import me.buzz.woolwars.game.game.arena.location.ArenaLocationType;
+import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
+import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class PlayableArena extends ArenaMetadata {
+public class PlayableArena extends ArenaMetadata implements ApiPlayableArena {
 
     private final World world;
 
@@ -13,8 +14,18 @@ public class PlayableArena extends ArenaMetadata {
         this.world = world;
     }
 
-    public Location getBukkitLocation(ArenaLocationType type){
-        return getArenaLocation(type).toBukkitLocation(world);
+    @Override
+    public Location getLocation(ArenaLocationType type) {
+        return getArenaLocation(type).toBukkitLocation(world).clone();
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
+    }
 }

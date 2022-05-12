@@ -1,26 +1,30 @@
 package me.buzz.woolwars.game;
 
-import me.buzz.woolwars.api.WoolWarsAPI;
+import lombok.Getter;
+import me.buzz.woolwars.api.ApiWoolWars;
+import me.buzz.woolwars.game.game.GameManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class WoolWars extends JavaPlugin implements WoolWarsAPI {
+public final class WoolWars extends JavaPlugin implements ApiWoolWars {
+
+    @Getter
+    private GameManager gameManager;
 
     @Override
     public void onEnable() {
         instance = this;
 
-        // Plugin startup logic
-
+        gameManager = new GameManager();
+        gameManager.init();
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        gameManager.stop();
     }
 
     private static WoolWars instance;
     public static WoolWars get(){
         return instance;
     }
-
 }

@@ -1,16 +1,16 @@
 package me.buzz.woolwars.game.game.match.types;
 
 import com.google.common.collect.Lists;
-import me.buzz.woolwars.api.events.PlayerJoinGameEvent;
-import me.buzz.woolwars.api.events.PlayerQuitGameEvent;
+import me.buzz.woolwars.api.game.arena.ArenaLocationType;
+import me.buzz.woolwars.api.game.match.events.PlayerJoinGameEvent;
+import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
+import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.game.arena.arena.PlayableArena;
-import me.buzz.woolwars.game.game.arena.location.ArenaLocationType;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
-import me.buzz.woolwars.game.game.match.state.MatchState;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.TeamUtils;
 import org.bukkit.Bukkit;
@@ -45,7 +45,7 @@ public class BasicWoolMatch extends WoolMatch {
         if (joinGameEvent.isCancelled()) return;
 
         playerHolder.registerPlayer(woolPlayer);
-        player.teleport(arena.getBukkitLocation(ArenaLocationType.WAITING_LOBBY));
+        player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
         //TODO: JOIN MESSAGE
     }
@@ -72,8 +72,8 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void prepare() {
-        teams.put(TeamColor.RED, new WoolTeam(ID, TeamColor.RED, arena.getBukkitLocation(ArenaLocationType.SPAWN_RED)));
-        teams.put(TeamColor.BLUE, new WoolTeam(ID, TeamColor.BLUE, arena.getBukkitLocation(ArenaLocationType.SPAWN_BLUE)));
+        teams.put(TeamColor.RED, new WoolTeam(ID, TeamColor.RED, arena.getLocation(ArenaLocationType.SPAWN_RED)));
+        teams.put(TeamColor.BLUE, new WoolTeam(ID, TeamColor.BLUE, arena.getLocation(ArenaLocationType.SPAWN_BLUE)));
 
         List<WoolPlayer> p = new ArrayList<>(playerHolder.getWoolPlayers());
         List<List<WoolPlayer>> groups = Lists.partition(p, TeamUtils.getHalfApprox(p.size()));
@@ -129,5 +129,4 @@ public class BasicWoolMatch extends WoolMatch {
     private boolean isEnded() {
         return matchState == MatchState.ENDED || matchState == MatchState.ENDING;
     }
-
 }

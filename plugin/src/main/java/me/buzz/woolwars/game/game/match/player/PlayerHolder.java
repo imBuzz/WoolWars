@@ -27,15 +27,15 @@ public class PlayerHolder extends AbstractHolder {
         return players.values();
     }
 
-    public List<Player> getOnlinePlayers() {
+    public Set<Player> getOnlinePlayers() {
         return players.values().stream()
                 .map(WoolPlayer::toBukkitPlayer)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     public void registerPlayer(WoolPlayer player) {
-        player.toBukkitPlayer().setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getID()));
+        player.toBukkitPlayer().setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getMatchID()));
         players.put(player.getName(), player);
         stats.put(player.getName(), new WoolPlayer.MatchStats(player.getUuid()));
     }

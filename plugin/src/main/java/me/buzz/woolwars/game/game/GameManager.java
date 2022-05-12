@@ -1,8 +1,16 @@
 package me.buzz.woolwars.game.game;
 
+import me.buzz.woolwars.api.game.ApiGameManager;
+import me.buzz.woolwars.api.game.match.ApiMatch;
+import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.manager.AbstractManager;
+import org.bukkit.entity.Player;
 
-public class GameManager extends AbstractManager {
+import java.util.*;
+
+public class GameManager extends AbstractManager implements ApiGameManager {
+
+    private final Map<String, WoolMatch> matches = new HashMap<>();
 
     @Override
     public void init() {
@@ -12,5 +20,20 @@ public class GameManager extends AbstractManager {
     @Override
     public void stop() {
 
+    }
+
+    @Override
+    public Collection<ApiMatch> getMatches() {
+        return Collections.unmodifiableCollection(matches.values());
+    }
+
+    @Override
+    public Optional<ApiMatch> getMatch(String ID) {
+        return Optional.ofNullable(matches.get(ID));
+    }
+
+    @Override
+    public Optional<ApiMatch> getMatchByPlayer(Player player) {
+        return getMatches().stream().filter(match -> match.getOnlinePlayers().contains(player)).findAny();
     }
 }

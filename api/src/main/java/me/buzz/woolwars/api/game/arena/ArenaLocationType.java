@@ -1,4 +1,4 @@
-package me.buzz.woolwars.game.game.arena.location;
+package me.buzz.woolwars.api.game.arena;
 
 public enum ArenaLocationType {
 

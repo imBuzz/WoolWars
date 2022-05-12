@@ -2,8 +2,8 @@ package me.buzz.woolwars.game.game.arena.arena;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.game.game.arena.location.ArenaLocation;
-import me.buzz.woolwars.game.game.arena.location.ArenaLocationType;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;

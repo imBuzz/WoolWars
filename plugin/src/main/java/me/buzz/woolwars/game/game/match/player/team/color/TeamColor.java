@@ -10,7 +10,7 @@ import org.bukkit.DyeColor;
 public enum TeamColor {
 
     RED(ChatColor.RED, DyeColor.RED, 5),
-    BLUE(ChatColor.AQUA, DyeColor.LIGHT_BLUE, 10);
+    BLUE(ChatColor.BLUE, DyeColor.BLUE, 10);
 
     private final ChatColor CC;
     private final DyeColor DC;

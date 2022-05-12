@@ -1,4 +1,4 @@
-package me.buzz.woolwars.game.game.match.state;
+package me.buzz.woolwars.api.game.match.state;
 
 public enum MatchState {
 
