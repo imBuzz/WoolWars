@@ -37,6 +37,8 @@ public abstract class WoolMatch implements ApiMatch {
 
     public abstract void prepare();
 
+    public abstract void preStart();
+
     public abstract void start();
 
     public abstract void end();

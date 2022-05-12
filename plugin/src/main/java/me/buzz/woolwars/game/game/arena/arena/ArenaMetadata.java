@@ -3,6 +3,9 @@ package me.buzz.woolwars.game.game.arena.arena;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
+import me.buzz.woolwars.api.game.arena.ArenaRegionType;
+import me.buzz.woolwars.game.game.arena.arena.regions.Region;
+import me.buzz.woolwars.game.game.arena.arena.regions.impl.CuboidRegion;
 import me.buzz.woolwars.game.game.arena.location.ArenaLocation;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.World;
@@ -18,14 +21,12 @@ public class ArenaMetadata {
 
     @Getter protected final String ID;
     protected final String name;
+
     protected final Map<ArenaLocationType, ArenaLocation> locations;
+    protected final Map<ArenaRegionType, Region> regions;
 
     public ArenaLocation getArenaLocation(ArenaLocationType type){
         return locations.get(type);
-    }
-
-    public PlayableArena toPlayableArena(World world){
-        return new PlayableArena(this, world);
     }
 
     public static ArenaMetadata fromFile(File file){
@@ -44,7 +45,25 @@ public class ArenaMetadata {
         locations.put(ArenaLocationType.POWERUP_1, ArenaLocation.fromString(data.getString("locations.powerups.1")));
         locations.put(ArenaLocationType.POWERUP_2, ArenaLocation.fromString(data.getString("locations.powerups.2")));
 
-        return new ArenaMetadata(ID, name, locations);
+        Map<ArenaRegionType, Region> regions = new HashMap<>();
+
+        regions.put(ArenaRegionType.RED_WALL,
+                new CuboidRegion(ArenaLocation.fromString(data.getString("locations.walls.teamRedWall.min")),
+                        ArenaLocation.fromString(data.getString("locations.walls.teamRedWall.max"))));
+
+        regions.put(ArenaRegionType.BLUE_WALL,
+                new CuboidRegion(ArenaLocation.fromString(data.getString("locations.walls.teamBlueWall.min")),
+                        ArenaLocation.fromString(data.getString("locations.walls.teamBlueWall.max"))));
+
+        return new ArenaMetadata(ID, name, locations, regions);
+    }
+
+    public PlayableArena toPlayableArena(World world) {
+        return new PlayableArena(this, world);
+    }
+
+    public Region getRegion(ArenaRegionType type) {
+        return regions.get(type);
     }
 
 

@@ -5,6 +5,7 @@ import me.buzz.woolwars.api.game.match.player.ApiPlayerHolder;
 import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.manager.AbstractHolder;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
 
     private final Map<String, WoolPlayer> players = new HashMap<>();
-    private final Map<String, WoolPlayer.MatchStats> stats = new HashMap<>();
+    private final Map<String, MatchStats> stats = new HashMap<>();
 
     public PlayerHolder(WoolMatch match) {
         super(match);
@@ -40,7 +41,7 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
     public void registerPlayer(WoolPlayer player) {
         player.toBukkitPlayer().setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getMatchID()));
         players.put(player.getName(), player);
-        stats.put(player.getName(), new WoolPlayer.MatchStats(player.getUUID()));
+        stats.put(player.getName(), new MatchStats(player.getUUID()));
     }
 
     public void removePlayer(WoolPlayer player) {
@@ -49,12 +50,12 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
     }
 
     @Override
-    public WoolPlayer.MatchStats getMatchStats(Player player) {
+    public MatchStats getMatchStats(Player player) {
         return getMatchStats(player.getName());
     }
 
     @Override
-    public WoolPlayer.MatchStats getMatchStats(String name) {
+    public MatchStats getMatchStats(String name) {
         return stats.get(name);
     }
 
