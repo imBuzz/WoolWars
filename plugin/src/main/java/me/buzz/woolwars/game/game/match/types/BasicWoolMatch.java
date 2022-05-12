@@ -64,7 +64,7 @@ public class BasicWoolMatch extends WoolMatch {
         //TODO: SEND QUIT MESSAGE CHECK SENDMESSAGE ON EVENT
         playerHolder.removePlayer(woolPlayer);
 
-        if (shouldEnd) {
+        if (shouldEnd && !isEnded()) {
             //TODO: INSUFFICIENT PLAYERS MESSAGE BY TEAM
             setMatchState(MatchState.ENDING);
         }
@@ -121,7 +121,13 @@ public class BasicWoolMatch extends WoolMatch {
                 postEnd();
                 break;
             }
-            default: break;
+            default:
+                break;
         }
     }
+
+    private boolean isEnded() {
+        return matchState == MatchState.ENDED || matchState == MatchState.ENDING;
+    }
+
 }
