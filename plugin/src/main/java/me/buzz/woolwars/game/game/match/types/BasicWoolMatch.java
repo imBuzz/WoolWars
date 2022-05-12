@@ -59,7 +59,7 @@ public class BasicWoolMatch extends WoolMatch {
         Bukkit.getPluginManager().callEvent(quitGameEvent);
 
         if (matchState == MatchState.PLAYING)
-            shouldEnd = playerHolder.getStats(player).getTeam().getOnlinePlayers().size() - 1 < MIN_PLAYERS_PER_TEAM;
+            shouldEnd = playerHolder.getMatchStats(player).getTeam().getOnlinePlayers().size() - 1 < MIN_PLAYERS_PER_TEAM;
 
         //TODO: SEND QUIT MESSAGE CHECK SENDMESSAGE ON EVENT
         playerHolder.removePlayer(woolPlayer);

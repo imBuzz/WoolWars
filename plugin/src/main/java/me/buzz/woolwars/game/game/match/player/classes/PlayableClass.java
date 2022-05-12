@@ -2,6 +2,7 @@ package me.buzz.woolwars.game.game.match.player.classes;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import org.bukkit.entity.Player;
 
@@ -10,6 +11,8 @@ public abstract class PlayableClass {
 
     protected final Player player;
     protected final TeamColor color;
+    @Getter
+    protected final PlayableClassType type;
     @Getter
     protected boolean used = false;
 

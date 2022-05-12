@@ -1,5 +1,8 @@
 package me.buzz.woolwars.game.game.match.player;
 
+import com.google.common.collect.ImmutableSet;
+import me.buzz.woolwars.api.game.match.player.ApiPlayerHolder;
+import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.manager.AbstractHolder;
@@ -10,7 +13,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PlayerHolder extends AbstractHolder {
+public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
 
     private final Map<String, WoolPlayer> players = new HashMap<>();
     private final Map<String, WoolPlayer.MatchStats> stats = new HashMap<>();
@@ -37,7 +40,7 @@ public class PlayerHolder extends AbstractHolder {
     public void registerPlayer(WoolPlayer player) {
         player.toBukkitPlayer().setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getMatchID()));
         players.put(player.getName(), player);
-        stats.put(player.getName(), new WoolPlayer.MatchStats(player.getUuid()));
+        stats.put(player.getName(), new WoolPlayer.MatchStats(player.getUUID()));
     }
 
     public void removePlayer(WoolPlayer player) {
@@ -45,12 +48,24 @@ public class PlayerHolder extends AbstractHolder {
         players.remove(player.getName());
     }
 
-    public WoolPlayer.MatchStats getStats(Player player) {
-        return getStats(player.getName());
+    @Override
+    public WoolPlayer.MatchStats getMatchStats(Player player) {
+        return getMatchStats(player.getName());
     }
 
-    private WoolPlayer.MatchStats getStats(String name) {
+    @Override
+    public WoolPlayer.MatchStats getMatchStats(String name) {
         return stats.get(name);
+    }
+
+    @Override
+    public ApiWoolPlayer getWoolPlayer() {
+        return null;
+    }
+
+    @Override
+    public ImmutableSet<Player> getPlayers() {
+        return ImmutableSet.copyOf(getOnlinePlayers());
     }
 
 

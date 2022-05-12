@@ -3,6 +3,9 @@ package me.buzz.woolwars.game.player;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import me.buzz.woolwars.api.game.match.player.player.ApiMatchStats;
+import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
+import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import org.bukkit.Bukkit;
@@ -10,35 +13,39 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class WoolPlayer {
+@Getter
+public class WoolPlayer implements ApiWoolPlayer {
 
-    @Getter public final UUID uuid;
-    @Getter private final String name;
+    public final UUID UUID;
+    private final String name;
 
     public int woolPlaced, blocksBroken, powerUpsGotten;
     public int wins, played, kills, deaths;
 
     public WoolPlayer(Player player) {
-        this.uuid = player.getUniqueId();
+        this.UUID = player.getUniqueId();
         this.name = player.getName();
     }
 
     public Player toBukkitPlayer() {
-        return Bukkit.getPlayer(uuid);
+        return Bukkit.getPlayer(UUID);
     }
 
     @RequiredArgsConstructor
-    public static class MatchStats {
-        @Getter
+    @Getter
+    public static class MatchStats implements ApiMatchStats {
         private final UUID uuid;
-        @Getter
-        WoolTeam team;
-        @Getter
-        @Setter
+        private WoolTeam team;
+        private @Setter
         PlayableClass playableClass;
 
-        public int matchWoolPlaced, matchBlocksBroken, matchPowerUpsGotten;
-        public int matchKills, matchDeaths;
+        private int matchWoolPlaced, matchBlocksBroken, matchPowerUpsGotten;
+        private int matchKills, matchDeaths;
+
+        @Override
+        public PlayableClassType getClassType() {
+            return playableClass.getType();
+        }
     }
 
 }

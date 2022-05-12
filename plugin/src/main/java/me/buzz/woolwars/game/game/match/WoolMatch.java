@@ -1,6 +1,5 @@
 package me.buzz.woolwars.game.game.match;
 
-import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,7 +13,6 @@ import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.UUIDUtils;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,11 +44,6 @@ public abstract class WoolMatch implements ApiMatch {
     public abstract void postEnd();
 
     protected abstract int getMaxPlayers();
-
-    @Override
-    public ImmutableSet<Player> getOnlinePlayers() {
-        return ImmutableSet.copyOf(playerHolder.getOnlinePlayers());
-    }
 
     @Override
     public String getMatchID() {

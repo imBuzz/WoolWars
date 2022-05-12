@@ -34,6 +34,6 @@ public class GameManager extends AbstractManager implements ApiGameManager {
 
     @Override
     public Optional<ApiMatch> getMatchByPlayer(Player player) {
-        return getMatches().stream().filter(match -> match.getOnlinePlayers().contains(player)).findAny();
+        return getMatches().stream().filter(match -> match.getPlayerHolder().getPlayers().contains(player)).findAny();
     }
 }

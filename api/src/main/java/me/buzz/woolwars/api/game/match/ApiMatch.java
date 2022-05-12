@@ -1,9 +1,8 @@
 package me.buzz.woolwars.api.game.match;
 
-import com.google.common.collect.ImmutableSet;
 import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
+import me.buzz.woolwars.api.game.match.player.ApiPlayerHolder;
 import me.buzz.woolwars.api.game.match.state.MatchState;
-import org.bukkit.entity.Player;
 
 public interface ApiMatch {
 
@@ -13,6 +12,6 @@ public interface ApiMatch {
 
     ApiPlayableArena getArena();
 
-    ImmutableSet<Player> getOnlinePlayers();
+    ApiPlayerHolder getPlayerHolder();
 
 }
