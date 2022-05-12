@@ -1,6 +1,7 @@
 package me.buzz.woolwars.game.game.match.player.classes.classes;
 
 import com.google.common.collect.Lists;
+import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
@@ -41,7 +42,7 @@ public class BerserkPlayableClass extends PlayableClass {
     }
 
     public BerserkPlayableClass(Player player, TeamColor teamColor) {
-        super(player, teamColor);
+        super(player, teamColor, PlayableClassType.BERSERK);
     }
 
     @Override
