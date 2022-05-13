@@ -1,4 +1,4 @@
-package me.buzz.woolwars.game.game.match.types;
+package me.buzz.woolwars.game.game.match.type;
 
 import com.google.common.collect.Lists;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
@@ -7,14 +7,17 @@ import me.buzz.woolwars.api.game.match.events.PlayerJoinGameEvent;
 import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
+import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.arena.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.game.match.listener.impl.BasicMatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.classes.classes.BerserkPlayableClass;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
+import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.TeamUtils;
 import org.bukkit.Bukkit;
@@ -35,6 +38,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void init() {
+        matchListener = new BasicMatchListener();
         playerHolder = new PlayerHolder(this);
     }
 
@@ -77,6 +81,11 @@ public class BasicWoolMatch extends WoolMatch {
     }
 
     @Override
+    public void cooldown() {
+        new CooldownTask(this, () -> setMatchState(MatchState.STARTING), 5).runTaskTimer(WoolWars.get(), 0L, 20L);
+    }
+
+    @Override
     public void prepare() {
         teams.put(TeamColor.RED, new WoolTeam(ID, TeamColor.RED, arena.getLocation(ArenaLocationType.SPAWN_RED)));
         teams.put(TeamColor.BLUE, new WoolTeam(ID, TeamColor.BLUE, arena.getLocation(ArenaLocationType.SPAWN_BLUE)));
@@ -104,7 +113,7 @@ public class BasicWoolMatch extends WoolMatch {
             player.teleport(matchStats.getTeam().getSpawnLocation());
         }
 
-        //TODO: START NEW COOLDOWN TASK
+        new CooldownTask(this, this::start, 5).runTaskTimer(WoolWars.get(), 0L, 20L);
     }
 
     @Override
@@ -116,17 +125,16 @@ public class BasicWoolMatch extends WoolMatch {
             block.setType(Material.AIR);
         }
 
-        //TODO: MESSAGES
+        for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
+            onlinePlayer.sendMessage("Started!");
+        }
     }
 
     @Override
     public void end() {
-
-    }
-
-    @Override
-    public void postEnd() {
-
+        for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
+            onlinePlayer.sendMessage("Ended");
+        }
     }
 
     @Override
@@ -137,7 +145,11 @@ public class BasicWoolMatch extends WoolMatch {
     @Override
     public void setMatchState(MatchState state) {
         super.setMatchState(state);
-        switch (matchState){
+        switch (matchState) {
+            case COOLDOWN: {
+                cooldown();
+                break;
+            }
             case STARTING: {
                 prepare();
                 break;
@@ -146,16 +158,12 @@ public class BasicWoolMatch extends WoolMatch {
                 end();
                 break;
             }
-            case ENDED: {
-                postEnd();
-                break;
-            }
             default:
                 break;
         }
     }
 
     private boolean isEnded() {
-        return matchState == MatchState.ENDED || matchState == MatchState.ENDING;
+        return matchState == MatchState.ENDING;
     }
 }

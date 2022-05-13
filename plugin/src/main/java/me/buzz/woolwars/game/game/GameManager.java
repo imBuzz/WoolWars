@@ -22,6 +22,10 @@ public class GameManager extends AbstractManager implements ApiGameManager {
 
     }
 
+    public WoolMatch getInternalMatch(String ID) {
+        return matches.get(ID);
+    }
+
     @Override
     public Collection<ApiMatch> getMatches() {
         return Collections.unmodifiableCollection(matches.values());

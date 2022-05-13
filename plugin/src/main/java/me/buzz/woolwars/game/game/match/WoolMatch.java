@@ -8,6 +8,7 @@ import me.buzz.woolwars.api.game.match.ApiMatch;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.game.arena.arena.PlayableArena;
+import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
@@ -24,6 +25,8 @@ public abstract class WoolMatch implements ApiMatch {
     protected final PlayableArena arena;
     @Getter
     protected PlayerHolder playerHolder;
+    @Getter
+    protected MatchListener matchListener;
 
     protected final Map<TeamColor, WoolTeam> teams = new HashMap<>();
     @Setter
@@ -35,6 +38,8 @@ public abstract class WoolMatch implements ApiMatch {
 
     public abstract void quit(WoolPlayer woolPlayer, QuitGameReason reason);
 
+    public abstract void cooldown();
+
     public abstract void prepare();
 
     public abstract void preStart();
@@ -42,8 +47,6 @@ public abstract class WoolMatch implements ApiMatch {
     public abstract void start();
 
     public abstract void end();
-
-    public abstract void postEnd();
 
     protected abstract int getMaxPlayers();
 

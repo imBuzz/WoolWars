@@ -1,0 +1,93 @@
+package me.buzz.woolwars.game.game.listener;
+
+import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.game.GameManager;
+import me.buzz.woolwars.game.game.match.WoolMatch;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
+
+public class GameListener implements Listener {
+
+    private final GameManager gameManager = WoolWars.get().getGameManager();
+
+    @EventHandler
+    public void interactAtEntity(PlayerInteractAtEntityEvent event) {
+        String gameID = event.getRightClicked().getWorld().getName().split("_")[1];
+        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().interactAtEntity(event);
+    }
+
+    @EventHandler
+    public void damage(EntityDamageEvent event) {
+        String gameID = event.getEntity().getWorld().getName().split("_")[1];
+        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().damage(event);
+    }
+
+    @EventHandler
+    public void damageByEntity(EntityDamageByEntityEvent event) {
+        String gameID = event.getEntity().getWorld().getName().split("_")[1];
+        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().damageByEntity(event);
+    }
+
+    @EventHandler
+    public void interact(PlayerInteractEvent event) {
+        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
+        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().interact(event);
+    }
+
+    @EventHandler
+    public void itemPickup(PlayerPickupItemEvent event) {
+        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
+        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().itemPickup(event);
+    }
+
+    @EventHandler
+    public void place(BlockPlaceEvent event) {
+        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
+        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().place(event);
+    }
+
+    @EventHandler
+    public void blockBreak(BlockBreakEvent event) {
+        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
+        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().blockBreak(event);
+    }
+
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent event) {
+        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
+        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().chat(event);
+    }
+
+}
