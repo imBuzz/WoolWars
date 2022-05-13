@@ -98,11 +98,16 @@ public class GameManager extends AbstractManager implements ApiGameManager {
 
     @Override
     public Optional<ApiMatch> getMatchByPlayer(Player player) {
+        return Optional.ofNullable(getInternalMatchByPlayer(player));
+    }
+
+    public WoolMatch getInternalMatchByPlayer(Player player) {
         if (player.hasMetadata("wl-playing-game")) {
             String gameID = player.getMetadata("wl-playing-game").get(0).asString();
-            return getMatch(gameID);
+            return getInternalMatch(gameID);
         } else {
-            return Optional.empty();
+            return null;
         }
     }
+
 }

@@ -62,7 +62,11 @@ public abstract class WoolMatch implements ApiMatch {
 
     public abstract void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause);
 
-    protected abstract int getMaxPlayers();
+    public abstract int getMaxPlayers();
+
+    public boolean isPlaying() {
+        return matchState == MatchState.PRE_ROUND || matchState == MatchState.ROUND;
+    }
 
     @Override
     public String getMatchID() {

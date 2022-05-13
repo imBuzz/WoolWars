@@ -8,6 +8,9 @@ import me.buzz.woolwars.game.commands.StartCommand;
 import me.buzz.woolwars.game.commands.TestCommand;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
 import me.buzz.woolwars.game.game.GameManager;
+import me.buzz.woolwars.game.player.PlayerAsyncTickTask;
+import me.buzz.woolwars.game.player.PlayerListener;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -36,6 +39,9 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
         getCommand("test").setExecutor(new TestCommand());
         getCommand("start").setExecutor(new StartCommand());
+
+        new PlayerAsyncTickTask().runTaskTimerAsynchronously(this, 5L, 5L);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
     @Override

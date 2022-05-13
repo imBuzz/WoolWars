@@ -66,7 +66,7 @@ public class BasicWoolMatch extends WoolMatch {
                         .replace("%current%", String.valueOf(playerHolder.getPlayersCount()))
                         .replace("%max%", String.valueOf(getMaxPlayers()))));
 
-        if (playerHolder.getPlayersCount() >= getMaxPlayers()) setMatchState(MatchState.COOLDOWN);
+        if (playerHolder.getPlayersCount() >= getMaxPlayers()) setMatchState(MatchState.STARTING);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class BasicWoolMatch extends WoolMatch {
         PlayerQuitGameEvent quitGameEvent = new PlayerQuitGameEvent(player, reason);
         Bukkit.getPluginManager().callEvent(quitGameEvent);
 
-        if (matchState == MatchState.PLAYING)
+        if (isPlaying())
             shouldEnd = playerHolder.getMatchStats(player).getTeam().getOnlinePlayers().size() - 1 < MIN_PLAYERS_PER_TEAM;
 
         //TODO: SEND QUIT MESSAGE CHECK SENDMESSAGE ON EVENT
@@ -91,7 +91,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void cooldown() {
-        new CooldownTask(this, () -> setMatchState(MatchState.STARTING), 5).runTaskTimer(WoolWars.get(), 0L, 20L);
+        new CooldownTask(this, this::prepare, 5).runTaskTimer(WoolWars.get(), 0L, 20L);
     }
 
     @Override
@@ -129,7 +129,9 @@ public class BasicWoolMatch extends WoolMatch {
         if (killer != null) playerHolder.getMatchStats(killer).matchKills++;
 
         victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 1));
-        victim.sendTitle("SEI MORTO", "COGLIONE!");
+        victim.sendTitle(StringsUtils.colorize(language.getProperty(LanguageFile.ROUND_START_TITLE)),
+                StringsUtils.colorize(language.getProperty(LanguageFile.ROUND_START_SUBTITLE)));
+
         playerHolder.setSpectator(victim);
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {
@@ -138,7 +140,7 @@ public class BasicWoolMatch extends WoolMatch {
     }
 
     @Override
-    protected int getMaxPlayers() {
+    public int getMaxPlayers() {
         return MAX_PLAYERS;
     }
 
@@ -146,12 +148,8 @@ public class BasicWoolMatch extends WoolMatch {
     public void setMatchState(MatchState state) {
         super.setMatchState(state);
         switch (matchState) {
-            case COOLDOWN: {
-                cooldown();
-                break;
-            }
             case STARTING: {
-                prepare();
+                cooldown();
                 break;
             }
             case ENDING: {

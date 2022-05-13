@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.round;
 
+import lombok.Getter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
@@ -21,6 +22,7 @@ import org.bukkit.entity.Player;
 public class RoundHolder extends AbstractHolder {
 
     private final PlayerHolder playerHolder = match.getPlayerHolder();
+    @Getter
     private int roundNumber = 0;
 
     public RoundHolder(WoolMatch match) {
@@ -28,7 +30,7 @@ public class RoundHolder extends AbstractHolder {
     }
 
     public void startNewRound() {
-        if (match.getMatchState() == MatchState.ENDING) return;
+        match.setMatchState(MatchState.PRE_ROUND);
         roundNumber++;
 
         for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks()) {
@@ -58,7 +60,7 @@ public class RoundHolder extends AbstractHolder {
         }
 
         new CooldownTask(match, () -> {
-            if (match.getMatchState() != MatchState.PLAYING) match.setMatchState(MatchState.PLAYING);
+            match.setMatchState(MatchState.ROUND);
             removeWalls();
             for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
                 onlinePlayer.sendTitle(

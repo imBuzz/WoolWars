@@ -18,7 +18,7 @@ public class StartCommand implements CommandExecutor {
             Player player = (Player) sender;
             String gameID = player.getMetadata("wl-playing-game").get(0).asString();
 
-            gameManager.getInternalMatch(gameID).setMatchState(MatchState.COOLDOWN);
+            gameManager.getInternalMatch(gameID).setMatchState(MatchState.STARTING);
         }
 
         return false;
