@@ -1,7 +1,7 @@
-package me.buzz.woolwars.game.game.arena.arena.regions.impl;
+package me.buzz.woolwars.game.game.arena.arena.regions;
 
 import lombok.RequiredArgsConstructor;
-import me.buzz.woolwars.game.game.arena.arena.regions.Region;
+import me.buzz.woolwars.api.game.arena.region.Region;
 import me.buzz.woolwars.game.game.arena.location.ArenaLocation;
 import org.bukkit.Location;
 import org.bukkit.World;

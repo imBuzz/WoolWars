@@ -2,7 +2,6 @@ package me.buzz.woolwars.game.game.match.player;
 
 import com.google.common.collect.ImmutableSet;
 import me.buzz.woolwars.api.game.match.player.ApiPlayerHolder;
-import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
@@ -50,6 +49,41 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
     }
 
     @Override
+    public boolean isSpectator(Player player) {
+        return player.hasMetadata("spectator");
+    }
+
+    @Override
+    public void setSpectator(Player player) {
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
+
+        player.setMetadata("spectator", new FixedMetadataValue(WoolWars.get(), true));
+        player.setAllowFlight(true);
+        player.setFlying(true);
+
+        //TODO: ADD SPECTATORS ITEM
+
+        for (Player onlinePlayer : getOnlinePlayers()) {
+            if (onlinePlayer == player) continue;
+            onlinePlayer.hidePlayer(player);
+        }
+    }
+
+    @Override
+    public void removeSpectator(Player player) {
+        player.getInventory().clear();
+
+        player.setFlying(false);
+        player.setAllowFlight(false);
+
+        for (Player onlinePlayer : getOnlinePlayers()) {
+            if (onlinePlayer == player) continue;
+            onlinePlayer.showPlayer(player);
+        }
+    }
+
+    @Override
     public MatchStats getMatchStats(Player player) {
         return getMatchStats(player.getName());
     }
@@ -57,11 +91,6 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
     @Override
     public MatchStats getMatchStats(String name) {
         return stats.get(name);
-    }
-
-    @Override
-    public ApiWoolPlayer getWoolPlayer() {
-        return null;
     }
 
     @Override

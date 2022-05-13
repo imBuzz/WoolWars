@@ -2,6 +2,8 @@ package me.buzz.woolwars.game.game.arena.arena;
 
 import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
+import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
+import me.buzz.woolwars.api.game.arena.region.Region;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -27,5 +29,10 @@ public class PlayableArena extends ArenaMetadata implements ApiPlayableArena {
     @Override
     public World getWorld() {
         return world;
+    }
+
+    @Override
+    public Region getRegion(ArenaRegionType type) {
+        return regions.get(type);
     }
 }

@@ -18,8 +18,8 @@ public class MatchStats implements ApiMatchStats {
     @Setter
     private PlayableClass playableClass;
 
-    private int matchWoolPlaced, matchBlocksBroken, matchPowerUpsGotten;
-    private int matchKills, matchDeaths;
+    public int matchWoolPlaced, matchBlocksBroken, matchPowerUpsGotten;
+    public int matchKills, matchDeaths;
 
     @Override
     public PlayableClassType getClassType() {

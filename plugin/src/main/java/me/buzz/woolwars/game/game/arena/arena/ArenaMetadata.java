@@ -3,9 +3,9 @@ package me.buzz.woolwars.game.game.arena.arena;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
-import me.buzz.woolwars.api.game.arena.ArenaRegionType;
-import me.buzz.woolwars.game.game.arena.arena.regions.Region;
-import me.buzz.woolwars.game.game.arena.arena.regions.impl.CuboidRegion;
+import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
+import me.buzz.woolwars.api.game.arena.region.Region;
+import me.buzz.woolwars.game.game.arena.arena.regions.CuboidRegion;
 import me.buzz.woolwars.game.game.arena.location.ArenaLocation;
 import org.apache.commons.io.FilenameUtils;
 import org.bukkit.World;
@@ -55,16 +55,15 @@ public class ArenaMetadata {
                 new CuboidRegion(ArenaLocation.fromString(data.getString("locations.walls.teamBlueWall.min")),
                         ArenaLocation.fromString(data.getString("locations.walls.teamBlueWall.max"))));
 
+        regions.put(ArenaRegionType.CENTER,
+                new CuboidRegion(ArenaLocation.fromString(data.getString("locations.center.min")),
+                        ArenaLocation.fromString(data.getString("locations.center.max"))));
+
         return new ArenaMetadata(ID, name, locations, regions);
     }
 
     public PlayableArena toPlayableArena(World world) {
         return new PlayableArena(this, world);
     }
-
-    public Region getRegion(ArenaRegionType type) {
-        return regions.get(type);
-    }
-
 
 }

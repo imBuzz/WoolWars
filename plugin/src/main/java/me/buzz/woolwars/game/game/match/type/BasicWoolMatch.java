@@ -2,7 +2,6 @@ package me.buzz.woolwars.game.game.match.type;
 
 import com.google.common.collect.Lists;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
-import me.buzz.woolwars.api.game.arena.ArenaRegionType;
 import me.buzz.woolwars.api.game.match.events.PlayerJoinGameEvent;
 import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
 import me.buzz.woolwars.api.game.match.state.MatchState;
@@ -12,18 +11,18 @@ import me.buzz.woolwars.game.game.arena.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.listener.impl.BasicMatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
-import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
-import me.buzz.woolwars.game.game.match.player.classes.classes.BerserkPlayableClass;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
+import me.buzz.woolwars.game.game.match.round.RoundHolder;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.TeamUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +37,19 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void init() {
-        matchListener = new BasicMatchListener();
         playerHolder = new PlayerHolder(this);
+        roundHolder = new RoundHolder(this);
+        matchListener = new BasicMatchListener(this);
+    }
+
+    @Override
+    public boolean checkJoin(WoolPlayer woolPlayer) {
+        return playerHolder.getPlayersCount() + 1 > getMaxPlayers();
     }
 
     @Override
     public void join(WoolPlayer woolPlayer) {
         Player player = woolPlayer.toBukkitPlayer();
-        if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
-            player.sendMessage("TOO MANY PLAYERS");
-            return;
-        }
 
         PlayerJoinGameEvent joinGameEvent = new PlayerJoinGameEvent(player);
         Bukkit.getPluginManager().callEvent(joinGameEvent);
@@ -58,6 +59,10 @@ public class BasicWoolMatch extends WoolMatch {
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
         //TODO: JOIN MESSAGE
+
+        if (playerHolder.getPlayersCount() == getMaxPlayers()) {
+            setMatchState(MatchState.COOLDOWN);
+        }
     }
 
     @Override
@@ -96,44 +101,33 @@ public class BasicWoolMatch extends WoolMatch {
         for (WoolPlayer woolPlayer : groups.get(0)) teams.get(TeamColor.RED).join(woolPlayer);
         for (WoolPlayer woolPlayer : groups.get(1)) teams.get(TeamColor.BLUE).join(woolPlayer);
 
-        preStart();
-    }
-
-    @Override
-    public void preStart() {
-        for (WoolPlayer woolPlayer : playerHolder.getWoolPlayers()) {
-            Player player = woolPlayer.toBukkitPlayer();
-            MatchStats matchStats = playerHolder.getMatchStats(player);
-
-            PlayableClass selectedClass = matchStats.getPlayableClass();
-            if (selectedClass == null)
-                selectedClass = new BerserkPlayableClass(player, matchStats.getTeam().getTeamColor());
-
-            selectedClass.equip();
-            player.teleport(matchStats.getTeam().getSpawnLocation());
-        }
-
-        new CooldownTask(this, this::start, 5).runTaskTimer(WoolWars.get(), 0L, 20L);
+        start();
     }
 
     @Override
     public void start() {
-        for (Block block : arena.getRegion(ArenaRegionType.RED_WALL).getBlocks()) {
-            block.setType(Material.AIR);
-        }
-        for (Block block : arena.getRegion(ArenaRegionType.BLUE_WALL).getBlocks()) {
-            block.setType(Material.AIR);
-        }
-
-        for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
-            onlinePlayer.sendMessage("Started!");
-        }
+        roundHolder.startNewRound();
     }
 
     @Override
     public void end() {
         for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
             onlinePlayer.sendMessage("Ended");
+        }
+    }
+
+    @Override
+    public void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause) {
+        MatchStats victimStats = playerHolder.getMatchStats(victim);
+        victimStats.matchDeaths++;
+        if (killer != null) playerHolder.getMatchStats(killer).matchKills++;
+
+        victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 1));
+        victim.sendTitle("SEI MORTO", "COGLIONE!");
+        playerHolder.setSpectator(victim);
+
+        if (cause == EntityDamageEvent.DamageCause.VOID) {
+            victim.teleport(victimStats.getTeam().getSpawnLocation());
         }
     }
 

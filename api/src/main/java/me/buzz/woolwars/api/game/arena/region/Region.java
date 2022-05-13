@@ -1,4 +1,4 @@
-package me.buzz.woolwars.game.game.arena.arena.regions;
+package me.buzz.woolwars.api.game.arena.region;
 
 import org.bukkit.Location;
 import org.bukkit.World;

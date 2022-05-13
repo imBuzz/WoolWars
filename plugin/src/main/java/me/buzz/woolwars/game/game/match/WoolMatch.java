@@ -12,9 +12,13 @@ import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
+import me.buzz.woolwars.game.game.match.round.RoundHolder;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.UUIDUtils;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,17 +26,22 @@ import java.util.Map;
 public abstract class WoolMatch implements ApiMatch {
 
     protected final String ID = UUIDUtils.getNewUUID();
+    protected final Map<TeamColor, WoolTeam> teams = new HashMap<>();
     protected final PlayableArena arena;
-    @Getter
-    protected PlayerHolder playerHolder;
+
+    @Setter
+    protected MatchState matchState = MatchState.WAITING;
     @Getter
     protected MatchListener matchListener;
 
-    protected final Map<TeamColor, WoolTeam> teams = new HashMap<>();
-    @Setter
-    protected MatchState matchState = MatchState.WAITING;
+    @Getter
+    protected PlayerHolder playerHolder;
+    @Getter
+    protected RoundHolder roundHolder;
 
     public abstract void init();
+
+    public abstract boolean checkJoin(WoolPlayer woolPlayer);
 
     public abstract void join(WoolPlayer woolPlayer);
 
@@ -42,13 +51,17 @@ public abstract class WoolMatch implements ApiMatch {
 
     public abstract void prepare();
 
-    public abstract void preStart();
-
     public abstract void start();
 
     public abstract void end();
 
+    public abstract void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause);
+
     protected abstract int getMaxPlayers();
+
+    public Collection<WoolTeam> getTeams() {
+        return teams.values();
+    }
 
     @Override
     public String getMatchID() {
@@ -62,6 +75,10 @@ public abstract class WoolMatch implements ApiMatch {
 
     @Override
     public ApiPlayableArena getArena() {
+        return getPlayableArena();
+    }
+
+    public PlayableArena getPlayableArena() {
         return arena;
     }
 
