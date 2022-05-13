@@ -1,4 +1,4 @@
-package me.buzz.woolwars.game.player;
+package me.buzz.woolwars.game.player.listener;
 
 import fr.minuskube.netherboard.Netherboard;
 import me.buzz.woolwars.game.utils.StringsUtils;

@@ -24,4 +24,12 @@ public final class StringsUtils {
         return Arrays.stream(strings).map(StringsUtils::colorize).collect(Collectors.toList());
     }
 
+    public static String getProgressBar(int current, int max, int totalBars, char symbol, ChatColor completedColor, ChatColor notCompletedColor) {
+        float percent = (float) current / max;
+        int progressBars = (int) (totalBars * percent);
+
+        return com.google.common.base.Strings.repeat("" + completedColor + symbol, progressBars)
+                + com.google.common.base.Strings.repeat("" + notCompletedColor + symbol, totalBars - progressBars);
+    }
+
 }

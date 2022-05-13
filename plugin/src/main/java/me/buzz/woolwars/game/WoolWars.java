@@ -8,8 +8,8 @@ import me.buzz.woolwars.game.commands.StartCommand;
 import me.buzz.woolwars.game.commands.TestCommand;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
 import me.buzz.woolwars.game.game.GameManager;
-import me.buzz.woolwars.game.player.PlayerAsyncTickTask;
-import me.buzz.woolwars.game.player.PlayerListener;
+import me.buzz.woolwars.game.player.listener.PlayerListener;
+import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

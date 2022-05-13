@@ -73,6 +73,7 @@ public class RoundHolder extends AbstractHolder {
 
     public void endRound(WoolTeam woolTeam) {
         woolTeam.increasePoints(1);
+        match.setMatchState(MatchState.ROUND_OVER);
 
         for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
             playerHolder.setSpectator(onlinePlayer);

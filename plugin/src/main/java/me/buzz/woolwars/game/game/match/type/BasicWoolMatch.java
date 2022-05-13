@@ -125,14 +125,16 @@ public class BasicWoolMatch extends WoolMatch {
     @Override
     public void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause) {
         MatchStats victimStats = playerHolder.getMatchStats(victim);
-        victimStats.matchDeaths++;
-        if (killer != null) playerHolder.getMatchStats(killer).matchKills++;
+        if (!playerHolder.isSpectator(victim)) {
+            victimStats.matchDeaths++;
+            if (killer != null) playerHolder.getMatchStats(killer).matchKills++;
 
-        victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 1));
-        victim.sendTitle(StringsUtils.colorize(language.getProperty(LanguageFile.ROUND_START_TITLE)),
-                StringsUtils.colorize(language.getProperty(LanguageFile.ROUND_START_SUBTITLE)));
+            victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 1));
+            victim.sendTitle(StringsUtils.colorize(language.getProperty(LanguageFile.DIED_TITLE)),
+                    StringsUtils.colorize(language.getProperty(LanguageFile.DIED_SUBTITLE)));
 
-        playerHolder.setSpectator(victim);
+            playerHolder.setSpectator(victim);
+        }
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {
             victim.teleport(victimStats.getTeam().getSpawnLocation());

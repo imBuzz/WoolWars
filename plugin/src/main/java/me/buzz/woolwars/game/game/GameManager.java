@@ -68,8 +68,6 @@ public class GameManager extends AbstractManager implements ApiGameManager {
 
     public boolean sendToFreeGame(WoolPlayer woolPlayer) {
         for (WoolMatch value : matchesByID.values()) {
-            System.out.println("Match: " + value.getMatchID());
-
             if (value.checkJoin(woolPlayer)) {
                 value.join(woolPlayer);
                 return true;
