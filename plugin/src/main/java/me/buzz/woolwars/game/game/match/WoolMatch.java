@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match;
 
+import ch.jalu.configme.SettingsManager;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
 import me.buzz.woolwars.api.game.match.ApiMatch;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
+import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
@@ -18,14 +20,17 @@ import me.buzz.woolwars.game.utils.UUIDUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
 public abstract class WoolMatch implements ApiMatch {
 
+    @Getter
+    protected final SettingsManager language = WoolWars.get().getLanguage();
+
     protected final String ID = UUIDUtils.getNewUUID();
+    @Getter
     protected final Map<TeamColor, WoolTeam> teams = new HashMap<>();
     protected final PlayableArena arena;
 
@@ -58,10 +63,6 @@ public abstract class WoolMatch implements ApiMatch {
     public abstract void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause);
 
     protected abstract int getMaxPlayers();
-
-    public Collection<WoolTeam> getTeams() {
-        return teams.values();
-    }
 
     @Override
     public String getMatchID() {

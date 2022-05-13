@@ -7,6 +7,7 @@ import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.listener.impl.BasicMatchListener;
@@ -17,6 +18,7 @@ import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.round.RoundHolder;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
+import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.TeamUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -58,13 +60,13 @@ public class BasicWoolMatch extends WoolMatch {
         playerHolder.registerPlayer(woolPlayer);
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
-        //TODO: JOIN MESSAGE
+        player.sendMessage(StringsUtils
+                .colorize(language.getProperty(LanguageFile.JOINED_MESSAGE)
+                        .replace("%player%", player.getName())
+                        .replace("%current%", String.valueOf(playerHolder.getPlayersCount()))
+                        .replace("%max%", String.valueOf(getMaxPlayers()))));
 
-        if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
-            System.out.println("STARTED");
-
-            setMatchState(MatchState.COOLDOWN);
-        }
+        if (playerHolder.getPlayersCount() >= getMaxPlayers()) setMatchState(MatchState.COOLDOWN);
     }
 
     @Override
