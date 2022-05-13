@@ -2,6 +2,7 @@ package me.buzz.woolwars.game.game.match.player.team.impl;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.MatchTeam;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.player.WoolPlayer;
@@ -22,7 +23,8 @@ public class WoolTeam implements MatchTeam {
     private final List<Player> players = new ArrayList<>(4);
     private int points;
 
-    public void join(WoolPlayer woolPlayer){
+    public void join(WoolPlayer woolPlayer, MatchStats stats) {
+        stats.setTeam(this);
         players.add(woolPlayer.toBukkitPlayer());
     }
 
@@ -31,7 +33,7 @@ public class WoolTeam implements MatchTeam {
         return players;
     }
 
-    public void increasePoints(int value){
+    public void increasePoints(int value) {
         points += value;
     }
 

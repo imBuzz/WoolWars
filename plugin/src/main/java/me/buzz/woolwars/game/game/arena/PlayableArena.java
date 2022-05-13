@@ -1,4 +1,4 @@
-package me.buzz.woolwars.game.game.arena.arena;
+package me.buzz.woolwars.game.game.arena;
 
 import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
@@ -12,8 +12,12 @@ public class PlayableArena extends ArenaMetadata implements ApiPlayableArena {
     private final World world;
 
     public PlayableArena(ArenaMetadata metadata, World world) {
-        super(metadata.ID, metadata.name, metadata.locations, metadata.regions);
+        super(metadata.ID, metadata.name, metadata.matchType, metadata.getWorldName(), metadata.locations, metadata.regions);
         this.world = world;
+
+        for (Region value : regions.values()) {
+            value.setWorld(this.world);
+        }
     }
 
     @Override

@@ -30,14 +30,18 @@ public class BerserkPlayableClass extends PlayableClass {
         globalItems.add(new ItemStack(Material.WOOD_PICKAXE));
         globalItems.add(new ItemStack(Material.SHEARS));
 
+        ItemStack wool = new Wool(DyeColor.RED).toItemStack();
+        wool.setAmount(64);
         coloredEquipment.put(TeamColor.RED, Lists.newArrayList(
                 new Pair<>(ArmorSlot.LEGGINGS, new ItemBuilder(Material.LEATHER_LEGGINGS).setLeatherColor(Color.RED).build()),
-                new Pair<>(ArmorSlot.OTHER, new Wool(DyeColor.RED).toItemStack())
+                new Pair<>(ArmorSlot.OTHER, wool)
         ));
 
+        wool = new Wool(DyeColor.BLUE).toItemStack();
+        wool.setAmount(64);
         coloredEquipment.put(TeamColor.BLUE, Lists.newArrayList(
                 new Pair<>(ArmorSlot.LEGGINGS, new ItemBuilder(Material.LEATHER_LEGGINGS).setLeatherColor(Color.BLUE).build()),
-                new Pair<>(ArmorSlot.OTHER, new Wool(DyeColor.BLUE).toItemStack())
+                new Pair<>(ArmorSlot.OTHER, wool)
         ));
     }
 

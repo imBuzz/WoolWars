@@ -11,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -58,7 +57,6 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void interact(PlayerInteractEvent event) {
-        event.setUseInteractedBlock(Event.Result.DENY);
     }
 
     @Override
@@ -87,16 +85,17 @@ public class BasicMatchListener implements MatchListener {
             if (dyeColor == woolTeam.getTeamColor().getDC()) sameTypeBlocks++;
         }
 
-        player.sendMessage("TotalBlocks: " + totalBlocks + " - SameBlocks: " + sameTypeBlocks);
-        //if (totalBlocks == sameTypeBlocks) match.getRoundHolder().endRound();
+        if (totalBlocks == sameTypeBlocks) match.getRoundHolder().endRound(woolTeam);
     }
 
     @Override
     public void blockBreak(BlockBreakEvent event) {
         Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
-        if (centerRegion.isInRegion(event.getBlock().getLocation())) return;
-
         event.setCancelled(true);
+
+        if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
+
+        event.getBlock().setType(Material.AIR);
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.util.UUID;
 @Getter
 public class MatchStats implements ApiMatchStats {
     private final UUID uuid;
+    @Setter
     private WoolTeam team;
     @Setter
     private PlayableClass playableClass;

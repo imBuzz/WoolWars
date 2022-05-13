@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum ArmorSlot {
 
-    HELMET(103),
-    CHESTPLATE(102),
-    LEGGINGS(101),
-    BOOTS(100),
+    HELMET(40),
+    CHESTPLATE(39),
+    LEGGINGS(38),
+    BOOTS(37),
     OTHER(-1);
 
     private final int slot;

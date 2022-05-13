@@ -7,7 +7,7 @@ import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
 import me.buzz.woolwars.api.game.match.ApiMatch;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
-import me.buzz.woolwars.game.game.arena.arena.PlayableArena;
+import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;

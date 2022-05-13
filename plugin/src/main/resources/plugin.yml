@@ -4,3 +4,9 @@ main: me.buzz.woolwars.game.WoolWars
 api-version: 1.18
 authors: [ ImBuzz ]
 description: WoolWars Plugin Controller
+
+commands:
+  start:
+    description: "TESTING"
+  test:
+    description: "TESTING"

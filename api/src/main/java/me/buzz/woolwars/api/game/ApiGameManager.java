@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ApiGameManager {
 
-    Collection<ApiMatch> getMatches();
+    Collection<ApiMatch> getMatchesByID();
 
     Optional<ApiMatch> getMatch(String ID);
 

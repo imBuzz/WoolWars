@@ -20,8 +20,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void interactAtEntity(PlayerInteractAtEntityEvent event) {
-        String gameID = event.getRightClicked().getWorld().getName().split("_")[1];
-        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().interactAtEntity(event);
@@ -29,8 +28,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void damage(EntityDamageEvent event) {
-        String gameID = event.getEntity().getWorld().getName().split("_")[1];
-        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getEntity().getWorld().getName());
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().damage(event);
@@ -38,8 +36,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void damageByEntity(EntityDamageByEntityEvent event) {
-        String gameID = event.getEntity().getWorld().getName().split("_")[1];
-        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getEntity().getWorld().getName());
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().damageByEntity(event);
@@ -47,8 +44,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void interact(PlayerInteractEvent event) {
-        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
-        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().interact(event);
@@ -56,8 +52,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void itemPickup(PlayerPickupItemEvent event) {
-        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
-        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getItem().getWorld().getName());
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().itemPickup(event);
@@ -65,8 +60,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void place(BlockPlaceEvent event) {
-        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
-        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getBlock().getWorld().getName());
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().place(event);
@@ -74,8 +68,9 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
-        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
-        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        event.getPlayer().sendMessage("CIAO");
+
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getBlock().getWorld().getName());
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().blockBreak(event);
@@ -83,8 +78,7 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
-        String gameID = event.getPlayer().getWorld().getName().split("_")[1];
-        WoolMatch woolMatch = gameManager.getInternalMatch(gameID);
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().chat(event);

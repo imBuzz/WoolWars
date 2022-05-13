@@ -7,7 +7,7 @@ import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
-import me.buzz.woolwars.game.game.arena.arena.PlayableArena;
+import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.listener.impl.BasicMatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
@@ -44,7 +44,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public boolean checkJoin(WoolPlayer woolPlayer) {
-        return playerHolder.getPlayersCount() + 1 > getMaxPlayers();
+        return playerHolder.getPlayersCount() + 1 <= getMaxPlayers();
     }
 
     @Override
@@ -60,7 +60,9 @@ public class BasicWoolMatch extends WoolMatch {
 
         //TODO: JOIN MESSAGE
 
-        if (playerHolder.getPlayersCount() == getMaxPlayers()) {
+        if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
+            System.out.println("STARTED");
+
             setMatchState(MatchState.COOLDOWN);
         }
     }
@@ -98,8 +100,10 @@ public class BasicWoolMatch extends WoolMatch {
         List<WoolPlayer> p = new ArrayList<>(playerHolder.getWoolPlayers());
         List<List<WoolPlayer>> groups = Lists.partition(p, TeamUtils.getHalfApprox(p.size()));
 
-        for (WoolPlayer woolPlayer : groups.get(0)) teams.get(TeamColor.RED).join(woolPlayer);
-        for (WoolPlayer woolPlayer : groups.get(1)) teams.get(TeamColor.BLUE).join(woolPlayer);
+        for (WoolPlayer woolPlayer : groups.get(0))
+            teams.get(TeamColor.RED).join(woolPlayer, playerHolder.getMatchStats(woolPlayer.getName()));
+        for (WoolPlayer woolPlayer : groups.get(1))
+            teams.get(TeamColor.BLUE).join(woolPlayer, playerHolder.getMatchStats(woolPlayer.getName()));
 
         start();
     }

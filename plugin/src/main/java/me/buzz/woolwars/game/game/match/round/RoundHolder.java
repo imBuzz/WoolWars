@@ -58,7 +58,9 @@ public class RoundHolder extends AbstractHolder {
         }, 5).runTaskTimer(WoolWars.get(), 0L, 20L);
     }
 
-    public void endRound() {
+    public void endRound(WoolTeam woolTeam) {
+        woolTeam.increasePoints(1);
+
         for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
             playerHolder.setSpectator(onlinePlayer);
         }
@@ -67,12 +69,10 @@ public class RoundHolder extends AbstractHolder {
     }
 
     public void removeWalls() {
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks()) {
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
             block.setType(Material.AIR);
-        }
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks()) {
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
             block.setType(Material.AIR);
-        }
     }
 
 

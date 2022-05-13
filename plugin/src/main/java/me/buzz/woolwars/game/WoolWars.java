@@ -2,6 +2,8 @@ package me.buzz.woolwars.game;
 
 import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
+import me.buzz.woolwars.game.commands.StartCommand;
+import me.buzz.woolwars.game.commands.TestCommand;
 import me.buzz.woolwars.game.game.GameManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,6 +18,9 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
         gameManager = new GameManager();
         gameManager.init();
+
+        getCommand("test").setExecutor(new TestCommand());
+        getCommand("start").setExecutor(new StartCommand());
     }
 
     @Override
