@@ -6,7 +6,6 @@ import me.buzz.woolwars.api.game.match.events.PlayerJoinGameEvent;
 import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
-import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.WoolMatch;
@@ -62,9 +61,9 @@ public class BasicWoolMatch extends WoolMatch {
 
         player.sendMessage(StringsUtils
                 .colorize(language.getProperty(LanguageFile.JOINED_MESSAGE)
-                        .replace("%player%", player.getName())
-                        .replace("%current%", String.valueOf(playerHolder.getPlayersCount()))
-                        .replace("%max%", String.valueOf(getMaxPlayers()))));
+                        .replace("{player}", player.getName())
+                        .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
+                        .replace("{max}", String.valueOf(getMaxPlayers()))));
 
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) setMatchState(MatchState.STARTING);
     }
@@ -91,7 +90,16 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void cooldown() {
-        new CooldownTask(this, this::prepare, 5).runTaskTimer(WoolWars.get(), 0L, 20L);
+        roundHolder.task = CooldownTask.Builder.create()
+                .endAction(task -> prepare())
+                .midAction(task -> {
+                    for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
+                        onlinePlayer.sendMessage(StringsUtils.colorize(language.getProperty(LanguageFile.STARTING_COOLDOWN)
+                                .replace("{seconds}", String.valueOf(task.getTargetSeconds()))));
+                    }
+                })
+                .seconds(5).build();
+        roundHolder.task.start();
     }
 
     @Override
@@ -144,6 +152,11 @@ public class BasicWoolMatch extends WoolMatch {
     @Override
     public int getMaxPlayers() {
         return MAX_PLAYERS;
+    }
+
+    @Override
+    public void tickPlayer(Player player) {
+
     }
 
     @Override

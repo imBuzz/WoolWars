@@ -3,7 +3,6 @@ package me.buzz.woolwars.game.game.match.round;
 import lombok.Getter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.match.state.MatchState;
-import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
@@ -22,6 +21,8 @@ import org.bukkit.entity.Player;
 public class RoundHolder extends AbstractHolder {
 
     private final PlayerHolder playerHolder = match.getPlayerHolder();
+    public CooldownTask task;
+
     @Getter
     private int roundNumber = 0;
 
@@ -59,16 +60,17 @@ public class RoundHolder extends AbstractHolder {
             }
         }
 
-        new CooldownTask(match, () -> {
+        task = CooldownTask.Builder.create().endAction(task1 -> {
             match.setMatchState(MatchState.ROUND);
             removeWalls();
             for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
                 onlinePlayer.sendTitle(
                         StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_START_TITLE)),
                         StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_START_SUBTITLE)
-                                .replace("%number%", String.valueOf(roundNumber))));
+                                .replace("{number}", String.valueOf(roundNumber))));
             }
-        }, 5).runTaskTimer(WoolWars.get(), 0L, 20L);
+        }).seconds(5).build();
+        task.start();
     }
 
     public void endRound(WoolTeam woolTeam) {
@@ -79,14 +81,15 @@ public class RoundHolder extends AbstractHolder {
             playerHolder.setSpectator(onlinePlayer);
             onlinePlayer.sendTitle(
                     StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_OVER_TITLE)
-                            .replace("%blue_team_points%", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
-                            .replace("%red_team_points%", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))),
+                            .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
+                            .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))),
                     StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_OVER_SUBTITLE)
-                    ).replace("%blue_team_points%", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints())
-                            .replace("%red_team_points%", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
+                    ).replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints())
+                            .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
         }
 
-        new CooldownTask(match, this::startNewRound, 5).runTaskTimer(WoolWars.get(), 0L, 20L);
+        task = CooldownTask.Builder.create().endAction(task1 -> match.getRoundHolder().startNewRound()).seconds(5).build();
+        task.start();
     }
 
     public void removeWalls() {

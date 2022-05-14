@@ -64,6 +64,8 @@ public abstract class WoolMatch implements ApiMatch {
 
     public abstract int getMaxPlayers();
 
+    public abstract void tickPlayer(Player player);
+
     public boolean isPlaying() {
         return matchState == MatchState.PRE_ROUND || matchState == MatchState.ROUND;
     }
