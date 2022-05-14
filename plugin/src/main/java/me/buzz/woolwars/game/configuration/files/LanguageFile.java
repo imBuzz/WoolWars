@@ -26,6 +26,7 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ROUND_OVER_TITLE = newProperty("match.round.over.title.title", "&9{blue_team_points} &f- &c{red_team_points}");
     public static final Property<String> ROUND_OVER_SUBTITLE = newProperty("match.round.over.title.subtitle", "&e&lROUND OVER");
 
+    public static final Property<String> ROUND_UNLOCK_CENTER_BAR = newProperty("match.round.protectCenter-bar", "&e&lCENTER UNLOCKS IN {seconds} SECONDS!");
 
     /*
     SCOREBOARDs
@@ -79,6 +80,6 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ROUND_STARTING = newProperty("scoreboard.variables.round.starting", "Starting");
     public static final Property<String> ROUND_PRE_ROUND = newProperty("scoreboard.variables.round.pre_round", "Pre Round");
     public static final Property<String> ROUND_ROUND = newProperty("scoreboard.variables.round.round", "Round");
-    public static final Property<String> ROUND_ENDED = newProperty("scoreboard.variables.round.ended", "Ended");
+    public static final Property<String> ROUND_ENDED = newProperty("scoreboard.variables.round.ended", "Round Over!");
 
 }

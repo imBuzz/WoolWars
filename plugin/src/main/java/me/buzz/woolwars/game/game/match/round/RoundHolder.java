@@ -1,6 +1,7 @@
 package me.buzz.woolwars.game.game.match.round;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
@@ -12,17 +13,27 @@ import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
+import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
+import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.manager.AbstractHolder;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 public class RoundHolder extends AbstractHolder {
 
     private final PlayerHolder playerHolder = match.getPlayerHolder();
-    public CooldownTask task;
+    @Getter
+    private final Map<String, CooldownTask> tasks = new HashMap<>();
 
+    @Getter
+    @Setter
+    private boolean canBreakCenter = false;
     @Getter
     private int roundNumber = 0;
 
@@ -60,17 +71,7 @@ public class RoundHolder extends AbstractHolder {
             }
         }
 
-        task = CooldownTask.Builder.create().endAction(task1 -> {
-            match.setMatchState(MatchState.ROUND);
-            removeWalls();
-            for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
-                onlinePlayer.sendTitle(
-                        StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_START_TITLE)),
-                        StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_START_SUBTITLE)
-                                .replace("{number}", String.valueOf(roundNumber))));
-            }
-        }).seconds(5).build();
-        task.start();
+        tasks.put("startRound", new StartRoundTask(match, TimeUnit.SECONDS.toMillis(5)).start());
     }
 
     public void endRound(WoolTeam woolTeam) {
@@ -88,8 +89,7 @@ public class RoundHolder extends AbstractHolder {
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
         }
 
-        task = CooldownTask.Builder.create().endAction(task1 -> match.getRoundHolder().startNewRound()).seconds(5).build();
-        task.start();
+        tasks.put("waitForNewRound", new WaitForNewRoundTask(match, TimeUnit.SECONDS.toMillis(5)).start());
     }
 
     public void removeWalls() {

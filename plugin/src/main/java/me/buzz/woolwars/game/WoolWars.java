@@ -10,6 +10,8 @@ import me.buzz.woolwars.game.configuration.ConfigurationType;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
 import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
+import me.buzz.woolwars.nms.INMSHandler;
+import me.buzz.woolwars.nms.ServerProtocols;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,12 +26,20 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
     @Getter
     private GameManager gameManager;
+    @Getter
+    private INMSHandler nmsHandler;
 
     @Override
     public void onEnable() {
         instance = this;
         if (!setupFiles()) {
             getLogger().severe("Error on creating plugin files, stopping...");
+            setEnabled(false);
+            return;
+        }
+
+        nmsHandler = ServerProtocols.getNmsHandler(this);
+        if (nmsHandler == null) {
             setEnabled(false);
             return;
         }

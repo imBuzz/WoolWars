@@ -17,16 +17,159 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>me.buzz.woolwars</groupId>
             <artifactId>api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>me.buzz.woolwars</groupId>
             <artifactId>plugin</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_8_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_8_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_8_R3</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_9_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_9_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_10_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_11_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_12_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_13_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_13_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_14_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_15_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_16_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_16_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_16_R3</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_17_R0</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_17_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_18_R0</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_18_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
+            <artifactId>v1_18_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -35,6 +178,30 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.3.0-SNAPSHOT</version>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>ch.jalu.configme</pattern>
+                            <shadedPattern>me.buzz.externals.configme</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>fr.minuskube.netherboard</pattern>
+                            <shadedPattern>me.buzz.externals.netherboard</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.yaml.snakeyaml</pattern>
+                            <shadedPattern>me.buzz.externals.snakeyaml</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.apache.commons.io</pattern>
+                            <shadedPattern>me.buzz.externals.commons.io</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.slf4j</pattern>
+                            <shadedPattern>me.buzz.externals.slf4j</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>

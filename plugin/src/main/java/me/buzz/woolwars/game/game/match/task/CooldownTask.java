@@ -1,67 +1,58 @@
 package me.buzz.woolwars.game.game.match.task;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import me.buzz.woolwars.game.WoolWars;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
-@AllArgsConstructor
-public class CooldownTask extends BukkitRunnable {
+import java.util.concurrent.TimeUnit;
 
-    private Action midAction;
-    private Action endAction;
-    @Getter
-    private int targetSeconds;
+public abstract class CooldownTask extends BukkitRunnable {
 
-    @Override
-    public void run() {
-        targetSeconds--;
-        if (targetSeconds <= 0) {
-            if (endAction != null) endAction.run(this);
-            cancel();
-            return;
-        }
+    private long startTime, targetTime;
 
-        if (midAction != null) midAction.run(this);
+    public CooldownTask(long targetTime) {
+        this.targetTime = targetTime;
     }
 
-    public void start() {
-        runTaskTimer(WoolWars.get(), 0L, 20L);
+    public CooldownTask start() {
+        startTime = System.currentTimeMillis();
+        targetTime += startTime;
+        return this;
     }
 
-    public interface Action {
-        void run(CooldownTask task);
+    public boolean shouldEnd() {
+        return targetTime - System.currentTimeMillis() <= 0;
     }
 
-    public static class Builder {
+    public String formatSeconds() {
+        return DurationFormatUtils.formatDuration(targetTime - startTime, "mm:ss");
+    }
 
-        private Action midAction;
-        private Action endAction;
-        private int seconds;
+    public String formatSecondsAndMillis() {
+        return String.format("%1$tS.%1$tL", targetTime - startTime);
+    }
+
+    public int getRemaningSeconds() {
+        return (int) TimeUnit.MILLISECONDS.toSeconds(targetTime - startTime);
+    }
+
+    /*public static class Builder {
+
+        private long targetTime;
 
         public static Builder create() {
             return new Builder();
         }
 
-        public Builder endAction(Action endAction) {
-            this.endAction = endAction;
+        public Builder time(long targetTime) {
+            this.targetTime = targetTime;
             return this;
         }
 
-        public Builder midAction(Action midAction) {
-            this.midAction = midAction;
-            return this;
+        public CooldownTask build(CooldownTaskType type) {
+            if (type == CooldownTaskType.TICK) return new TickTask(targetTime);
+            return new SecondsTask(targetTime);
         }
-
-        public Builder seconds(int seconds) {
-            this.seconds = seconds;
-            return this;
-        }
-
-        public CooldownTask build() {
-            return new CooldownTask(midAction, endAction, seconds);
-        }
-    }
+    }*/
 
 
 }

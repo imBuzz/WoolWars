@@ -8,7 +8,6 @@ import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.utils.StringsUtils;
-import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -73,8 +72,8 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                         tempLine = tempLine
                                 .replace("{map_name}", match.getArena().getName())
                                 .replace("{current_players}", String.valueOf(match.getPlayerHolder().getPlayersCount()))
-                                .replace("{max_players}", String.valueOf(match.getMaxPlayers()))
-                                .replace("{remaning_seconds}", String.valueOf(match.getMaxPlayers()));
+                                .replace("{max_players}", String.valueOf(match.getMaxPlayers()));
+                        //.replace("{remaning_seconds}", String.valueOf(match.getRoundHolder().task.getTargetSeconds()));
                         break;
                     }
                     case PRE_ROUND: {
@@ -93,7 +92,8 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                         StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
                                                 match.getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
 
-                                .replace("{time_left}", DurationFormatUtils.formatDuration(match.getRoundHolder().task.getTargetSeconds() * 1000L, "mm:ss"))
+                                //.replace("{time_left}", DurationFormatUtils.formatDuration(match.getRoundHolder().getTasks().get("waitForNewRound").getRemaningSeconds(), "mm:ss"))
+
                                 .replace("{red_team_players}", String.valueOf(match.getTeams().get(TeamColor.RED).getPlayers().size()))
                                 .replace("{blue_team_players}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPlayers().size()));
                         break;
@@ -110,7 +110,8 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                 .replace("{blue_team_progress}",
                                         StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
                                                 match.getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
-                                .replace("{time_left}", DurationFormatUtils.formatDuration(match.getRoundHolder().task.getTargetSeconds() * 1000L, "mm:ss"))
+
+                                //.replace("{time_left}", DurationFormatUtils.formatDuration(match.getRoundHolder().task.getTargetSeconds() * 1000L, "mm:ss"))
 
                                 .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
                                 .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))

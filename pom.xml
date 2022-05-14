@@ -10,6 +10,7 @@
     <modules>
         <module>api</module>
         <module>plugin</module>
+        <module>nms</module>
         <module>jar</module>
     </modules>
     <packaging>pom</packaging>

@@ -15,7 +15,7 @@ import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.round.RoundHolder;
-import me.buzz.woolwars.game.game.match.task.CooldownTask;
+import me.buzz.woolwars.game.game.match.task.tasks.StartingMatchTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.TeamUtils;
@@ -27,6 +27,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class BasicWoolMatch extends WoolMatch {
     private final static int MAX_PLAYERS = 8;
@@ -90,16 +91,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void cooldown() {
-        roundHolder.task = CooldownTask.Builder.create()
-                .endAction(task -> prepare())
-                .midAction(task -> {
-                    for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
-                        onlinePlayer.sendMessage(StringsUtils.colorize(language.getProperty(LanguageFile.STARTING_COOLDOWN)
-                                .replace("{seconds}", String.valueOf(task.getTargetSeconds()))));
-                    }
-                })
-                .seconds(5).build();
-        roundHolder.task.start();
+        roundHolder.getTasks().put("startTask", new StartingMatchTask(this, TimeUnit.SECONDS.toMillis(5)).start());
     }
 
     @Override
