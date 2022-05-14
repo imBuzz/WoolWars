@@ -3,9 +3,11 @@ package me.buzz.woolwars.game.game.match.listener.impl;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.arena.region.Region;
+import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
+import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -71,6 +73,13 @@ public class BasicMatchListener implements MatchListener {
             event.setCancelled(true);
             return;
         }
+        if (!match.getRoundHolder().isCanBreakCenter()) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(StringsUtils.colorize(match.getLanguage()
+                    .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
+                            .getTasks().get("centerProtect").formatSecondsAndMillis())));
+            return;
+        }
 
         Player player = event.getPlayer();
         WoolTeam woolTeam = match.getPlayerHolder().getMatchStats(player).getTeam();
@@ -92,8 +101,13 @@ public class BasicMatchListener implements MatchListener {
     public void blockBreak(BlockBreakEvent event) {
         Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
         event.setCancelled(true);
-
         if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
+        if (!match.getRoundHolder().isCanBreakCenter()) {
+            event.getPlayer().sendMessage(StringsUtils.colorize(match.getLanguage()
+                    .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
+                            .getTasks().get("centerProtect").formatSecondsAndMillis())));
+            return;
+        }
 
         event.getBlock().setType(Material.AIR);
     }

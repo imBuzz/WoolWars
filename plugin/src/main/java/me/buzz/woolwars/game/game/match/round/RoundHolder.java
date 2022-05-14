@@ -71,7 +71,7 @@ public class RoundHolder extends AbstractHolder {
             }
         }
 
-        tasks.put("startRound", new StartRoundTask(match, TimeUnit.SECONDS.toMillis(5)).start());
+        tasks.put("startRound", new StartRoundTask(match, TimeUnit.SECONDS.toMillis(5)).start(20));
     }
 
     public void endRound(WoolTeam woolTeam) {
@@ -89,7 +89,7 @@ public class RoundHolder extends AbstractHolder {
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
         }
 
-        tasks.put("waitForNewRound", new WaitForNewRoundTask(match, TimeUnit.SECONDS.toMillis(5)).start());
+        tasks.put("waitForNewRound", new WaitForNewRoundTask(match, TimeUnit.SECONDS.toMillis(5)).start(20));
     }
 
     public void removeWalls() {

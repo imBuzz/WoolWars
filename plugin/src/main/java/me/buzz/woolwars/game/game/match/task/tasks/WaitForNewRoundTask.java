@@ -14,8 +14,15 @@ public class WaitForNewRoundTask extends SecondsTask {
 
     @Override
     public void run() {
-        match.getRoundHolder().startNewRound();
+        if (shouldEnd()) {
+            end();
+            cancel();
+        }
     }
 
 
+    @Override
+    public void end() {
+        match.getRoundHolder().startNewRound();
+    }
 }

@@ -72,8 +72,9 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                         tempLine = tempLine
                                 .replace("{map_name}", match.getArena().getName())
                                 .replace("{current_players}", String.valueOf(match.getPlayerHolder().getPlayersCount()))
-                                .replace("{max_players}", String.valueOf(match.getMaxPlayers()));
-                        //.replace("{remaning_seconds}", String.valueOf(match.getRoundHolder().task.getTargetSeconds()));
+                                .replace("{max_players}", String.valueOf(match.getMaxPlayers()))
+                                .replace("{remaning_seconds}", String.valueOf(match.getRoundHolder()
+                                        .getTasks().get("startTask").formatSeconds()));
                         break;
                     }
                     case PRE_ROUND: {
@@ -92,7 +93,7 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                         StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
                                                 match.getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
 
-                                //.replace("{time_left}", DurationFormatUtils.formatDuration(match.getRoundHolder().getTasks().get("waitForNewRound").getRemaningSeconds(), "mm:ss"))
+                                .replace("{time_left}", match.getRoundHolder().getTasks().get("startRound").formatSeconds())
 
                                 .replace("{red_team_players}", String.valueOf(match.getTeams().get(TeamColor.RED).getPlayers().size()))
                                 .replace("{blue_team_players}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPlayers().size()));
@@ -111,7 +112,7 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                         StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
                                                 match.getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
 
-                                //.replace("{time_left}", DurationFormatUtils.formatDuration(match.getRoundHolder().task.getTargetSeconds() * 1000L, "mm:ss"))
+                                .replace("{time_left}", match.getRoundHolder().getTasks().get("restGame").formatSeconds())
 
                                 .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
                                 .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))

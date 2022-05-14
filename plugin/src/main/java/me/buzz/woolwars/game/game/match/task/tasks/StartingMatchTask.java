@@ -21,7 +21,16 @@ public class StartingMatchTask extends SecondsTask {
             onlinePlayer.sendMessage(StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.STARTING_COOLDOWN)
                     .replace("{seconds}", String.valueOf(getRemaningSeconds()))));
         }
+
+        if (shouldEnd()) {
+            end();
+            cancel();
+        }
     }
 
 
+    @Override
+    public void end() {
+        match.prepare();
+    }
 }

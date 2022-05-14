@@ -18,7 +18,7 @@ public class ProtectCenterTask extends TickTask {
     @Override
     public void run() {
         if (shouldEnd()) {
-            match.getRoundHolder().setCanBreakCenter(true);
+            end();
             cancel();
             return;
         }
@@ -31,5 +31,11 @@ public class ProtectCenterTask extends TickTask {
         }
     }
 
-
+    @Override
+    public void end() {
+        for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
+            WoolWars.get().getNmsHandler().getPlayerHandler().sendActionBar(onlinePlayer, "");
+        }
+        match.getRoundHolder().setCanBreakCenter(true);
+    }
 }

@@ -91,7 +91,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void cooldown() {
-        roundHolder.getTasks().put("startTask", new StartingMatchTask(this, TimeUnit.SECONDS.toMillis(5)).start());
+        roundHolder.getTasks().put("startTask", new StartingMatchTask(this, TimeUnit.SECONDS.toMillis(5)).start(20));
     }
 
     @Override

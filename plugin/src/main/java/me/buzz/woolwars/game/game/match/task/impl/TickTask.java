@@ -10,9 +10,9 @@ public abstract class TickTask extends CooldownTask {
     }
 
     @Override
-    public CooldownTask start() {
-        runTaskTimer(WoolWars.get(), 0L, 1L);
+    public CooldownTask start(long delay) {
+        super.start(delay);
+        runTaskTimer(WoolWars.get(), delay, 1L);
         return this;
     }
-
 }

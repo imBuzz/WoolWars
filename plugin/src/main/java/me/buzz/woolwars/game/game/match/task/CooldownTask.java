@@ -7,15 +7,14 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class CooldownTask extends BukkitRunnable {
 
-    private long startTime, targetTime;
+    private long targetTime;
 
     public CooldownTask(long targetTime) {
         this.targetTime = targetTime;
     }
 
-    public CooldownTask start() {
-        startTime = System.currentTimeMillis();
-        targetTime += startTime;
+    public CooldownTask start(long delay) {
+        targetTime = System.currentTimeMillis() + targetTime;
         return this;
     }
 
@@ -23,36 +22,21 @@ public abstract class CooldownTask extends BukkitRunnable {
         return targetTime - System.currentTimeMillis() <= 0;
     }
 
+    public abstract void end();
+
     public String formatSeconds() {
-        return DurationFormatUtils.formatDuration(targetTime - startTime, "mm:ss");
+        return DurationFormatUtils.formatDuration(targetTime - System.currentTimeMillis(), "mm:ss");
     }
 
     public String formatSecondsAndMillis() {
-        return String.format("%1$tS.%1$tL", targetTime - startTime);
+        long time = targetTime - System.currentTimeMillis();
+        String s = DurationFormatUtils.formatDuration(time, "ss.SSS");
+        if (TimeUnit.MILLISECONDS.toSeconds(time) >= 10) return s.substring(0, s.length() - 1);
+        else return s.substring(1, s.length() - 1);
     }
 
     public int getRemaningSeconds() {
-        return (int) TimeUnit.MILLISECONDS.toSeconds(targetTime - startTime);
+        return (int) TimeUnit.MILLISECONDS.toSeconds(targetTime - System.currentTimeMillis());
     }
-
-    /*public static class Builder {
-
-        private long targetTime;
-
-        public static Builder create() {
-            return new Builder();
-        }
-
-        public Builder time(long targetTime) {
-            this.targetTime = targetTime;
-            return this;
-        }
-
-        public CooldownTask build(CooldownTaskType type) {
-            if (type == CooldownTaskType.TICK) return new TickTask(targetTime);
-            return new SecondsTask(targetTime);
-        }
-    }*/
-
 
 }

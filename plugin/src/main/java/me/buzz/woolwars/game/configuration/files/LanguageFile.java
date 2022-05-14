@@ -28,6 +28,8 @@ public class LanguageFile implements SettingsHolder {
 
     public static final Property<String> ROUND_UNLOCK_CENTER_BAR = newProperty("match.round.protectCenter-bar", "&e&lCENTER UNLOCKS IN {seconds} SECONDS!");
 
+    public static final Property<String> ROUND_CANNOT_BE_CAPTURED = newProperty("match.round.cannot-be-captured", "&cYou cannot capture the center for another {seconds} seconds!");
+
     /*
     SCOREBOARDs
      */

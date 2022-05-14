@@ -68,8 +68,6 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
-        event.getPlayer().sendMessage("CIAO");
-
         WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getBlock().getWorld().getName());
         if (woolMatch == null) return;
 

@@ -10,8 +10,9 @@ public abstract class SecondsTask extends CooldownTask {
     }
 
     @Override
-    public CooldownTask start() {
-        runTaskTimer(WoolWars.get(), 0L, 20L);
+    public CooldownTask start(long delay) {
+        super.start(delay);
+        runTaskTimer(WoolWars.get(), delay, 20L);
         return this;
     }
 
