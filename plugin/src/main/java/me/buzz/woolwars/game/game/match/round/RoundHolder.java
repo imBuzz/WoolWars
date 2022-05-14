@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.match.state.MatchState;
+import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
@@ -71,7 +73,8 @@ public class RoundHolder extends AbstractHolder {
             }
         }
 
-        tasks.put("startRound", new StartRoundTask(match, TimeUnit.SECONDS.toMillis(5)).start(20));
+        tasks.put("startRound", new StartRoundTask(match,
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.PRE_ROUND_TIMER))).start(20));
     }
 
     public void endRound(WoolTeam woolTeam) {
@@ -89,7 +92,8 @@ public class RoundHolder extends AbstractHolder {
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
         }
 
-        tasks.put("waitForNewRound", new WaitForNewRoundTask(match, TimeUnit.SECONDS.toMillis(5)).start(20));
+        tasks.put("waitForNewRound", new WaitForNewRoundTask(match,
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.WAIT_FOR_NEW_ROUND_TIMER))).start(20));
     }
 
     public void removeWalls() {

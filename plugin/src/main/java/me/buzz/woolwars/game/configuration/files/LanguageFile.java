@@ -12,7 +12,7 @@ import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 public class LanguageFile implements SettingsHolder {
 
     public static final Property<String> JOINED_MESSAGE = newProperty("match.joined", "&7%player% &ehas joined (&b{current}&e/&b{max}&e)");
-    public static final Property<String> STARTING_COOLDOWN = newProperty("match.starting-cooldown", "&eThe game starts in {seconds} &eseconds!");
+    public static final Property<String> STARTING_COOLDOWN = newProperty("match.starting-cooldown", "&eThe game starts in &c{seconds} &eseconds!");
 
     public static final Property<String> PRE_ROUND_TITLE = newProperty("match.pre-round.title.title", "&e&lPRE ROUND");
     public static final Property<String> PRE_ROUND_SUBTITLE = newProperty("match.pre-round.title.subtitle", "&bSelect your class!");
@@ -81,7 +81,7 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ROUND_WAITING = newProperty("scoreboard.variables.round.waiting", "Waiting");
     public static final Property<String> ROUND_STARTING = newProperty("scoreboard.variables.round.starting", "Starting");
     public static final Property<String> ROUND_PRE_ROUND = newProperty("scoreboard.variables.round.pre_round", "Pre Round");
-    public static final Property<String> ROUND_ROUND = newProperty("scoreboard.variables.round.round", "Round");
+    public static final Property<String> ROUND_ROUND = newProperty("scoreboard.variables.round.round", "Active Round");
     public static final Property<String> ROUND_ENDED = newProperty("scoreboard.variables.round.ended", "Round Over!");
 
 }

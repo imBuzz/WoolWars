@@ -9,6 +9,10 @@ public abstract class TickTask extends CooldownTask {
         super(targetTime);
     }
 
+    public boolean shouldEnd() {
+        return targetTime - System.currentTimeMillis() <= 0;
+    }
+
     @Override
     public CooldownTask start(long delay) {
         super.start(delay);

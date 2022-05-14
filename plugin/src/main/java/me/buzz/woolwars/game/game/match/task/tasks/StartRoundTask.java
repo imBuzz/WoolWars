@@ -1,6 +1,8 @@
 package me.buzz.woolwars.game.game.match.task.tasks;
 
 import me.buzz.woolwars.api.game.match.state.MatchState;
+import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
@@ -49,7 +51,9 @@ public class StartRoundTask extends SecondsTask {
                             .replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber()))));
         }
 
-        match.getRoundHolder().getTasks().put("centerProtect", new ProtectCenterTask(match, TimeUnit.SECONDS.toMillis(10)).start(20));
-        match.getRoundHolder().getTasks().put("restGame", new WaitForNewRoundTask(match, TimeUnit.MINUTES.toMillis(1)).start(20));
+        match.getRoundHolder().getTasks().put("centerProtect", new ProtectCenterTask(match,
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CENTER_UNLOCKS_COOLDOWN))).start(20));
+        match.getRoundHolder().getTasks().put("restGame", new WaitForNewRoundTask(match,
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.ROUND_DURATION))).start(20));
     }
 }

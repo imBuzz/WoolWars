@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class CooldownTask extends BukkitRunnable {
 
-    private long targetTime;
+    protected long targetTime;
 
     public CooldownTask(long targetTime) {
         this.targetTime = targetTime;
@@ -18,9 +18,7 @@ public abstract class CooldownTask extends BukkitRunnable {
         return this;
     }
 
-    public boolean shouldEnd() {
-        return targetTime - System.currentTimeMillis() <= 0;
-    }
+    public abstract boolean shouldEnd();
 
     public abstract void end();
 

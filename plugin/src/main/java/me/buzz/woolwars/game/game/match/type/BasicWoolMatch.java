@@ -6,6 +6,8 @@ import me.buzz.woolwars.api.game.match.events.PlayerJoinGameEvent;
 import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
+import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.WoolMatch;
@@ -91,7 +93,8 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void cooldown() {
-        roundHolder.getTasks().put("startTask", new StartingMatchTask(this, TimeUnit.SECONDS.toMillis(5)).start(20));
+        roundHolder.getTasks().put("startTask", new StartingMatchTask(this,
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.START_COOLDOWN))).start(20));
     }
 
     @Override
