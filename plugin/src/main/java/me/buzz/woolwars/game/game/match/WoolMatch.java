@@ -58,11 +58,13 @@ public abstract class WoolMatch implements ApiMatch {
 
     public abstract void start();
 
-    public abstract void end();
+    public abstract void end(WoolTeam winnerTeam);
 
     public abstract void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause);
 
     public abstract int getMaxPlayers();
+
+    public abstract int getPointsToWin();
 
     public abstract void tickPlayer(Player player);
 

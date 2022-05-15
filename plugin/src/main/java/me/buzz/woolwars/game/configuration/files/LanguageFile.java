@@ -31,6 +31,35 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ROUND_CANNOT_BE_CAPTURED = newProperty("match.round.cannot-be-captured", "&cYou cannot capture the center for another {seconds} seconds!");
 
     /*
+
+    ENDED MATCH
+
+     */
+
+    public static final Property<String> ENDED_STATUS_LOST = newProperty("match.ended.variables.status.lost", "&cYour team lost!");
+    public static final Property<String> ENDED_STATUS_VICTORY = newProperty("match.ended.variables.status.victory", "&aYour team won!");
+
+    public static final Property<String> ENDED_VICTORY_TITLE = newProperty("match.ended.victory.title.title", "&c&lVICTORY");
+    public static final Property<String> ENDED_VICTORY_SUBTITLE = newProperty("match.ended.victory.title.subtitle", "&6Your team won!");
+
+    public static final Property<String> ENDED_LOST_TITLE = newProperty("match.ended.lost.title.title", "&c&lDEFEAT");
+    public static final Property<String> ENDED_LOST_SUBTITLE = newProperty("match.ended.lost.title.subtitle", "&6Your team was defeated!");
+
+    public static final Property<Boolean> ENDED_RESUME_CENTERED = newProperty("match.ended.resume.centered", true);
+    public static final Property<List<String>> ENDED_RESUME = newListProperty("match.ended.resume.lines", Lists.newArrayList(
+            "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+            "&f&lWOOL WARS",
+            "",
+            "{status}",
+            "",
+            "&e&lMost Kills &7{top_killer_name} - {top_kills}",
+            "&6&lMost Wool Placed &7{top_wool_name} - {top_wool}",
+            "&c&lMost Blocks Broken &7{top_blocks_name} - {top_blocks}",
+            "",
+            "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+
+
+    /*
     SCOREBOARDs
      */
 
@@ -65,6 +94,18 @@ public class LanguageFile implements SettingsHolder {
             "   ",
             "&cRed Players: &f{red_team_players} &7{red_team_isYou}",
             "&9Blue Players: &f{blue_team_players} &7{blue_team_isYou}",
+            "  ",
+            "&fTime Left: &a{time_left}",
+            " ",
+            "&eyour.server.ip"));
+
+    public static final Property<List<String>> SCOREBOARD_MATCH_ROUND_OVER = newListProperty("scoreboard.match.round-over", Lists.newArrayList(
+            "    ",
+            "&fRound: &b{round}",
+            "&fState: &e{round_type}",
+            "   ",
+            "&c[R] {red_team_progress} &8({red_team_points}/3)",
+            "&9[B] {blue_team_progress} &8({blue_team_points}/3)",
             "  ",
             "&fTime Left: &a{time_left}",
             " ",

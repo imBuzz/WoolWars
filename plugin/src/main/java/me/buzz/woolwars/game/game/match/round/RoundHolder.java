@@ -73,12 +73,21 @@ public class RoundHolder extends AbstractHolder {
             }
         }
 
-        tasks.put("startRound", new StartRoundTask(match,
+        tasks.put(StartRoundTask.ID, new StartRoundTask(match,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.PRE_ROUND_TIMER))).start(20));
     }
 
     public void endRound(WoolTeam woolTeam) {
+        CooldownTask task = getTasks().remove(WaitForNewRoundTask.ID);
+        if (task != null) task.stop();
+
         woolTeam.increasePoints(1);
+        if (woolTeam.getPoints() == match.getPointsToWin()) {
+            match.setMatchState(MatchState.ENDING);
+            match.end(woolTeam);
+            return;
+        }
+
         match.setMatchState(MatchState.ROUND_OVER);
 
         for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
@@ -92,7 +101,7 @@ public class RoundHolder extends AbstractHolder {
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
         }
 
-        tasks.put("waitForNewRound", new WaitForNewRoundTask(match,
+        tasks.put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.WAIT_FOR_NEW_ROUND_TIMER))).start(20));
     }
 

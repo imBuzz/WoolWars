@@ -9,6 +9,7 @@ import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.DyeColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -17,10 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 
 @RequiredArgsConstructor
 public class BasicMatchListener implements MatchListener {
@@ -82,10 +80,12 @@ public class BasicMatchListener implements MatchListener {
         }
 
         Player player = event.getPlayer();
+        if (event.getBlockPlaced().getType() != Material.WOOL) return;
+        match.getPlayerHolder().getMatchStats(event.getPlayer()).matchWoolPlaced++;
+
         WoolTeam woolTeam = match.getPlayerHolder().getMatchStats(player).getTeam();
 
         int totalBlocks = 0, sameTypeBlocks = 0;
-
         for (Block block : centerRegion.getBlocks()) {
             totalBlocks++;
             if (block.getType() != Material.WOOL) continue;
@@ -109,7 +109,14 @@ public class BasicMatchListener implements MatchListener {
             return;
         }
 
+        match.getPlayerHolder().getMatchStats(event.getPlayer()).matchBlocksBroken++;
         event.getBlock().setType(Material.AIR);
+    }
+
+    @Override
+    public void dropItem(PlayerDropItemEvent event) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
+        event.setCancelled(true);
     }
 
     @Override

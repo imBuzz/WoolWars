@@ -4,10 +4,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 
 public interface MatchListener {
 
@@ -24,6 +21,8 @@ public interface MatchListener {
     void place(BlockPlaceEvent event);
 
     void blockBreak(BlockBreakEvent event);
+
+    void dropItem(PlayerDropItemEvent event);
 
     void chat(AsyncPlayerChatEvent event);
 

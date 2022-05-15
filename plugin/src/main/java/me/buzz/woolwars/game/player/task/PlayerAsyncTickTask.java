@@ -7,6 +7,7 @@ import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,8 +51,12 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                     tempLines = match.getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_PRE_ROUND);
                     break;
                 }
-                default: {
+                case ROUND: {
                     tempLines = match.getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_ROUND);
+                    break;
+                }
+                default: {
+                    tempLines = match.getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_ROUND_OVER);
                     break;
                 }
             }
@@ -112,7 +117,7 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                         StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
                                                 match.getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
 
-                                .replace("{time_left}", match.getRoundHolder().getTasks().get("restGame").formatSeconds())
+                                .replace("{time_left}", match.getRoundHolder().getTasks().get(WaitForNewRoundTask.ID).formatSeconds())
 
                                 .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
                                 .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
@@ -124,7 +129,7 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                 .replace("{blue_team_players}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPlayers().size()));
                         break;
                     }
-                    case ROUND_OVER: {
+                    default: {
                         tempLine = tempLine
                                 .replace("{round}", String.valueOf(match.getRoundHolder().getRoundNumber()))
                                 .replace("{round_type}", getMatchName(match))
@@ -138,16 +143,13 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                                 match.getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
 
                                 .replace("{time_left}",
-                                        match.getRoundHolder().getTasks().containsKey("waitForNewRound") ? match.getRoundHolder().getTasks().get("waitForNewRound").formatSeconds() : "00:00")
+                                        match.getRoundHolder().getTasks().containsKey(WaitForNewRoundTask.ID) ? match.getRoundHolder().getTasks().get(WaitForNewRoundTask.ID).formatSeconds() : "00:00")
 
                                 .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
                                 .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
 
                                 .replace("{red_team_isYou}", match.getTeams().get(TeamColor.RED).getPlayers().contains(player) ? match.getLanguage().getProperty(LanguageFile.IS_YOU) : "")
-                                .replace("{blue_team_isYou}", match.getTeams().get(TeamColor.BLUE).getPlayers().contains(player) ? match.getLanguage().getProperty(LanguageFile.IS_YOU) : "")
-
-                                .replace("{red_team_players}", String.valueOf(match.getTeams().get(TeamColor.RED).getPlayers().size()))
-                                .replace("{blue_team_players}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPlayers().size()));
+                                .replace("{blue_team_isYou}", match.getTeams().get(TeamColor.BLUE).getPlayers().contains(player) ? match.getLanguage().getProperty(LanguageFile.IS_YOU) : "");
                         break;
                     }
                 }

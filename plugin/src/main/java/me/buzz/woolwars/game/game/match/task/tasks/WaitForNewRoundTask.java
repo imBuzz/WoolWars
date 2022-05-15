@@ -5,6 +5,7 @@ import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
 
 public class WaitForNewRoundTask extends SecondsTask {
 
+    public static final String ID = "waitForNewRound";
     private final WoolMatch match;
 
     public WaitForNewRoundTask(WoolMatch match, long targetTime) {
@@ -24,5 +25,10 @@ public class WaitForNewRoundTask extends SecondsTask {
     @Override
     public void end() {
         match.getRoundHolder().startNewRound();
+    }
+
+    @Override
+    public String getID() {
+        return ID;
     }
 }

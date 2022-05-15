@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 public class StartingMatchTask extends SecondsTask {
 
+    public static final String ID = "startTask";
     private final WoolMatch match;
 
     public StartingMatchTask(WoolMatch match, long targetTime) {
@@ -17,14 +18,15 @@ public class StartingMatchTask extends SecondsTask {
 
     @Override
     public void run() {
-        for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            onlinePlayer.sendMessage(StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.STARTING_COOLDOWN)
-                    .replace("{seconds}", String.valueOf(getRemaningSeconds()))));
-        }
-
         if (shouldEnd()) {
             end();
             cancel();
+            return;
+        }
+
+        for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
+            onlinePlayer.sendMessage(StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.STARTING_COOLDOWN)
+                    .replace("{seconds}", String.valueOf(getRemaningSeconds()))));
         }
     }
 
@@ -32,5 +34,10 @@ public class StartingMatchTask extends SecondsTask {
     @Override
     public void end() {
         match.prepare();
+    }
+
+    @Override
+    public String getID() {
+        return ID;
     }
 }

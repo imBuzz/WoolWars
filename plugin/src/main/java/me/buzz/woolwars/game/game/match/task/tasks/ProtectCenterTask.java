@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 
 public class ProtectCenterTask extends TickTask {
 
+    public final static String ID = "centerProtect";
+
     private final WoolMatch match;
 
     public ProtectCenterTask(WoolMatch match, long targetTime) {
@@ -37,5 +39,10 @@ public class ProtectCenterTask extends TickTask {
             WoolWars.get().getNmsHandler().getPlayerHandler().sendActionBar(onlinePlayer, "");
         }
         match.getRoundHolder().setCanBreakCenter(true);
+    }
+
+    @Override
+    public String getID() {
+        return ID;
     }
 }

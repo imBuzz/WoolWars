@@ -29,6 +29,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class BasicWoolMatch extends WoolMatch {
@@ -93,7 +94,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void cooldown() {
-        roundHolder.getTasks().put("startTask", new StartingMatchTask(this,
+        roundHolder.getTasks().put(StartingMatchTask.ID, new StartingMatchTask(this,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.START_COOLDOWN))).start(20));
     }
 
@@ -119,10 +120,62 @@ public class BasicWoolMatch extends WoolMatch {
     }
 
     @Override
-    public void end() {
-        for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
-            onlinePlayer.sendMessage("Ended");
+    public void end(WoolTeam winnerTeam) {
+        //TODO: REWORK
+
+        Map<String, Integer> topKillers = TeamUtils.getTopKillers(this);
+        Map<String, Integer> topWool = TeamUtils.getTopWool(this);
+        Map<String, Integer> topBlocks = TeamUtils.getTopBroken(this);
+
+        Integer[] topKillers_value = topKillers.values().toArray(new Integer[0]);
+        String[] topKillers_names = topKillers.keySet().toArray(new String[0]);
+
+        Integer[] topWool_value = topWool.values().toArray(new Integer[0]);
+        String[] topWool_names = topWool.keySet().toArray(new String[0]);
+
+        Integer[] topBlocks_value = topBlocks.values().toArray(new Integer[0]);
+        String[] topBlocks_names = topBlocks.keySet().toArray(new String[0]);
+
+        List<String> tempLines = language.getProperty(LanguageFile.ENDED_RESUME);
+
+        for (WoolTeam value : teams.values()) {
+            boolean isWinnerTeam = value == winnerTeam;
+
+            List<String> lines = new ArrayList<>();
+            for (String tempLine : tempLines) {
+                lines.add(tempLine
+                        .replace("{status}", language.getProperty(isWinnerTeam ? LanguageFile.ENDED_STATUS_VICTORY : LanguageFile.ENDED_STATUS_LOST))
+
+                        .replace("{top_killer_name}", topKillers_names[0])
+                        .replace("{top_kills}", String.valueOf(topKillers_value[0]))
+
+                        .replace("{top_wool_name}", topWool_names[0])
+                        .replace("{top_wool}", String.valueOf(topWool_value[0]))
+
+                        .replace("{top_blocks_name}", topBlocks_names[0])
+                        .replace("{top_blocks}", String.valueOf(topBlocks_value[0]))
+                );
+            }
+
+            for (Player player : value.getOnlinePlayers()) {
+                playerHolder.setSpectator(player);
+                player.sendTitle(StringsUtils.colorize(language.getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE)),
+                        StringsUtils.colorize(language.getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_SUBTITLE : LanguageFile.ENDED_LOST_SUBTITLE)));
+
+                if (language.getProperty(LanguageFile.ENDED_RESUME_CENTERED)) {
+                    for (String line : lines) {
+                        if (line.isEmpty()) player.sendMessage(line);
+                        else StringsUtils.sendCenteredMessage(player, line);
+                    }
+                } else {
+                    for (String line : lines) {
+                        player.sendMessage(StringsUtils.colorize(line));
+                    }
+                }
+            }
         }
+
+
     }
 
     @Override
@@ -150,6 +203,11 @@ public class BasicWoolMatch extends WoolMatch {
     }
 
     @Override
+    public int getPointsToWin() {
+        return 3;
+    }
+
+    @Override
     public void tickPlayer(Player player) {
 
     }
@@ -157,17 +215,8 @@ public class BasicWoolMatch extends WoolMatch {
     @Override
     public void setMatchState(MatchState state) {
         super.setMatchState(state);
-        switch (matchState) {
-            case STARTING: {
-                cooldown();
-                break;
-            }
-            case ENDING: {
-                end();
-                break;
-            }
-            default:
-                break;
+        if (matchState == MatchState.STARTING) {
+            cooldown();
         }
     }
 

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class StartRoundTask extends SecondsTask {
 
+    public static final String ID = "startRound";
     private final WoolMatch match;
 
     public StartRoundTask(WoolMatch match, long targetTime) {
@@ -51,9 +52,14 @@ public class StartRoundTask extends SecondsTask {
                             .replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber()))));
         }
 
-        match.getRoundHolder().getTasks().put("centerProtect", new ProtectCenterTask(match,
+        match.getRoundHolder().getTasks().put(ProtectCenterTask.ID, new ProtectCenterTask(match,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CENTER_UNLOCKS_COOLDOWN))).start(20));
-        match.getRoundHolder().getTasks().put("restGame", new WaitForNewRoundTask(match,
+        match.getRoundHolder().getTasks().put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.ROUND_DURATION))).start(20));
+    }
+
+    @Override
+    public String getID() {
+        return ID;
     }
 }

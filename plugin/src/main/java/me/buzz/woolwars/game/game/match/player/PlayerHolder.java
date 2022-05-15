@@ -1,6 +1,7 @@
 package me.buzz.woolwars.game.game.match.player;
 
 import com.google.common.collect.ImmutableSet;
+import lombok.Getter;
 import me.buzz.woolwars.api.game.match.player.ApiPlayerHolder;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.WoolMatch;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
 
     private final Map<String, WoolPlayer> players = new HashMap<>();
+    @Getter
     private final Map<String, MatchStats> stats = new HashMap<>();
 
     public PlayerHolder(WoolMatch match) {

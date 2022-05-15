@@ -9,10 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 
 public class GameListener implements Listener {
 
@@ -72,6 +69,14 @@ public class GameListener implements Listener {
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().blockBreak(event);
+    }
+
+    @EventHandler
+    public void dropItem(PlayerDropItemEvent event) {
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getItemDrop().getWorld().getName());
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().dropItem(event);
     }
 
     @EventHandler
