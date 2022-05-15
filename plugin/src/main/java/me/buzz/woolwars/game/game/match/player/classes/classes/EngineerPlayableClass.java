@@ -14,38 +14,41 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TankPlayableClass extends PlayableClass {
+public class EngineerPlayableClass extends PlayableClass {
 
     private final static Map<ArmorSlot, ItemStack> armor = new HashMap<>();
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
         items.put(0, new ItemBuilder(Material.WOOD_SWORD).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(1, new ItemBuilder(Material.WOOD_PICKAXE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(2, new ItemBuilder(Material.SHEARS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(3, new ItemBuilder(Material.WOOL, 64).build());
+        items.put(1, new ItemBuilder(Material.BOW).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(2, new ItemStack(Material.ARROW, 4));
+        items.put(3, new ItemBuilder(Material.SHEARS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
 
-        items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.TANK_KEYSTONE)
+        items.put(4, new ItemStack(Material.STONE_PICKAXE));
+        items.put(5, new ItemBuilder(Material.POTION).potion(PotionType.REGEN, 1, true).build());
+        items.put(6, new ItemBuilder(Material.WOOL, 64).build());
+
+        items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.ENGINEER_KEYSTONE)
                 .toItemStack(WoolWars.get().getLanguage().getProperty(LanguageFile.KEYSTONE_MATERIAL)));
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.CHESTPLATE, new ItemBuilder(Material.LEATHER_CHESTPLATE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        armor.put(ArmorSlot.LEGGINGS, new ItemBuilder(Material.LEATHER_LEGGINGS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        armor.put(ArmorSlot.BOOTS, new ItemBuilder(Material.LEATHER_BOOTS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.LEATHER_CHESTPLATE));
+        armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
+        armor.put(ArmorSlot.BOOTS, new ItemStack(Material.AIR));
     }
 
-    public TankPlayableClass(Player player, TeamColor teamColor) {
-        super(player, teamColor, PlayableClassType.TANK);
+    public EngineerPlayableClass(Player player, TeamColor teamColor) {
+        super(player, teamColor, PlayableClassType.ENGINEER);
     }
 
     public static String getBaseLayout() {
-        return "123400009";
+        return "123456709";
     }
 
     @Override
@@ -67,9 +70,7 @@ public class TankPlayableClass extends PlayableClass {
 
     @Override
     public void useAbility() {
-        if (used) return;
-        used = true;
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 3, 1));
+
     }
 
     @Override

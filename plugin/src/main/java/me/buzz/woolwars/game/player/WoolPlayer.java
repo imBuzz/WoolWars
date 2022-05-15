@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
-import me.buzz.woolwars.game.game.match.player.classes.classes.TankPlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -35,6 +35,11 @@ public class WoolPlayer implements ApiWoolPlayer {
 
     public void load() {
         kitLayout.put(PlayableClassType.TANK, TankPlayableClass.getBaseLayout());
+        kitLayout.put(PlayableClassType.ASSAULT, AssaultPlayableClass.getBaseLayout());
+        kitLayout.put(PlayableClassType.ARCHER, ArcherPlayableClass.getBaseLayout());
+        kitLayout.put(PlayableClassType.SWORDMAN, SwordmanPlayableClass.getBaseLayout());
+        kitLayout.put(PlayableClassType.GOLEM, GolemPlayableClass.getBaseLayout());
+        kitLayout.put(PlayableClassType.ENGINEER, EngineerPlayableClass.getBaseLayout());
     }
 
     public Player toBukkitPlayer() {

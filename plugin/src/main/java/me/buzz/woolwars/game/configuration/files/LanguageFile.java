@@ -126,5 +126,67 @@ public class LanguageFile implements SettingsHolder {
                             "&c&lONCE &7per round."
                     )));
 
+    public static final Property<WoolItem> ARCHER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.archer.keystone",
+            new WoolItem("&fKeystone Ability: &6&lSTEP BACK",
+                    Lists.newArrayList(
+                            "&7Push yourself back instantly!",
+                            "",
+                            "&6Press &e&lQ &6or &e&lRight Click &6to activate",
+                            "",
+                            "&7You can only use your keystone",
+                            "&c&lONCE &7per round."
+                    )));
+
+    public static final Property<WoolItem> SWORDMAN_KEYSTONE = newBeanProperty(WoolItem.class, "classes.swordman.keystone",
+            new WoolItem("&fKeystone Ability: &6&lSPRINT",
+                    Lists.newArrayList(
+                            "&7Give yourself a speed boost for",
+                            "&73 seconds.",
+                            "",
+                            "&6Press &e&lQ &6or &e&lRight Click &6to activate",
+                            "",
+                            "&7You can only use your keystone",
+                            "&c&lONCE &7per round."
+                    )));
+
+    public static final Property<WoolItem> GOLEM_KEYSTONE = newBeanProperty(WoolItem.class, "classes.golem.keystone",
+            new WoolItem("&fKeystone Ability: &6&lGOLDEN SHELL",
+                    Lists.newArrayList(
+                            "&7Encase yourself in Golden Armor",
+                            "&7for 5 seconds.",
+                            "",
+                            "&6Press &e&lQ &6or &e&lRight Click &6to activate",
+                            "",
+                            "&7You can only use your keystone",
+                            "&c&lONCE &7per round."
+                    )));
+
+    public static final Property<WoolItem> ENGINEER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.engineer.keystone",
+            new WoolItem("&fKeystone Ability: &6&lHACK",
+                    Lists.newArrayList(
+                            "&7Disable players from placing or",
+                            "&7breaking middle blocks for 3",
+                            "&7seconds.",
+                            "",
+                            "&6Press &e&lQ &6or &e&lRight Click &6to activate",
+                            "",
+                            "&7You can only use your keystone",
+                            "&c&lONCE &7per round."
+                    )));
+
+    public static final Property<WoolItem> ASSAULT_KEYSTONE = newBeanProperty(WoolItem.class, "classes.assault.keystone",
+            new WoolItem("&fKeystone Ability: &6&lKNOCKBACK TNT",
+                    Lists.newArrayList(
+                            "&7Place a TNT that doesn't deal",
+                            "&7damage, but deals massive",
+                            "&7knockback to enemies within 4",
+                            "&7blocks.",
+                            "",
+                            "&6Press &e&lQ &6or &e&lRight Click &6to activate",
+                            "",
+                            "&7You can only use your keystone",
+                            "&c&lONCE &7per round."
+                    )));
+
 
 }

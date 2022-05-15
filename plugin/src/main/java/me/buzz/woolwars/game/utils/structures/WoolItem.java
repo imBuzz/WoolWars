@@ -14,8 +14,8 @@ import java.util.List;
 @Getter
 public class WoolItem {
 
-    private final String name;
-    private final List<String> lines;
+    private String name;
+    private List<String> lines;
 
     public ItemStack toItemStack(Material material) {
         List<String> l = new ArrayList<>();

@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.round;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
@@ -10,7 +11,7 @@ import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
-import me.buzz.woolwars.game.game.match.player.classes.classes.TankPlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.AssaultPlayableClass;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
@@ -20,16 +21,19 @@ import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.manager.AbstractHolder;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
+import me.lucko.helper.random.RandomSelector;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class RoundHolder extends AbstractHolder {
+
+    private final static RandomSelector<Material> centerMats = RandomSelector.uniform(ImmutableList.of(Material.SNOW_BLOCK, Material.WOOL, Material.QUARTZ_BLOCK));
+
 
     private final PlayerHolder playerHolder = match.getPlayerHolder();
     @Getter
@@ -53,8 +57,9 @@ public class RoundHolder extends AbstractHolder {
             block.setType(Material.GLASS);
         for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
             block.setType(Material.GLASS);
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks())
-            block.setType(ThreadLocalRandom.current().nextBoolean() ? Material.SNOW_BLOCK : Material.QUARTZ_BLOCK);
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks()) {
+            block.setType(centerMats.pick());
+        }
 
         for (WoolTeam team : match.getTeams().values()) {
             for (Player onlinePlayer : team.getOnlinePlayers()) {
@@ -63,9 +68,11 @@ public class RoundHolder extends AbstractHolder {
                 MatchStats matchStats = playerHolder.getMatchStats(onlinePlayer);
                 PlayableClass selectedClass = matchStats.getPlayableClass();
                 if (selectedClass == null) {
-                    selectedClass = new TankPlayableClass(onlinePlayer, matchStats.getTeam().getTeamColor());
+                    selectedClass = new AssaultPlayableClass(onlinePlayer, matchStats.getTeam().getTeamColor());
                     matchStats.setPlayableClass(selectedClass);
                 }
+                selectedClass.reset();
+
                 selectedClass.equip(playerHolder.getWoolPlayer(onlinePlayer), playerHolder.getMatchStats(onlinePlayer));
                 onlinePlayer.teleport(team.getSpawnLocation());
 

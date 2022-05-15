@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.material.Wool;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 import java.util.*;
 
@@ -122,6 +124,17 @@ public class ItemBuilder {
     public ItemBuilder wool(DyeColor color) {
         item = new Wool(color).toItemStack();
         meta = item.getItemMeta();
+        return this;
+    }
+
+    public ItemBuilder potion(PotionType potionType, int level, boolean splash) {
+        Potion potion = new Potion(potionType);
+        potion.setLevel(level);
+        if (splash) potion.splash();
+
+        potion.apply(item);
+        meta = item.getItemMeta();
+
         return this;
     }
 
