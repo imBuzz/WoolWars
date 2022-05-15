@@ -9,7 +9,6 @@ import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.TimeUnit;
@@ -28,19 +27,17 @@ public class StartRoundTask extends SecondsTask {
     public void run() {
         if (shouldEnd()) {
             end();
-            cancel();
+            stop();
+            return;
         }
-    }
 
+        super.run();
+    }
 
     @Override
     public void end() {
         CooldownTask task = match.getRoundHolder().getTasks().get("restGame");
-        if (task != null) {
-            if (Bukkit.getScheduler().isCurrentlyRunning(task.getTaskId()) || Bukkit.getScheduler().isQueued(task.getTaskId())) {
-                Bukkit.getScheduler().cancelTask(task.getTaskId());
-            }
-        }
+        if (task != null) task.stop();
 
         match.setMatchState(MatchState.ROUND);
         match.getRoundHolder().removeWalls();
@@ -55,9 +52,15 @@ public class StartRoundTask extends SecondsTask {
         }
 
         match.getRoundHolder().getTasks().put(ProtectCenterTask.ID, new ProtectCenterTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CENTER_UNLOCKS_COOLDOWN))).start(20));
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CENTER_UNLOCKS_COOLDOWN) + 1)).start());
         match.getRoundHolder().getTasks().put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.ROUND_DURATION))).start(20));
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.ROUND_DURATION) + 1)).start());
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        match.getRoundHolder().getTasks().remove(getID());
     }
 
     @Override

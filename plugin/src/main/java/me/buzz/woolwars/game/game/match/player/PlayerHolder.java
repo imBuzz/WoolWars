@@ -8,8 +8,10 @@ import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.manager.AbstractHolder;
 import me.buzz.woolwars.game.player.WoolPlayer;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,9 +46,20 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
     }
 
     public void registerPlayer(WoolPlayer player) {
-        player.toBukkitPlayer().setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getMatchID()));
+        Player bukkitPlayer = player.toBukkitPlayer();
+        bukkitPlayer.setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getMatchID()));
+
         players.put(player.getName(), player);
         stats.put(player.getName(), new MatchStats(player.getUUID()));
+
+        for (PotionEffect activePotionEffect : bukkitPlayer.getActivePotionEffects())
+            bukkitPlayer.removePotionEffect(activePotionEffect.getType());
+
+        bukkitPlayer.setFoodLevel(20);
+        bukkitPlayer.setHealth(20);
+        bukkitPlayer.setGameMode(GameMode.SURVIVAL);
+        bukkitPlayer.getInventory().setArmorContents(null);
+        bukkitPlayer.getInventory().clear();
     }
 
     public void removePlayer(WoolPlayer player) {

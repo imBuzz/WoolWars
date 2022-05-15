@@ -15,8 +15,12 @@ import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.round.RoundHolder;
+import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.UUIDUtils;
+import me.buzz.woolwars.game.utils.bucket.Bucket;
+import me.buzz.woolwars.game.utils.bucket.factory.BucketFactory;
+import me.buzz.woolwars.game.utils.bucket.partitioning.PartitioningStrategies;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -25,6 +29,8 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public abstract class WoolMatch implements ApiMatch {
+
+    public final static Bucket<CooldownTask> cooldownTaskBucket = BucketFactory.newHashSetBucket(3, PartitioningStrategies.lowestSize());
 
     @Getter
     protected final SettingsManager language = WoolWars.get().getLanguage();

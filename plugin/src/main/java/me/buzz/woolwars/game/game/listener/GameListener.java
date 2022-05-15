@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 
 public class GameListener implements Listener {
@@ -77,6 +78,14 @@ public class GameListener implements Listener {
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().dropItem(event);
+    }
+
+    @EventHandler
+    public void foodLose(FoodLevelChangeEvent event) {
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getEntity().getWorld().getName());
+        if (woolMatch == null) return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler

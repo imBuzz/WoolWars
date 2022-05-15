@@ -1,34 +1,44 @@
 package me.buzz.woolwars.game.game.match.task;
 
+import me.buzz.woolwars.game.game.match.WoolMatch;
 import org.apache.commons.lang.time.DurationFormatUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.TimeUnit;
 
-//TODO: QUANDO STARTA IL ROUND DATO DAL "PAREGGIO" SI SOVRAPPONE TUTTO CONTROLLARE BENE STA SITUA
+public abstract class CooldownTask {
 
-public abstract class CooldownTask extends BukkitRunnable {
+    private final long sleepTime;
+    private long nextActionTime;
 
     protected long targetTime;
 
-    public CooldownTask(long targetTime) {
+    public CooldownTask(long targetTime, long sleepTime) {
         this.targetTime = targetTime;
+        this.sleepTime = sleepTime;
     }
 
-    public CooldownTask start(long delay) {
+    public CooldownTask start() {
         targetTime = System.currentTimeMillis() + targetTime;
+        WoolMatch.cooldownTaskBucket.add(this);
         return this;
     }
 
-    public abstract boolean shouldEnd();
+    public boolean shouldEnd() {
+        return targetTime - System.currentTimeMillis() <= 0;
+    }
 
     public abstract void end();
 
+    public boolean canRun() {
+        return nextActionTime - System.currentTimeMillis() <= 0;
+    }
+
+    public void run() {
+        nextActionTime = System.currentTimeMillis() + sleepTime;
+    }
+
     public void stop() {
-        if (Bukkit.getScheduler().isCurrentlyRunning(getTaskId()) || Bukkit.getScheduler().isQueued(getTaskId())) {
-            cancel();
-        }
+        WoolMatch.cooldownTaskBucket.remove(this);
     }
 
     public String formatSeconds() {
@@ -42,7 +52,7 @@ public abstract class CooldownTask extends BukkitRunnable {
         else return s.substring(1, s.length() - 1);
     }
 
-    public int getRemaningSeconds() {
+    public int getRemainingSeconds() {
         return (int) TimeUnit.MILLISECONDS.toSeconds(targetTime - System.currentTimeMillis());
     }
 

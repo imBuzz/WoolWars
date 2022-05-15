@@ -122,7 +122,9 @@ public class ItemBuilder {
     }
 
     public ItemBuilder wool(DyeColor color) {
+        int amount = item.getAmount();
         item = new Wool(color).toItemStack();
+        item.setAmount(amount);
         meta = item.getItemMeta();
         return this;
     }

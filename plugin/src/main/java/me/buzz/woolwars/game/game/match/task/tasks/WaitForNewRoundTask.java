@@ -17,14 +17,22 @@ public class WaitForNewRoundTask extends SecondsTask {
     public void run() {
         if (shouldEnd()) {
             end();
-            cancel();
+            stop();
+            return;
         }
-    }
 
+        super.run();
+    }
 
     @Override
     public void end() {
         match.getRoundHolder().startNewRound();
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        match.getRoundHolder().getTasks().remove(getID());
     }
 
     @Override

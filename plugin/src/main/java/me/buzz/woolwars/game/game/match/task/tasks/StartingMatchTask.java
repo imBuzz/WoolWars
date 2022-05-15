@@ -20,20 +20,27 @@ public class StartingMatchTask extends SecondsTask {
     public void run() {
         if (shouldEnd()) {
             end();
-            cancel();
+            stop();
             return;
         }
 
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
             onlinePlayer.sendMessage(StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.STARTING_COOLDOWN)
-                    .replace("{seconds}", String.valueOf(getRemaningSeconds()))));
+                    .replace("{seconds}", String.valueOf(getRemainingSeconds()))));
         }
-    }
 
+        super.run();
+    }
 
     @Override
     public void end() {
         match.prepare();
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        match.getRoundHolder().getTasks().remove(getID());
     }
 
     @Override

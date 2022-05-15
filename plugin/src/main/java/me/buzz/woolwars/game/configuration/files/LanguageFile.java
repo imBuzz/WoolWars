@@ -13,8 +13,8 @@ import static ch.jalu.configme.properties.PropertyInitializer.*;
 
 public class LanguageFile implements SettingsHolder {
 
-    public static final Property<String> JOINED_MESSAGE = newProperty("match.joined", "&7%player% &ehas joined (&b{current}&e/&b{max}&e)");
-    public static final Property<String> LEAVE_MESSAGE = newProperty("match.quit", "&7%player% &eleft from the game (&b{current}&e/&b{max}&e)");
+    public static final Property<String> JOINED_MESSAGE = newProperty("match.joined", "&7{player} &ehas joined (&b{current}&e/&b{max}&e)");
+    public static final Property<String> LEAVE_MESSAGE = newProperty("match.quit", "&7{player} &eleft from the game (&b{current}&e/&b{max}&e)");
 
     public static final Property<String> NOT_ENOUGH_PLAYER_TO_PLAY = newProperty("match.not-enough-player-to-play",
             "&cThere are not enough player to keep playing!");

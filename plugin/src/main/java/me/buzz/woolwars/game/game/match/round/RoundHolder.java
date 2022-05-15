@@ -20,8 +20,8 @@ import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.manager.AbstractHolder;
 import me.buzz.woolwars.game.utils.StringsUtils;
+import me.buzz.woolwars.game.utils.random.RandomSelector;
 import me.buzz.woolwars.game.utils.structures.Title;
-import me.lucko.helper.random.RandomSelector;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -82,7 +82,7 @@ public class RoundHolder extends AbstractHolder {
         }
 
         tasks.put(StartRoundTask.ID, new StartRoundTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.PRE_ROUND_TIMER))).start(20));
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.PRE_ROUND_TIMER) + 1)).start());
     }
 
     public void endRound(WoolTeam woolTeam) {
@@ -112,7 +112,7 @@ public class RoundHolder extends AbstractHolder {
         }
 
         tasks.put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.WAIT_FOR_NEW_ROUND_TIMER))).start(20));
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.WAIT_FOR_NEW_ROUND_TIMER) + 1)).start());
     }
 
     public void removeWalls() {

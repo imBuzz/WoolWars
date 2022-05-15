@@ -21,7 +21,7 @@ public class ProtectCenterTask extends TickTask {
     public void run() {
         if (shouldEnd()) {
             end();
-            cancel();
+            stop();
             return;
         }
 
@@ -31,6 +31,8 @@ public class ProtectCenterTask extends TickTask {
                             match.getLanguage().getProperty(LanguageFile.ROUND_UNLOCK_CENTER_BAR)
                                     .replace("{seconds}", formatSecondsAndMillis()));
         }
+
+        super.run();
     }
 
     @Override
@@ -39,6 +41,12 @@ public class ProtectCenterTask extends TickTask {
             WoolWars.get().getNmsHandler().getPlayerHandler().sendActionBar(onlinePlayer, "");
         }
         match.getRoundHolder().setCanBreakCenter(true);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        match.getRoundHolder().getTasks().remove(getID());
     }
 
     @Override

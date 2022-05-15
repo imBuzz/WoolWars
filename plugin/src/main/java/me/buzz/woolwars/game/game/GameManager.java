@@ -6,9 +6,11 @@ import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.arena.ArenaMetadata;
 import me.buzz.woolwars.game.game.listener.GameListener;
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.type.BasicWoolMatch;
 import me.buzz.woolwars.game.manager.AbstractManager;
 import me.buzz.woolwars.game.player.WoolPlayer;
+import me.buzz.woolwars.game.utils.bucket.BucketPartition;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
@@ -25,6 +27,13 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     public void init() {
         Bukkit.getPluginManager().registerEvents(new GameListener(), WoolWars.get());
         loadGames();
+
+        Bukkit.getScheduler().runTaskTimer(WoolWars.get(), () -> {
+            BucketPartition<CooldownTask> part = WoolMatch.cooldownTaskBucket.asCycle().next();
+            part.forEach(task -> {
+                if (task.canRun()) task.run();
+            });
+        }, 1L, 1L);
     }
 
     @Override

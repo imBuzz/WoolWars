@@ -79,7 +79,7 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                 .replace("{current_players}", String.valueOf(match.getPlayerHolder().getPlayersCount()))
                                 .replace("{max_players}", String.valueOf(match.getMaxPlayers()))
                                 .replace("{remaning_seconds}", String.valueOf(match.getRoundHolder()
-                                        .getTasks().get("startTask").getRemaningSeconds()));
+                                        .getTasks().get("startTask").getRemainingSeconds()));
                         break;
                     }
                     case PRE_ROUND: {
