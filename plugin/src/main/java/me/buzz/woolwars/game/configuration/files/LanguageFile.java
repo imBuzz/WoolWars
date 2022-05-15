@@ -3,47 +3,39 @@ package me.buzz.woolwars.game.configuration.files;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
 import com.google.common.collect.Lists;
+import me.buzz.woolwars.game.utils.structures.Title;
+import me.buzz.woolwars.game.utils.structures.WoolItem;
+import org.bukkit.Material;
 
 import java.util.List;
 
-import static ch.jalu.configme.properties.PropertyInitializer.newListProperty;
-import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
+import static ch.jalu.configme.properties.PropertyInitializer.*;
 
 public class LanguageFile implements SettingsHolder {
 
     public static final Property<String> JOINED_MESSAGE = newProperty("match.joined", "&7%player% &ehas joined (&b{current}&e/&b{max}&e)");
+    public static final Property<String> LEAVE_MESSAGE = newProperty("match.quit", "&7%player% &eleft from the game (&b{current}&e/&b{max}&e)");
+
+    public static final Property<String> NOT_ENOUGH_PLAYER_TO_PLAY = newProperty("match.not-enough-player-to-play",
+            "&cThere are not enough player to keep playing!");
+
     public static final Property<String> STARTING_COOLDOWN = newProperty("match.starting-cooldown", "&eThe game starts in &c{seconds} &eseconds!");
 
-    public static final Property<String> PRE_ROUND_TITLE = newProperty("match.pre-round.title.title", "&e&lPRE ROUND");
-    public static final Property<String> PRE_ROUND_SUBTITLE = newProperty("match.pre-round.title.subtitle", "&bSelect your class!");
-
-    public static final Property<String> ROUND_START_TITLE = newProperty("match.round.start.title.title", "&a&lROUND START");
-    public static final Property<String> ROUND_START_SUBTITLE = newProperty("match.round.start.title.subtitle", "&bRound {number}");
-
-    public static final Property<String> DIED_TITLE = newProperty("match.round.died.title.title", "&c&lYOU DIED");
-    public static final Property<String> DIED_SUBTITLE = newProperty("match.round.died.title.subtitle", "&fYou will respawn at the start of the next round!");
-
-    public static final Property<String> ROUND_OVER_TITLE = newProperty("match.round.over.title.title", "&9{blue_team_points} &f- &c{red_team_points}");
-    public static final Property<String> ROUND_OVER_SUBTITLE = newProperty("match.round.over.title.subtitle", "&e&lROUND OVER");
+    public static final Property<Title> PRE_ROUND_TITLE = newBeanProperty(Title.class, "match.pre-round.title", new Title("&e&lPRE ROUND", "&bSelect your class!"));
+    public static final Property<Title> ROUND_START_TITLE = newBeanProperty(Title.class, "match.round.start.title", new Title("&a&lROUND START", "&bRound {number}"));
+    public static final Property<Title> DIED_TITLE = newBeanProperty(Title.class, "match.round.died.title", new Title("&c&lYOU DIED", "&fYou will respawn at the start of the next round!"));
+    public static final Property<Title> ROUND_OVER_TITLE = newBeanProperty(Title.class, "match.round.over.title", new Title("&9{blue_team_points} &f- &c{red_team_points}", "&e&lROUND OVER"));
 
     public static final Property<String> ROUND_UNLOCK_CENTER_BAR = newProperty("match.round.protectCenter-bar", "&e&lCENTER UNLOCKS IN {seconds} SECONDS!");
-
     public static final Property<String> ROUND_CANNOT_BE_CAPTURED = newProperty("match.round.cannot-be-captured", "&cYou cannot capture the center for another {seconds} seconds!");
 
-    /*
-
-    ENDED MATCH
-
-     */
+    //ENDED MATCH
 
     public static final Property<String> ENDED_STATUS_LOST = newProperty("match.ended.variables.status.lost", "&cYour team lost!");
     public static final Property<String> ENDED_STATUS_VICTORY = newProperty("match.ended.variables.status.victory", "&aYour team won!");
 
-    public static final Property<String> ENDED_VICTORY_TITLE = newProperty("match.ended.victory.title.title", "&c&lVICTORY");
-    public static final Property<String> ENDED_VICTORY_SUBTITLE = newProperty("match.ended.victory.title.subtitle", "&6Your team won!");
-
-    public static final Property<String> ENDED_LOST_TITLE = newProperty("match.ended.lost.title.title", "&c&lDEFEAT");
-    public static final Property<String> ENDED_LOST_SUBTITLE = newProperty("match.ended.lost.title.subtitle", "&6Your team was defeated!");
+    public static final Property<Title> ENDED_VICTORY_TITLE = newBeanProperty(Title.class, "match.ended.victory.title", new Title("&c&lVICTORY", "&6Your team won!"));
+    public static final Property<Title> ENDED_LOST_TITLE = newBeanProperty(Title.class, "match.ended.lost.title", new Title("&c&lDEFEAT", "&6Your team was defeated!"));
 
     public static final Property<Boolean> ENDED_RESUME_CENTERED = newProperty("match.ended.resume.centered", true);
     public static final Property<List<String>> ENDED_RESUME = newListProperty("match.ended.resume.lines", Lists.newArrayList(
@@ -59,9 +51,7 @@ public class LanguageFile implements SettingsHolder {
             "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
 
 
-    /*
-    SCOREBOARDs
-     */
+    //SCOREBOARDs
 
     public static final Property<List<String>> SCOREBOARD_MATCH_LOBBY = newListProperty("scoreboard.lobby", Lists.newArrayList("", "CIAO", ""));
 
@@ -111,18 +101,30 @@ public class LanguageFile implements SettingsHolder {
             " ",
             "&eyour.server.ip"));
 
-    /*
-    VARIABLES (SCOREBOARD)
-     */
-
+    //VARIABLES (SCOREBOARD)
 
     public static final Property<String> IS_YOU = newProperty("scoreboard.variables.isYou", "(You)");
     public static final Property<String> PROGRESS_SYMBOL = newProperty("scoreboard.variables.progress_symbol", "✪");
 
     public static final Property<String> ROUND_WAITING = newProperty("scoreboard.variables.round.waiting", "Waiting");
-    public static final Property<String> ROUND_STARTING = newProperty("scoreboard.variables.round.starting", "Starting");
     public static final Property<String> ROUND_PRE_ROUND = newProperty("scoreboard.variables.round.pre_round", "Pre Round");
     public static final Property<String> ROUND_ROUND = newProperty("scoreboard.variables.round.round", "Active Round");
     public static final Property<String> ROUND_ENDED = newProperty("scoreboard.variables.round.ended", "Round Over!");
+
+    //ITEMS
+
+    public static final Property<Material> KEYSTONE_MATERIAL = newBeanProperty(Material.class, "classes.keystone-material", Material.BLAZE_POWDER);
+    public static final Property<WoolItem> TANK_KEYSTONE = newBeanProperty(WoolItem.class, "classes.tank.keystone",
+            new WoolItem("&fKeystone Ability: &6&lGIGAHEAL",
+                    Lists.newArrayList(
+                            "&7Give yourself a high amount of",
+                            "&7regen for 2 seconds.",
+                            "",
+                            "&6Press &e&lQ &6or &e&lRight Click &6to activate",
+                            "",
+                            "&7You can only use your keystone",
+                            "&c&lONCE &7per round."
+                    )));
+
 
 }

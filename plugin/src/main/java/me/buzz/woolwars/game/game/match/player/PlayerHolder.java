@@ -28,6 +28,10 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
         return players.size();
     }
 
+    public WoolPlayer getWoolPlayer(Player player) {
+        return players.get(player.getName());
+    }
+
     public Collection<WoolPlayer> getWoolPlayers() {
         return players.values();
     }

@@ -1,6 +1,7 @@
 package me.buzz.woolwars.game.utils;
 
 import org.bukkit.Color;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
@@ -8,13 +9,14 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
+import org.bukkit.material.Wool;
 
 import java.util.*;
 
 public class ItemBuilder {
 
-    private final ItemStack item;
-    private final ItemMeta meta;
+    private ItemStack item;
+    private ItemMeta meta;
 
     public ItemBuilder(Material material, int amount, short damage) {
         this.item = new ItemStack(material, amount, damage);
@@ -114,6 +116,17 @@ public class ItemBuilder {
     public ItemBuilder setLeatherColor(Color color) {
         LeatherArmorMeta armorMeta = (LeatherArmorMeta) meta;
         armorMeta.setColor(color);
+        return this;
+    }
+
+    public ItemBuilder wool(DyeColor color) {
+        item = new Wool(color).toItemStack();
+        meta = item.getItemMeta();
+        return this;
+    }
+
+    public ItemBuilder amount(int amount) {
+        item.setAmount(Math.min(amount, 64));
         return this;
     }
 

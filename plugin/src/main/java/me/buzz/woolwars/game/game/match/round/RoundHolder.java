@@ -10,7 +10,7 @@ import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
-import me.buzz.woolwars.game.game.match.player.classes.classes.BerserkPlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.TankPlayableClass;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
@@ -19,12 +19,14 @@ import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.manager.AbstractHolder;
 import me.buzz.woolwars.game.utils.StringsUtils;
+import me.buzz.woolwars.game.utils.structures.Title;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class RoundHolder extends AbstractHolder {
@@ -47,12 +49,12 @@ public class RoundHolder extends AbstractHolder {
         match.setMatchState(MatchState.PRE_ROUND);
         roundNumber++;
 
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks()) {
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
             block.setType(Material.GLASS);
-        }
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks()) {
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
             block.setType(Material.GLASS);
-        }
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks())
+            block.setType(ThreadLocalRandom.current().nextBoolean() ? Material.SNOW_BLOCK : Material.QUARTZ_BLOCK);
 
         for (WoolTeam team : match.getTeams().values()) {
             for (Player onlinePlayer : team.getOnlinePlayers()) {
@@ -61,15 +63,14 @@ public class RoundHolder extends AbstractHolder {
                 MatchStats matchStats = playerHolder.getMatchStats(onlinePlayer);
                 PlayableClass selectedClass = matchStats.getPlayableClass();
                 if (selectedClass == null) {
-                    selectedClass = new BerserkPlayableClass(onlinePlayer, matchStats.getTeam().getTeamColor());
+                    selectedClass = new TankPlayableClass(onlinePlayer, matchStats.getTeam().getTeamColor());
                     matchStats.setPlayableClass(selectedClass);
                 }
-                selectedClass.equip();
+                selectedClass.equip(playerHolder.getWoolPlayer(onlinePlayer), playerHolder.getMatchStats(onlinePlayer));
                 onlinePlayer.teleport(team.getSpawnLocation());
 
-                onlinePlayer.sendTitle(
-                        StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.PRE_ROUND_TITLE)),
-                        StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.PRE_ROUND_SUBTITLE)));
+                Title title = match.getLanguage().getProperty(LanguageFile.PRE_ROUND_TITLE);
+                onlinePlayer.sendTitle(StringsUtils.colorize(title.getTitle()), StringsUtils.colorize(title.getSubTitle()));
             }
         }
 
@@ -92,11 +93,13 @@ public class RoundHolder extends AbstractHolder {
 
         for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
             playerHolder.setSpectator(onlinePlayer);
+
+            Title title = match.getLanguage().getProperty(LanguageFile.ROUND_OVER_TITLE);
             onlinePlayer.sendTitle(
-                    StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_OVER_TITLE)
+                    StringsUtils.colorize(title.getTitle()
                             .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))),
-                    StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_OVER_SUBTITLE)
+                    StringsUtils.colorize(title.getSubTitle()
                     ).replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints())
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
         }

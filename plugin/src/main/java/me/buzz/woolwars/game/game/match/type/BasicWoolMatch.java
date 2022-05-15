@@ -21,6 +21,7 @@ import me.buzz.woolwars.game.game.match.task.tasks.StartingMatchTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.TeamUtils;
+import me.buzz.woolwars.game.utils.structures.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -63,11 +64,13 @@ public class BasicWoolMatch extends WoolMatch {
         playerHolder.registerPlayer(woolPlayer);
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
-        player.sendMessage(StringsUtils
-                .colorize(language.getProperty(LanguageFile.JOINED_MESSAGE)
-                        .replace("{player}", player.getName())
-                        .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
-                        .replace("{max}", String.valueOf(getMaxPlayers()))));
+        for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
+            matchPlayer.sendMessage(StringsUtils
+                    .colorize(language.getProperty(LanguageFile.JOINED_MESSAGE)
+                            .replace("{player}", player.getName())
+                            .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
+                            .replace("{max}", String.valueOf(getMaxPlayers()))));
+        }
 
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) setMatchState(MatchState.STARTING);
     }
@@ -83,11 +86,24 @@ public class BasicWoolMatch extends WoolMatch {
         if (isPlaying())
             shouldEnd = playerHolder.getMatchStats(player).getTeam().getOnlinePlayers().size() - 1 < MIN_PLAYERS_PER_TEAM;
 
-        //TODO: SEND QUIT MESSAGE CHECK SENDMESSAGE ON EVENT
+        if (quitGameEvent.isSendMessage()) {
+            for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
+                matchPlayer.sendMessage(StringsUtils
+                        .colorize(language.getProperty(LanguageFile.LEAVE_MESSAGE)
+                                .replace("{player}", player.getName())
+                                .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
+                                .replace("{max}", String.valueOf(getMaxPlayers()))));
+            }
+        }
+
+        teams.get(playerHolder.getMatchStats(player.getName()).getTeam().getTeamColor()).remove(player);
         playerHolder.removePlayer(woolPlayer);
 
         if (shouldEnd && !isEnded()) {
-            //TODO: INSUFFICIENT PLAYERS MESSAGE BY TEAM
+            for (Player matchPlayer : playerHolder.getOnlinePlayers())
+                matchPlayer.sendMessage(StringsUtils
+                        .colorize(language.getProperty(LanguageFile.NOT_ENOUGH_PLAYER_TO_PLAY)));
+
             setMatchState(MatchState.ENDING);
         }
     }
@@ -159,8 +175,9 @@ public class BasicWoolMatch extends WoolMatch {
 
             for (Player player : value.getOnlinePlayers()) {
                 playerHolder.setSpectator(player);
-                player.sendTitle(StringsUtils.colorize(language.getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE)),
-                        StringsUtils.colorize(language.getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_SUBTITLE : LanguageFile.ENDED_LOST_SUBTITLE)));
+
+                Title title = language.getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE);
+                player.sendTitle(StringsUtils.colorize(title.getTitle()), StringsUtils.colorize(title.getSubTitle()));
 
                 if (language.getProperty(LanguageFile.ENDED_RESUME_CENTERED)) {
                     for (String line : lines) {
@@ -186,8 +203,10 @@ public class BasicWoolMatch extends WoolMatch {
             if (killer != null) playerHolder.getMatchStats(killer).matchKills++;
 
             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 1));
-            victim.sendTitle(StringsUtils.colorize(language.getProperty(LanguageFile.DIED_TITLE)),
-                    StringsUtils.colorize(language.getProperty(LanguageFile.DIED_SUBTITLE)));
+
+            Title title = language.getProperty(LanguageFile.DIED_TITLE);
+            victim.sendTitle(StringsUtils.colorize(title.getTitle()),
+                    StringsUtils.colorize(title.getSubTitle()));
 
             playerHolder.setSpectator(victim);
         }

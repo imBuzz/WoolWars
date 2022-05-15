@@ -8,6 +8,7 @@ import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
 import me.buzz.woolwars.game.utils.StringsUtils;
+import me.buzz.woolwars.game.utils.structures.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -45,11 +46,12 @@ public class StartRoundTask extends SecondsTask {
         match.getRoundHolder().removeWalls();
         match.getRoundHolder().setCanBreakCenter(false);
 
+        Title title = match.getLanguage().getProperty(LanguageFile.ROUND_START_TITLE);
+        title.setTitle(StringsUtils.colorize(title.getTitle()));
+
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            onlinePlayer.sendTitle(
-                    StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_START_TITLE)),
-                    StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.ROUND_START_SUBTITLE)
-                            .replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber()))));
+            onlinePlayer.sendTitle(title.getTitle(),
+                    StringsUtils.colorize(title.getSubTitle().replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber()))));
         }
 
         match.getRoundHolder().getTasks().put(ProtectCenterTask.ID, new ProtectCenterTask(match,

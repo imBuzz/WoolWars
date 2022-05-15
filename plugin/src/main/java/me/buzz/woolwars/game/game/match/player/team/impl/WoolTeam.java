@@ -28,6 +28,11 @@ public class WoolTeam implements MatchTeam {
         players.add(woolPlayer.toBukkitPlayer());
     }
 
+    public void remove(Player player) {
+        players.remove(player);
+    }
+
+
     @Override
     public List<Player> getOnlinePlayers() {
         return players;

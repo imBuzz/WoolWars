@@ -16,7 +16,11 @@ public class TestCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (!gameManager.sendToFreeGame(new WoolPlayer(player))) {
+
+            WoolPlayer woolPlayer = new WoolPlayer(player);
+            woolPlayer.load();
+
+            if (!gameManager.sendToFreeGame(woolPlayer)) {
                 player.sendMessage("NO MATCHES");
             }
         }

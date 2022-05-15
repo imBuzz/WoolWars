@@ -10,8 +10,7 @@ public enum ArmorSlot {
     HELMET(40),
     CHESTPLATE(39),
     LEGGINGS(38),
-    BOOTS(37),
-    OTHER(-1);
+    BOOTS(37);
 
     private final int slot;
 
