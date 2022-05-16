@@ -67,6 +67,11 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
         players.remove(player.getName());
     }
 
+    public void reset() {
+        players.clear();
+        stats.clear();
+    }
+
     @Override
     public boolean isSpectator(Player player) {
         return player.hasMetadata("spectator");

@@ -4,9 +4,10 @@ import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
 import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
-import me.buzz.woolwars.game.commands.StartCommand;
-import me.buzz.woolwars.game.commands.TestCommand;
+import me.buzz.woolwars.game.commands.WoolCommandsHandler;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
+import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
 import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
@@ -21,9 +22,11 @@ import java.util.Map;
 
 public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
-    //TODO: FARE IL REJOIN TRAMITE UNA CACHE DI 3 MINUTI NELLA QUALE VI E' IL NOME DEL PLAYER E L'ID DELL ULTIMO GAME NEL QUALE E' ENTRATO
-
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
+    private WoolCommandsHandler commandsHandler;
+
+    @Getter
+    private DataProvider dataProvider;
     @Getter
     private GameManager gameManager;
     @Getter
@@ -44,11 +47,13 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
             return;
         }
 
+        dataProvider = getSettings().getProperty(ConfigFile.DATABASE_TYPE).getProviderSupplier().get();
+        dataProvider.init();
+
         gameManager = new GameManager();
         gameManager.init();
 
-        getCommand("test").setExecutor(new TestCommand());
-        getCommand("start").setExecutor(new StartCommand());
+        commandsHandler = new WoolCommandsHandler();
 
         new PlayerAsyncTickTask().runTaskTimerAsynchronously(this, 5L, 5L);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
@@ -70,6 +75,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
             }
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

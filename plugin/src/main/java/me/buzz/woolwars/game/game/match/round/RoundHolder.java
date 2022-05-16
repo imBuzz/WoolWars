@@ -34,7 +34,6 @@ public class RoundHolder extends AbstractHolder {
 
     private final static RandomSelector<Material> centerMats = RandomSelector.uniform(ImmutableList.of(Material.SNOW_BLOCK, Material.WOOL, Material.QUARTZ_BLOCK));
 
-
     private final PlayerHolder playerHolder = match.getPlayerHolder();
     @Getter
     private final Map<String, CooldownTask> tasks = new HashMap<>();
@@ -57,9 +56,8 @@ public class RoundHolder extends AbstractHolder {
             block.setType(Material.GLASS);
         for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
             block.setType(Material.GLASS);
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks()) {
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks())
             block.setType(centerMats.pick());
-        }
 
         for (WoolTeam team : match.getTeams().values()) {
             for (Player onlinePlayer : team.getOnlinePlayers()) {
@@ -113,6 +111,13 @@ public class RoundHolder extends AbstractHolder {
 
         tasks.put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.WAIT_FOR_NEW_ROUND_TIMER) + 1)).start());
+    }
+
+    public void reset() {
+        for (CooldownTask value : tasks.values()) value.stop();
+        tasks.clear();
+        roundNumber = 0;
+        canBreakCenter = false;
     }
 
     public void removeWalls() {

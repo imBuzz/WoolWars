@@ -4,6 +4,7 @@ import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.arena.region.Region;
+import me.buzz.woolwars.game.game.arena.regions.ImplementedRegion;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -15,7 +16,7 @@ public class PlayableArena extends ArenaMetadata implements ApiPlayableArena {
         super(metadata.ID, metadata.name, metadata.matchType, metadata.getWorldName(), metadata.locations, metadata.regions);
         this.world = world;
 
-        for (Region value : regions.values()) {
+        for (ImplementedRegion value : regions.values()) {
             value.setWorld(this.world);
         }
     }

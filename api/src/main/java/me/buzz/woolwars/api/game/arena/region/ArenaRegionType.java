@@ -4,7 +4,6 @@ public enum ArenaRegionType {
 
     RED_WALL,
     BLUE_WALL,
-
-    CENTER;
+    CENTER
 
 }

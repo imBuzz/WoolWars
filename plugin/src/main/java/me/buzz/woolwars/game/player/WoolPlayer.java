@@ -1,10 +1,12 @@
 package me.buzz.woolwars.game.player;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.game.match.player.classes.classes.*;
+import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -13,7 +15,22 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter
+@AllArgsConstructor
 public class WoolPlayer implements ApiWoolPlayer {
+
+    private final static Map<String, WoolPlayer> woolPlayersByName = new HashMap<>();
+
+    public static WoolPlayer getWoolPlayer(Player player) {
+        return woolPlayersByName.get(player.getName());
+    }
+
+    public static void trackPlayer(WoolPlayer player) {
+        woolPlayersByName.put(player.getName(), player);
+    }
+
+    public static WoolPlayer removePlayer(Player player) {
+        return woolPlayersByName.remove(player.getName());
+    }
 
     public final UUID UUID;
     private final String name;
@@ -34,16 +51,26 @@ public class WoolPlayer implements ApiWoolPlayer {
     }
 
     public void load() {
-        kitLayout.put(PlayableClassType.TANK, TankPlayableClass.getBaseLayout());
-        kitLayout.put(PlayableClassType.ASSAULT, AssaultPlayableClass.getBaseLayout());
-        kitLayout.put(PlayableClassType.ARCHER, ArcherPlayableClass.getBaseLayout());
-        kitLayout.put(PlayableClassType.SWORDMAN, SwordmanPlayableClass.getBaseLayout());
-        kitLayout.put(PlayableClassType.GOLEM, GolemPlayableClass.getBaseLayout());
-        kitLayout.put(PlayableClassType.ENGINEER, EngineerPlayableClass.getBaseLayout());
+        if (kitLayout.isEmpty()) {
+            kitLayout.put(PlayableClassType.TANK, TankPlayableClass.getBaseLayout());
+            kitLayout.put(PlayableClassType.ASSAULT, AssaultPlayableClass.getBaseLayout());
+            kitLayout.put(PlayableClassType.ARCHER, ArcherPlayableClass.getBaseLayout());
+            kitLayout.put(PlayableClassType.SWORDMAN, SwordmanPlayableClass.getBaseLayout());
+            kitLayout.put(PlayableClassType.GOLEM, GolemPlayableClass.getBaseLayout());
+            kitLayout.put(PlayableClassType.ENGINEER, EngineerPlayableClass.getBaseLayout());
+        }
     }
 
     public Player toBukkitPlayer() {
         return Bukkit.getPlayer(UUID);
+    }
+
+    public void transferFrom(MatchStats stats) {
+        woolPlaced += stats.getMatchWoolPlaced();
+        blocksBroken += stats.getMatchBlocksBroken();
+        powerUpsGotten += stats.getMatchPowerUpsGotten();
+        played++;
+        deaths += stats.getMatchWoolPlaced();
     }
 
 }

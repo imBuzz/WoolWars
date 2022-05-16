@@ -1,12 +1,13 @@
 name: WoolWars
 version: '${project.version}'
 main: me.buzz.woolwars.game.WoolWars
-api-version: 1.18
+api-version: 1.13
 authors: [ ImBuzz ]
-description: WoolWars Plugin Controller
+description: "WoolWars minigame"
 
 commands:
-  start:
-    description: "TESTING"
-  test:
-    description: "TESTING"
+  woolwars:
+    aliases:
+      - "ww"
+    usage: "/woolwars"
+    description: "Basic Woolwars command"

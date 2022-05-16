@@ -10,4 +10,8 @@ public abstract class SecondsTask extends CooldownTask {
         super(targetTime, TimeUnit.SECONDS.toMillis(1));
     }
 
+    public boolean shouldEnd() {
+        return targetTime - (System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(1)) <= 0;
+    }
+
 }

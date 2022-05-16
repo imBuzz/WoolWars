@@ -13,6 +13,12 @@ import static ch.jalu.configme.properties.PropertyInitializer.*;
 
 public class LanguageFile implements SettingsHolder {
 
+    public static final Property<String> COMMANDS_NO_PERMISSION = newProperty("commands.general.no-permission", "&cYou don't have the permission to do that!");
+    public static final Property<String> NO_MATCH = newProperty("commands.general.no-match-for-player", "&cYou have to be in a match to do that!");
+
+    public static final Property<String> YOUR_ARE_IN_A_MATCH = newProperty("commands.join.already-in-match", "&cYou are already in a match");
+    public static final Property<String> NO_MATCH_FOUND = newProperty("commands.join.no-match-found", "&cThere aren't free match to join");
+
     public static final Property<String> JOINED_MESSAGE = newProperty("match.joined", "&7{player} &ehas joined (&b{current}&e/&b{max}&e)");
     public static final Property<String> LEAVE_MESSAGE = newProperty("match.quit", "&7{player} &eleft from the game (&b{current}&e/&b{max}&e)");
 
@@ -26,6 +32,7 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<Title> DIED_TITLE = newBeanProperty(Title.class, "match.round.died.title", new Title("&c&lYOU DIED", "&fYou will respawn at the start of the next round!"));
     public static final Property<Title> ROUND_OVER_TITLE = newBeanProperty(Title.class, "match.round.over.title", new Title("&9{blue_team_points} &f- &c{red_team_points}", "&e&lROUND OVER"));
 
+    public static final Property<String> CENTER_UNLOCK = newProperty("match.round.center-unlocked", "&a&lCENTER UNLOCKED!");
     public static final Property<String> ROUND_UNLOCK_CENTER_BAR = newProperty("match.round.protectCenter-bar", "&e&lCENTER UNLOCKS IN {seconds} SECONDS!");
     public static final Property<String> ROUND_CANNOT_BE_CAPTURED = newProperty("match.round.cannot-be-captured", "&cYou cannot capture the center for another {seconds} seconds!");
 
@@ -115,7 +122,7 @@ public class LanguageFile implements SettingsHolder {
 
     public static final Property<Material> KEYSTONE_MATERIAL = newBeanProperty(Material.class, "classes.keystone-material", Material.BLAZE_POWDER);
     public static final Property<WoolItem> TANK_KEYSTONE = newBeanProperty(WoolItem.class, "classes.tank.keystone",
-            new WoolItem("&fKeystone Ability: &6&lGIGAHEAL",
+            WoolItem.from("&fKeystone Ability: &6&lGIGAHEAL",
                     Lists.newArrayList(
                             "&7Give yourself a high amount of",
                             "&7regen for 2 seconds.",
@@ -127,7 +134,7 @@ public class LanguageFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> ARCHER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.archer.keystone",
-            new WoolItem("&fKeystone Ability: &6&lSTEP BACK",
+            WoolItem.from("&fKeystone Ability: &6&lSTEP BACK",
                     Lists.newArrayList(
                             "&7Push yourself back instantly!",
                             "",
@@ -138,7 +145,7 @@ public class LanguageFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> SWORDMAN_KEYSTONE = newBeanProperty(WoolItem.class, "classes.swordman.keystone",
-            new WoolItem("&fKeystone Ability: &6&lSPRINT",
+            WoolItem.from("&fKeystone Ability: &6&lSPRINT",
                     Lists.newArrayList(
                             "&7Give yourself a speed boost for",
                             "&73 seconds.",
@@ -150,7 +157,7 @@ public class LanguageFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> GOLEM_KEYSTONE = newBeanProperty(WoolItem.class, "classes.golem.keystone",
-            new WoolItem("&fKeystone Ability: &6&lGOLDEN SHELL",
+            WoolItem.from("&fKeystone Ability: &6&lGOLDEN SHELL",
                     Lists.newArrayList(
                             "&7Encase yourself in Golden Armor",
                             "&7for 5 seconds.",
@@ -162,7 +169,7 @@ public class LanguageFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> ENGINEER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.engineer.keystone",
-            new WoolItem("&fKeystone Ability: &6&lHACK",
+            WoolItem.from("&fKeystone Ability: &6&lHACK",
                     Lists.newArrayList(
                             "&7Disable players from placing or",
                             "&7breaking middle blocks for 3",
@@ -175,7 +182,7 @@ public class LanguageFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> ASSAULT_KEYSTONE = newBeanProperty(WoolItem.class, "classes.assault.keystone",
-            new WoolItem("&fKeystone Ability: &6&lKNOCKBACK TNT",
+            WoolItem.from("&fKeystone Ability: &6&lKNOCKBACK TNT",
                     Lists.newArrayList(
                             "&7Place a TNT that doesn't deal",
                             "&7damage, but deals massive",

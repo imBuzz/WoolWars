@@ -17,6 +17,7 @@ import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.round.RoundHolder;
+import me.buzz.woolwars.game.game.match.task.tasks.ResetMatchTask;
 import me.buzz.woolwars.game.game.match.task.tasks.StartingMatchTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.StringsUtils;
@@ -83,8 +84,10 @@ public class BasicWoolMatch extends WoolMatch {
         PlayerQuitGameEvent quitGameEvent = new PlayerQuitGameEvent(player, reason);
         Bukkit.getPluginManager().callEvent(quitGameEvent);
 
+        MatchStats matchStats = playerHolder.getMatchStats(player);
+
         if (isPlaying())
-            shouldEnd = playerHolder.getMatchStats(player).getTeam().getOnlinePlayers().size() - 1 < MIN_PLAYERS_PER_TEAM;
+            shouldEnd = matchStats.getTeam().getOnlinePlayers().size() - 1 < MIN_PLAYERS_PER_TEAM;
 
         if (quitGameEvent.isSendMessage()) {
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
@@ -96,7 +99,9 @@ public class BasicWoolMatch extends WoolMatch {
             }
         }
 
-        teams.get(playerHolder.getMatchStats(player.getName()).getTeam().getTeamColor()).remove(player);
+        matchStats.getTeam().remove(player);
+
+        woolPlayer.transferFrom(matchStats);
         playerHolder.removePlayer(woolPlayer);
 
         if (shouldEnd && !isEnded()) {
@@ -137,8 +142,6 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void end(WoolTeam winnerTeam) {
-        //TODO: REWORK
-
         Map<String, Integer> topKillers = TeamUtils.getTopKillers(this);
         Map<String, Integer> topWool = TeamUtils.getTopWool(this);
         Map<String, Integer> topBlocks = TeamUtils.getTopBroken(this);
@@ -154,9 +157,14 @@ public class BasicWoolMatch extends WoolMatch {
 
         List<String> tempLines = language.getProperty(LanguageFile.ENDED_RESUME);
 
-        for (WoolTeam value : teams.values()) {
-            boolean isWinnerTeam = value == winnerTeam;
+        for (WoolPlayer woolPlayer : playerHolder.getWoolPlayers()) {
+            Player player = woolPlayer.toBukkitPlayer();
+            MatchStats stats = playerHolder.getMatchStats(player);
 
+            woolPlayer.transferFrom(stats);
+            playerHolder.setSpectator(player);
+
+            boolean isWinnerTeam = stats.getTeam() == winnerTeam;
             List<String> lines = new ArrayList<>();
             for (String tempLine : tempLines) {
                 lines.add(tempLine
@@ -173,26 +181,31 @@ public class BasicWoolMatch extends WoolMatch {
                 );
             }
 
-            for (Player player : value.getOnlinePlayers()) {
-                playerHolder.setSpectator(player);
+            Title title = language.getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE);
+            player.sendTitle(StringsUtils.colorize(title.getTitle()), StringsUtils.colorize(title.getSubTitle()));
 
-                Title title = language.getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE);
-                player.sendTitle(StringsUtils.colorize(title.getTitle()), StringsUtils.colorize(title.getSubTitle()));
-
-                if (language.getProperty(LanguageFile.ENDED_RESUME_CENTERED)) {
-                    for (String line : lines) {
-                        if (line.isEmpty()) player.sendMessage(line);
-                        else StringsUtils.sendCenteredMessage(player, line);
-                    }
-                } else {
-                    for (String line : lines) {
-                        player.sendMessage(StringsUtils.colorize(line));
-                    }
+            if (language.getProperty(LanguageFile.ENDED_RESUME_CENTERED)) {
+                for (String line : lines) {
+                    if (line.isEmpty()) player.sendMessage(line);
+                    else StringsUtils.sendCenteredMessage(player, line);
+                }
+            } else {
+                for (String line : lines) {
+                    player.sendMessage(StringsUtils.colorize(line));
                 }
             }
         }
 
+        roundHolder.getTasks().put(ResetMatchTask.ID, new ResetMatchTask(this,
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CLOSE_GAME_COOLDOWN))).start());
+    }
 
+    @Override
+    public void reset() {
+        teams.clear();
+        roundHolder.reset();
+        playerHolder.reset();
+        matchState = MatchState.WAITING;
     }
 
     @Override
@@ -224,11 +237,6 @@ public class BasicWoolMatch extends WoolMatch {
     @Override
     public int getPointsToWin() {
         return 3;
-    }
-
-    @Override
-    public void tickPlayer(Player player) {
-
     }
 
     @Override

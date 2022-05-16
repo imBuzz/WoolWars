@@ -1,7 +1,6 @@
 package me.buzz.woolwars.game.game.arena.regions;
 
-import me.buzz.woolwars.api.game.arena.region.Region;
-import me.buzz.woolwars.game.game.arena.location.ArenaLocation;
+import me.buzz.woolwars.game.game.arena.location.SerializedLocation;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -9,12 +8,12 @@ import org.bukkit.block.Block;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CuboidRegion implements Region {
+public class CuboidRegion implements ImplementedRegion {
 
     private final int topBlockX, bottomBlockX, topBlockY, bottomBlockY, topBlockZ, bottomBlockZ;
     private World world;
 
-    public CuboidRegion(ArenaLocation min, ArenaLocation max) {
+    public CuboidRegion(SerializedLocation min, SerializedLocation max) {
         topBlockX = (int) Math.max(max.getX(), min.getX());
         bottomBlockX = (int) Math.min(max.getX(), min.getX());
 

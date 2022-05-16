@@ -66,13 +66,13 @@ public abstract class WoolMatch implements ApiMatch {
 
     public abstract void end(WoolTeam winnerTeam);
 
+    public abstract void reset();
+
     public abstract void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause);
 
     public abstract int getMaxPlayers();
 
     public abstract int getPointsToWin();
-
-    public abstract void tickPlayer(Player player);
 
     public boolean isPlaying() {
         return matchState == MatchState.PRE_ROUND || matchState == MatchState.ROUND;

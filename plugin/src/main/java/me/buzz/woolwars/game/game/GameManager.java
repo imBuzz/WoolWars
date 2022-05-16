@@ -2,6 +2,7 @@ package me.buzz.woolwars.game.game;
 
 import me.buzz.woolwars.api.game.ApiGameManager;
 import me.buzz.woolwars.api.game.match.ApiMatch;
+import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.arena.ArenaMetadata;
 import me.buzz.woolwars.game.game.listener.GameListener;
@@ -90,7 +91,7 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     }
 
     @Override
-    public Collection<ApiMatch> getMatchesByID() {
+    public Collection<ApiMatch> getMatches() {
         return Collections.unmodifiableCollection(matchesByID.values());
     }
 
@@ -106,6 +107,11 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     @Override
     public Optional<ApiMatch> getMatchByPlayer(Player player) {
         return Optional.ofNullable(getInternalMatchByPlayer(player));
+    }
+
+    @Override
+    public ApiWoolPlayer getWoolPlayer(Player player) {
+        return WoolPlayer.getWoolPlayer(player);
     }
 
     public WoolMatch getInternalMatchByPlayer(Player player) {
