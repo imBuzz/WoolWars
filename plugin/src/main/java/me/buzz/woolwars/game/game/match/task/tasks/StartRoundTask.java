@@ -7,7 +7,6 @@ import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
-import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
 import org.bukkit.entity.Player;
 
@@ -43,18 +42,15 @@ public class StartRoundTask extends SecondsTask {
         match.getRoundHolder().removeWalls();
         match.getRoundHolder().setCanBreakCenter(false);
 
-        Title title = match.getLanguage().getProperty(LanguageFile.ROUND_START_TITLE);
-        title.setTitle(StringsUtils.colorize(title.getTitle()));
-
+        Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_START_TITLE);
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            onlinePlayer.sendTitle(title.getTitle(),
-                    StringsUtils.colorize(title.getSubTitle().replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber()))));
+            onlinePlayer.sendTitle(title.getTitle(), title.getSubTitle().replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber())));
         }
 
         match.getRoundHolder().getTasks().put(ProtectCenterTask.ID, new ProtectCenterTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CENTER_UNLOCKS_COOLDOWN) + 1)).start());
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CENTER_UNLOCKS_COOLDOWN))).start());
         match.getRoundHolder().getTasks().put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.ROUND_DURATION) + 1)).start());
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.ROUND_DURATION))).start());
     }
 
     @Override

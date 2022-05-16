@@ -46,7 +46,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setName(String name) {
-        meta.setDisplayName(StringsUtils.colorize(name));
+        meta.setDisplayName(name);
         return this;
     }
 
@@ -60,7 +60,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setLore(List<String> lore) {
-        meta.setLore(StringsUtils.colorize(lore));
+        meta.setLore(lore);
         return this;
     }
 
@@ -70,7 +70,7 @@ public class ItemBuilder {
 
     public ItemBuilder addLore(List<String> lore) {
         List<String> newLore = meta.getLore() == null ? new ArrayList<>() : meta.getLore();
-        newLore.addAll(StringsUtils.colorize(lore));
+        newLore.addAll(lore);
         meta.setLore(newLore);
         return this;
     }
@@ -158,7 +158,7 @@ public class ItemBuilder {
         private final BookMeta meta = (BookMeta) ItemBuilder.this.meta;
 
         public BookItemMeta setTitle(String title) {
-            meta.setTitle(StringsUtils.colorize(title));
+            meta.setTitle(title);
             return this;
         }
 
@@ -168,12 +168,12 @@ public class ItemBuilder {
         }
 
         public BookItemMeta setPages(String... pages) {
-            meta.setPages(StringsUtils.colorize(pages));
+            meta.setPages(pages);
             return this;
         }
 
         public BookItemMeta setPages(List<String> pages) {
-            meta.setPages(StringsUtils.colorize(pages));
+            meta.setPages(pages);
             return this;
         }
 

@@ -6,7 +6,6 @@ import me.buzz.woolwars.game.commands.WoolCommand;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.player.WoolPlayer;
-import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -38,7 +37,7 @@ public class Leave implements WoolCommand {
 
         WoolMatch woolMatch = woolWars.getGameManager().getInternalMatchByPlayer(player);
         if (woolMatch == null) {
-            player.sendMessage(StringsUtils.colorize(WoolWars.get().getLanguage().getProperty(LanguageFile.NO_MATCH)));
+            player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.NO_MATCH));
             return false;
         }
 

@@ -10,8 +10,6 @@ import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
-import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
-import me.buzz.woolwars.game.game.match.player.classes.classes.AssaultPlayableClass;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
@@ -19,7 +17,6 @@ import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.manager.AbstractHolder;
-import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.random.RandomSelector;
 import me.buzz.woolwars.game.utils.structures.Title;
 import org.bukkit.Material;
@@ -64,23 +61,21 @@ public class RoundHolder extends AbstractHolder {
                 if (playerHolder.isSpectator(onlinePlayer)) playerHolder.removeSpectator(onlinePlayer);
 
                 MatchStats matchStats = playerHolder.getMatchStats(onlinePlayer);
-                PlayableClass selectedClass = matchStats.getPlayableClass();
-                if (selectedClass == null) {
-                    selectedClass = new AssaultPlayableClass(onlinePlayer, matchStats.getTeam().getTeamColor());
-                    matchStats.setPlayableClass(selectedClass);
-                }
-                selectedClass.reset();
 
-                selectedClass.equip(playerHolder.getWoolPlayer(onlinePlayer), playerHolder.getMatchStats(onlinePlayer));
+                matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor());
+                matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer),
+                        playerHolder.getMatchStats(onlinePlayer));
+
+                team.getTeamNPC().show(onlinePlayer);
                 onlinePlayer.teleport(team.getSpawnLocation());
 
-                Title title = match.getLanguage().getProperty(LanguageFile.PRE_ROUND_TITLE);
-                onlinePlayer.sendTitle(StringsUtils.colorize(title.getTitle()), StringsUtils.colorize(title.getSubTitle()));
+                Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.PRE_ROUND_TITLE);
+                onlinePlayer.sendTitle(title.getTitle(), title.getSubTitle());
             }
         }
 
         tasks.put(StartRoundTask.ID, new StartRoundTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.PRE_ROUND_TIMER) + 1)).start());
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.PRE_ROUND_TIMER))).start());
     }
 
     public void endRound(WoolTeam woolTeam) {
@@ -95,22 +90,19 @@ public class RoundHolder extends AbstractHolder {
         }
 
         match.setMatchState(MatchState.ROUND_OVER);
-
         for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
             playerHolder.setSpectator(onlinePlayer);
 
-            Title title = match.getLanguage().getProperty(LanguageFile.ROUND_OVER_TITLE);
-            onlinePlayer.sendTitle(
-                    StringsUtils.colorize(title.getTitle()
+            Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_OVER_TITLE);
+            onlinePlayer.sendTitle(title.getTitle()
                             .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
-                            .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))),
-                    StringsUtils.colorize(title.getSubTitle()
-                    ).replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints())
+                            .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints())),
+                    title.getSubTitle().replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints())
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
         }
 
         tasks.put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.WAIT_FOR_NEW_ROUND_TIMER) + 1)).start());
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.WAIT_FOR_NEW_ROUND_TIMER))).start());
     }
 
     public void reset() {
@@ -125,6 +117,13 @@ public class RoundHolder extends AbstractHolder {
             block.setType(Material.AIR);
         for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
             block.setType(Material.AIR);
+
+        for (WoolTeam value : match.getTeams().values()) {
+            for (Player onlinePlayer : value.getOnlinePlayers()) {
+                value.getTeamNPC().hide(onlinePlayer);
+            }
+        }
+
     }
 
 

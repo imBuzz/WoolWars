@@ -4,26 +4,10 @@ import me.buzz.woolwars.game.utils.structures.DefaultFontInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public final class StringsUtils {
 
     private StringsUtils() {
         throw new AssertionError("Nope");
-    }
-
-    public static String colorize(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s);
-    }
-
-    public static List<String> colorize(List<String> strings) {
-        return strings.stream().map(StringsUtils::colorize).collect(Collectors.toList());
-    }
-
-    public static List<String> colorize(String... strings) {
-        return Arrays.stream(strings).map(StringsUtils::colorize).collect(Collectors.toList());
     }
 
     public static String getProgressBar(int current, int max, int totalBars, char symbol, ChatColor completedColor, ChatColor notCompletedColor) {
@@ -38,7 +22,6 @@ public final class StringsUtils {
 
     public static void sendCenteredMessage(Player player, String message) {
         if (message == null || message.equals("")) player.sendMessage("");
-        message = StringsUtils.colorize(message);
 
         int messagePxSize = 0;
         boolean previousCode = false;

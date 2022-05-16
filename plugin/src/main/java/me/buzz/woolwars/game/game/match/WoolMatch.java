@@ -1,6 +1,5 @@
 package me.buzz.woolwars.game.game.match;
 
-import ch.jalu.configme.SettingsManager;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -8,7 +7,6 @@ import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
 import me.buzz.woolwars.api.game.match.ApiMatch;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
-import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
@@ -32,13 +30,11 @@ public abstract class WoolMatch implements ApiMatch {
 
     public final static Bucket<CooldownTask> cooldownTaskBucket = BucketFactory.newHashSetBucket(3, PartitioningStrategies.lowestSize());
 
-    @Getter
-    protected final SettingsManager language = WoolWars.get().getLanguage();
-
     protected final String ID = UUIDUtils.getNewUUID();
+    protected final PlayableArena arena;
+
     @Getter
     protected final Map<TeamColor, WoolTeam> teams = new HashMap<>();
-    protected final PlayableArena arena;
 
     @Setter
     protected MatchState matchState = MatchState.WAITING;

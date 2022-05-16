@@ -28,7 +28,7 @@ public class ProtectCenterTask extends TickTask {
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
             WoolWars.get().getNmsHandler().getPlayerHandler()
                     .sendActionBar(onlinePlayer,
-                            match.getLanguage().getProperty(LanguageFile.ROUND_UNLOCK_CENTER_BAR)
+                            WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_UNLOCK_CENTER_BAR)
                                     .replace("{seconds}", formatSecondsAndMillis()));
         }
 
@@ -38,7 +38,7 @@ public class ProtectCenterTask extends TickTask {
     @Override
     public void end() {
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            WoolWars.get().getNmsHandler().getPlayerHandler().sendActionBar(onlinePlayer, match.getLanguage().getProperty(LanguageFile.CENTER_UNLOCK));
+            WoolWars.get().getNmsHandler().getPlayerHandler().sendActionBar(onlinePlayer, WoolWars.get().getLanguage().getProperty(LanguageFile.CENTER_UNLOCK));
         }
         match.getRoundHolder().setCanBreakCenter(true);
     }

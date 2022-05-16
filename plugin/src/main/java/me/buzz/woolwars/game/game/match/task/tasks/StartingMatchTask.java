@@ -1,9 +1,9 @@
 package me.buzz.woolwars.game.game.match.task.tasks;
 
+import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
-import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.entity.Player;
 
 public class StartingMatchTask extends SecondsTask {
@@ -25,8 +25,8 @@ public class StartingMatchTask extends SecondsTask {
         }
 
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            onlinePlayer.sendMessage(StringsUtils.colorize(match.getLanguage().getProperty(LanguageFile.STARTING_COOLDOWN)
-                    .replace("{seconds}", String.valueOf(getRemainingSeconds()))));
+            onlinePlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.STARTING_COOLDOWN)
+                    .replace("{seconds}", String.valueOf(getRemainingSeconds())));
         }
 
         super.run();

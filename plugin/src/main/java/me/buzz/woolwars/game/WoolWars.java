@@ -13,6 +13,8 @@ import me.buzz.woolwars.game.player.listener.PlayerListener;
 import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
 import me.buzz.woolwars.nms.INMSHandler;
 import me.buzz.woolwars.nms.ServerProtocols;
+import net.jitse.npclib.NPCLib;
+import net.jitse.npclib.NPCLibOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +27,8 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
     private WoolCommandsHandler commandsHandler;
 
+    @Getter
+    private NPCLib npcLib;
     @Getter
     private DataProvider dataProvider;
     @Getter
@@ -47,6 +51,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
             return;
         }
 
+        npcLib = new NPCLib(this, new NPCLibOptions().setMovementHandling(NPCLibOptions.MovementHandling.repeatingTask(40)));
         dataProvider = getSettings().getProperty(ConfigFile.DATABASE_TYPE).getProviderSupplier().get();
         dataProvider.init();
 

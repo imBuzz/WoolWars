@@ -63,7 +63,7 @@ public class ArenaMetadata {
                 new CuboidRegion(SerializedLocation.fromString(data.getString("locations.center.pos1")),
                         SerializedLocation.fromString(data.getString("locations.center.pos2"))));
 
-        return new ArenaMetadata(ID, name, matchType, worldName, locations, regions);
+        return new ArenaMetadata(ID, name, matchType, locations, regions, worldName);
     }
 
     public SerializedLocation getArenaLocation(ArenaLocationType type) {

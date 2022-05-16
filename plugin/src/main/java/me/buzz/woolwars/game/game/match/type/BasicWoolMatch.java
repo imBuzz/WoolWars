@@ -23,6 +23,7 @@ import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.TeamUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
+import net.jitse.npclib.api.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -66,11 +67,10 @@ public class BasicWoolMatch extends WoolMatch {
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
         for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
-            matchPlayer.sendMessage(StringsUtils
-                    .colorize(language.getProperty(LanguageFile.JOINED_MESSAGE)
-                            .replace("{player}", player.getName())
-                            .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
-                            .replace("{max}", String.valueOf(getMaxPlayers()))));
+            matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.JOINED_MESSAGE)
+                    .replace("{player}", player.getName())
+                    .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
+                    .replace("{max}", String.valueOf(getMaxPlayers())));
         }
 
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) setMatchState(MatchState.STARTING);
@@ -91,23 +91,21 @@ public class BasicWoolMatch extends WoolMatch {
 
         if (quitGameEvent.isSendMessage()) {
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
-                matchPlayer.sendMessage(StringsUtils
-                        .colorize(language.getProperty(LanguageFile.LEAVE_MESSAGE)
-                                .replace("{player}", player.getName())
-                                .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
-                                .replace("{max}", String.valueOf(getMaxPlayers()))));
+                matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.LEAVE_MESSAGE)
+                        .replace("{player}", player.getName())
+                        .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
+                        .replace("{max}", String.valueOf(getMaxPlayers())));
             }
         }
 
-        matchStats.getTeam().remove(player);
+        if (matchStats.getTeam() != null) matchStats.getTeam().remove(player);
 
         woolPlayer.transferFrom(matchStats);
         playerHolder.removePlayer(woolPlayer);
 
         if (shouldEnd && !isEnded()) {
             for (Player matchPlayer : playerHolder.getOnlinePlayers())
-                matchPlayer.sendMessage(StringsUtils
-                        .colorize(language.getProperty(LanguageFile.NOT_ENOUGH_PLAYER_TO_PLAY)));
+                matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.NOT_ENOUGH_PLAYER_TO_PLAY));
 
             setMatchState(MatchState.ENDING);
         }
@@ -116,21 +114,33 @@ public class BasicWoolMatch extends WoolMatch {
     @Override
     public void cooldown() {
         roundHolder.getTasks().put(StartingMatchTask.ID, new StartingMatchTask(this,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.START_COOLDOWN) + 1)).start());
+                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.START_COOLDOWN))).start());
     }
 
     @Override
     public void prepare() {
-        teams.put(TeamColor.RED, new WoolTeam(ID, TeamColor.RED, arena.getLocation(ArenaLocationType.SPAWN_RED)));
-        teams.put(TeamColor.BLUE, new WoolTeam(ID, TeamColor.BLUE, arena.getLocation(ArenaLocationType.SPAWN_BLUE)));
-
         List<WoolPlayer> p = new ArrayList<>(playerHolder.getWoolPlayers());
         List<List<WoolPlayer>> groups = Lists.partition(p, TeamUtils.getHalfApprox(p.size()));
 
-        for (WoolPlayer woolPlayer : groups.get(0))
-            teams.get(TeamColor.RED).join(woolPlayer, playerHolder.getMatchStats(woolPlayer.getName()));
-        for (WoolPlayer woolPlayer : groups.get(1))
-            teams.get(TeamColor.BLUE).join(woolPlayer, playerHolder.getMatchStats(woolPlayer.getName()));
+        for (int i = 0; i < TeamColor.values().length; i++) {
+            TeamColor teamColor = TeamColor.values()[i];
+            WoolTeam team = new WoolTeam(ID, teamColor, arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.SPAWN_RED : ArenaLocationType.SPAWN_BLUE));
+
+            NPC npc = WoolWars.get().getNpcLib().createNPC(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME));
+            npc.setLocation(WoolWars.get().getSettings().getProperty(teamColor == TeamColor.RED ? ConfigFile.NPC_LOCATION_RED :
+                    ConfigFile.NPC_LOCATION_BLUE).toBukkitLocation(arena.getWorld()));
+
+            npc.setCallback(player -> player.sendMessage("Ciao " + npc.getId()));
+            npc.setSkin(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_SKIN));
+            npc.create();
+
+            team.setTeamNPC(npc);
+
+            for (WoolPlayer woolPlayer : groups.get(i))
+                team.join(woolPlayer, playerHolder.getMatchStats(woolPlayer.getName()));
+
+            teams.put(teamColor, team);
+        }
 
         start();
     }
@@ -155,7 +165,7 @@ public class BasicWoolMatch extends WoolMatch {
         Integer[] topBlocks_value = topBlocks.values().toArray(new Integer[0]);
         String[] topBlocks_names = topBlocks.keySet().toArray(new String[0]);
 
-        List<String> tempLines = language.getProperty(LanguageFile.ENDED_RESUME);
+        List<String> tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.ENDED_RESUME);
 
         for (WoolPlayer woolPlayer : playerHolder.getWoolPlayers()) {
             Player player = woolPlayer.toBukkitPlayer();
@@ -168,7 +178,7 @@ public class BasicWoolMatch extends WoolMatch {
             List<String> lines = new ArrayList<>();
             for (String tempLine : tempLines) {
                 lines.add(tempLine
-                        .replace("{status}", language.getProperty(isWinnerTeam ? LanguageFile.ENDED_STATUS_VICTORY : LanguageFile.ENDED_STATUS_LOST))
+                        .replace("{status}", WoolWars.get().getLanguage().getProperty(isWinnerTeam ? LanguageFile.ENDED_STATUS_VICTORY : LanguageFile.ENDED_STATUS_LOST))
 
                         .replace("{top_killer_name}", topKillers_names[0])
                         .replace("{top_kills}", String.valueOf(topKillers_value[0]))
@@ -181,17 +191,17 @@ public class BasicWoolMatch extends WoolMatch {
                 );
             }
 
-            Title title = language.getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE);
-            player.sendTitle(StringsUtils.colorize(title.getTitle()), StringsUtils.colorize(title.getSubTitle()));
+            Title title = WoolWars.get().getLanguage().getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE);
+            player.sendTitle(title.getTitle(), title.getSubTitle());
 
-            if (language.getProperty(LanguageFile.ENDED_RESUME_CENTERED)) {
+            if (WoolWars.get().getLanguage().getProperty(LanguageFile.ENDED_RESUME_CENTERED)) {
                 for (String line : lines) {
                     if (line.isEmpty()) player.sendMessage(line);
                     else StringsUtils.sendCenteredMessage(player, line);
                 }
             } else {
                 for (String line : lines) {
-                    player.sendMessage(StringsUtils.colorize(line));
+                    player.sendMessage(line);
                 }
             }
         }
@@ -202,6 +212,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void reset() {
+        for (WoolTeam value : teams.values()) value.getTeamNPC().destroy();
         teams.clear();
         roundHolder.reset();
         playerHolder.reset();
@@ -212,16 +223,15 @@ public class BasicWoolMatch extends WoolMatch {
     public void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause) {
         MatchStats victimStats = playerHolder.getMatchStats(victim);
         if (!playerHolder.isSpectator(victim)) {
+            playerHolder.setSpectator(victim);
+
             victimStats.matchDeaths++;
             if (killer != null) playerHolder.getMatchStats(killer).matchKills++;
 
-            victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 1));
+            victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 2, 1));
 
-            Title title = language.getProperty(LanguageFile.DIED_TITLE);
-            victim.sendTitle(StringsUtils.colorize(title.getTitle()),
-                    StringsUtils.colorize(title.getSubTitle()));
-
-            playerHolder.setSpectator(victim);
+            Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED_TITLE);
+            victim.sendTitle(title.getTitle(), title.getSubTitle());
         }
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {

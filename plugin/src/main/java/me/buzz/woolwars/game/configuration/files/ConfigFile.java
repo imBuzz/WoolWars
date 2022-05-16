@@ -15,6 +15,14 @@ public class ConfigFile implements SettingsHolder {
     public static final Property<SerializedLocation> LOBBY_LOCATION = newBeanProperty(SerializedLocation.class, "match.locations.lobby",
             SerializedLocation.from("lobby", 0, 0, 0, 0, 0));
 
+    @Comment("Leave the worldName property empty")
+    public static final Property<SerializedLocation> NPC_LOCATION_BLUE = newBeanProperty(SerializedLocation.class, "match.locations.npc.blue",
+            SerializedLocation.from("", 0.5, 75, -46.5, 180, 0));
+
+    @Comment("Leave the worldName property empty")
+    public static final Property<SerializedLocation> NPC_LOCATION_RED = newBeanProperty(SerializedLocation.class, "match.locations.npc.red",
+            SerializedLocation.from("", 0.5, 75, 46.5, 0, 0));
+
     public static final Property<Integer> START_COOLDOWN = newProperty("match.start-cooldown-seconds", 5);
     public static final Property<Integer> PRE_ROUND_TIMER = newProperty("match.pre-round-timer-seconds", 12);
     public static final Property<Integer> ROUND_DURATION = newProperty("match.round-duration-seconds", 60);

@@ -5,9 +5,7 @@ import com.google.common.collect.Maps;
 import lombok.Getter;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.commands.list.Join;
-import me.buzz.woolwars.game.commands.list.Leave;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
-import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,11 +23,10 @@ public class WoolCommandsHandler implements CommandExecutor, TabCompleter {
 
     public WoolCommandsHandler() {
 
-        commands.put("join", new Join());
-        commands.put("leave", new Leave());
+        //commands.put("join", new Join());
+        //commands.put("leave", new Leave());
 
-        woolWars.getCommand("woolwars").setExecutor(this);
-        woolWars.getCommand("woolwars").setTabCompleter(this);
+        woolWars.getCommand("woolwars").setExecutor(new Join());
     }
 
     @Override
@@ -39,7 +36,7 @@ public class WoolCommandsHandler implements CommandExecutor, TabCompleter {
 
             WoolCommand petsCommand = commands.get(command.getName().toLowerCase(Locale.ROOT));
             if (!petsCommand.hasPermission(sender)) {
-                sender.sendMessage(StringsUtils.colorize(WoolWars.get().getLanguage().getProperty(LanguageFile.COMMANDS_NO_PERMISSION)));
+                sender.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.COMMANDS_NO_PERMISSION));
                 return false;
             }
             petsCommand.onCommand(woolWars, sender, args);
@@ -49,7 +46,7 @@ public class WoolCommandsHandler implements CommandExecutor, TabCompleter {
 
         WoolCommand petsCommand = commands.get(args[0]);
         if (!petsCommand.hasPermission(sender)) {
-            sender.sendMessage(StringsUtils.colorize(WoolWars.get().getLanguage().getProperty(LanguageFile.COMMANDS_NO_PERMISSION)));
+            sender.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.COMMANDS_NO_PERMISSION));
             return false;
         }
         petsCommand.onCommand(woolWars, sender, args);

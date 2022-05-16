@@ -3,11 +3,11 @@ package me.buzz.woolwars.game.game.match.listener.impl;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.arena.region.Region;
+import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
-import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -73,9 +73,9 @@ public class BasicMatchListener implements MatchListener {
         }
         if (!match.getRoundHolder().isCanBreakCenter()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(StringsUtils.colorize(match.getLanguage()
+            event.getPlayer().sendMessage(WoolWars.get().getLanguage()
                     .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
-                            .getTasks().get("centerProtect").formatSecondsAndMillis())));
+                            .getTasks().get("centerProtect").formatSecondsAndMillis()));
             return;
         }
 
@@ -103,9 +103,9 @@ public class BasicMatchListener implements MatchListener {
         event.setCancelled(true);
         if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
         if (!match.getRoundHolder().isCanBreakCenter()) {
-            event.getPlayer().sendMessage(StringsUtils.colorize(match.getLanguage()
+            event.getPlayer().sendMessage(WoolWars.get().getLanguage()
                     .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
-                            .getTasks().get("centerProtect").formatSecondsAndMillis())));
+                            .getTasks().get("centerProtect").formatSecondsAndMillis()));
             return;
         }
 

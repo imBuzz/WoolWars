@@ -197,6 +197,10 @@
                             <shadedPattern>me.buzz.externals.commons.io</shadedPattern>
                         </relocation>
                         <relocation>
+                            <pattern>net.jitse.npclib</pattern>
+                            <shadedPattern>me.buzz.externals.npclib</shadedPattern>
+                        </relocation>
+                        <relocation>
                             <pattern>org.slf4j</pattern>
                             <shadedPattern>me.buzz.externals.slf4j</shadedPattern>
                         </relocation>
