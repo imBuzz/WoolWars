@@ -1,6 +1,5 @@
 package me.buzz.woolwars.game.game.gui;
 
-import ch.jalu.configme.properties.Property;
 import fr.minuskube.inv.ClickableItem;
 import fr.minuskube.inv.SmartInventory;
 import fr.minuskube.inv.content.InventoryContents;
@@ -12,27 +11,12 @@ import me.buzz.woolwars.game.configuration.files.gui.GuiFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.utils.ItemBuilder;
-import me.buzz.woolwars.game.utils.structures.WoolItem;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RequiredArgsConstructor
 public class ClassSelectorGui implements InventoryProvider {
-
-    private final static Map<Property<WoolItem>, Integer> slotsByProperty = new HashMap<>();
-
-    static {
-        slotsByProperty.put(GuiFile.CLASS_SELECTOR_TANK, 11);
-        slotsByProperty.put(GuiFile.CLASS_SELECTOR_ASSAULT, 13);
-        slotsByProperty.put(GuiFile.CLASS_SELECTOR_ARCHER, 15);
-        slotsByProperty.put(GuiFile.CLASS_SELECTOR_SWORDMAN, 29);
-        slotsByProperty.put(GuiFile.CLASS_SELECTOR_GOLEM, 31);
-        slotsByProperty.put(GuiFile.CLASS_SELECTOR_ENGINEER, 33);
-    }
 
     private final WoolMatch match;
     private final MatchStats stats;
