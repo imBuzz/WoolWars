@@ -1,5 +1,6 @@
-package me.buzz.woolwars.game.configuration.files;
+package me.buzz.woolwars.game.configuration.files.lang;
 
+import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
 import com.google.common.collect.Lists;
@@ -137,9 +138,9 @@ public class LanguageFile implements SettingsHolder {
 
     //ITEMS
 
-    public static final Property<Material> KEYSTONE_MATERIAL = newBeanProperty(Material.class, "classes.keystone-material", Material.BLAZE_POWDER);
+    @Comment("Do not change the material on this section")
     public static final Property<WoolItem> TANK_KEYSTONE = newBeanProperty(WoolItem.class, "classes.tank.keystone",
-            WoolItem.from("§fKeystone Ability: §6§lGIGAHEAL",
+            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lGIGAHEAL",
                     Lists.newArrayList(
                             "§7Give yourself a high amount of",
                             "§7regen for 2 seconds.",
@@ -150,8 +151,9 @@ public class LanguageFile implements SettingsHolder {
                             "§c§lONCE §7per round."
                     )));
 
+    @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ARCHER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.archer.keystone",
-            WoolItem.from("§fKeystone Ability: §6§lSTEP BACK",
+            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lSTEP BACK",
                     Lists.newArrayList(
                             "§7Push yourself back instantly!",
                             "",
@@ -161,8 +163,9 @@ public class LanguageFile implements SettingsHolder {
                             "§c§lONCE §7per round."
                     )));
 
+    @Comment("Do not change the material on this section")
     public static final Property<WoolItem> SWORDMAN_KEYSTONE = newBeanProperty(WoolItem.class, "classes.swordman.keystone",
-            WoolItem.from("§fKeystone Ability: §6§lSPRINT",
+            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lSPRINT",
                     Lists.newArrayList(
                             "§7Give yourself a speed boost for",
                             "§73 seconds.",
@@ -173,8 +176,9 @@ public class LanguageFile implements SettingsHolder {
                             "§c§lONCE §7per round."
                     )));
 
+    @Comment("Do not change the material on this section")
     public static final Property<WoolItem> GOLEM_KEYSTONE = newBeanProperty(WoolItem.class, "classes.golem.keystone",
-            WoolItem.from("§fKeystone Ability: §6§lGOLDEN SHELL",
+            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lGOLDEN SHELL",
                     Lists.newArrayList(
                             "§7Encase yourself in Golden Armor",
                             "§7for 5 seconds.",
@@ -185,8 +189,9 @@ public class LanguageFile implements SettingsHolder {
                             "§c§lONCE §7per round."
                     )));
 
+    @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ENGINEER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.engineer.keystone",
-            WoolItem.from("§fKeystone Ability: §6§lHACK",
+            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lHACK",
                     Lists.newArrayList(
                             "§7Disable players from placing or",
                             "§7breaking middle blocks for 3",
@@ -198,8 +203,9 @@ public class LanguageFile implements SettingsHolder {
                             "§c§lONCE §7per round."
                     )));
 
+    @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ASSAULT_KEYSTONE = newBeanProperty(WoolItem.class, "classes.assault.keystone",
-            WoolItem.from("§fKeystone Ability: §6§lKNOCKBACK TNT",
+            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lKNOCKBACK TNT",
                     Lists.newArrayList(
                             "§7Place a TNT that doesn't deal",
                             "§7damage, but deals massive",

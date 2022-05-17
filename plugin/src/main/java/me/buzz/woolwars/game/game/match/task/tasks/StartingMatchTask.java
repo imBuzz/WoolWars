@@ -1,7 +1,7 @@
 package me.buzz.woolwars.game.game.match.task.tasks;
 
 import me.buzz.woolwars.game.WoolWars;
-import me.buzz.woolwars.game.configuration.files.LanguageFile;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
 import org.bukkit.entity.Player;

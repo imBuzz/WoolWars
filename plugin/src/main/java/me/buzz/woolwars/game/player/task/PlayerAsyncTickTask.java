@@ -3,7 +3,7 @@ package me.buzz.woolwars.game.player.task;
 import fr.minuskube.netherboard.Netherboard;
 import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import me.buzz.woolwars.game.WoolWars;
-import me.buzz.woolwars.game.configuration.files.LanguageFile;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;

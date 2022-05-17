@@ -4,10 +4,11 @@ import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
+import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
-import me.buzz.woolwars.game.configuration.files.LanguageFile;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
@@ -62,9 +63,8 @@ public class RoundHolder extends AbstractHolder {
 
                 MatchStats matchStats = playerHolder.getMatchStats(onlinePlayer);
 
-                matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor());
-                matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer),
-                        playerHolder.getMatchStats(onlinePlayer));
+                matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor(), PlayableClassType.TANK);
+                matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer), matchStats);
 
                 team.getTeamNPC().show(onlinePlayer);
                 onlinePlayer.teleport(team.getSpawnLocation());
@@ -120,6 +120,7 @@ public class RoundHolder extends AbstractHolder {
 
         for (WoolTeam value : match.getTeams().values()) {
             for (Player onlinePlayer : value.getOnlinePlayers()) {
+                onlinePlayer.closeInventory();
                 value.getTeamNPC().hide(onlinePlayer);
             }
         }

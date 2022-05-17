@@ -2,11 +2,12 @@ package me.buzz.woolwars.game;
 
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
+import fr.minuskube.inv.InventoryManager;
 import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
 import me.buzz.woolwars.game.commands.WoolCommandsHandler;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
-import me.buzz.woolwars.game.configuration.files.ConfigFile;
+import me.buzz.woolwars.game.configuration.files.DatabaseFile;
 import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
@@ -27,6 +28,8 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
     private WoolCommandsHandler commandsHandler;
 
+    @Getter
+    private InventoryManager inventoryManager;
     @Getter
     private NPCLib npcLib;
     @Getter
@@ -52,8 +55,11 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         }
 
         npcLib = new NPCLib(this, new NPCLibOptions().setMovementHandling(NPCLibOptions.MovementHandling.repeatingTask(40)));
-        dataProvider = getSettings().getProperty(ConfigFile.DATABASE_TYPE).getProviderSupplier().get();
+        dataProvider = getDataSettings().getProperty(DatabaseFile.DATABASE_TYPE).getProviderSupplier().get();
         dataProvider.init();
+
+        inventoryManager = new InventoryManager(this);
+        inventoryManager.init();
 
         gameManager = new GameManager();
         gameManager.init();
@@ -73,7 +79,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         try {
             for (ConfigurationType value : ConfigurationType.values()) {
                 files.put(value, SettingsManagerBuilder
-                        .withYamlFile(new File(getDataFolder(), value.getFileName()))
+                        .withYamlFile(new File(getDataFolder().getAbsolutePath() + value.getPath(), value.getFileName()))
                         .configurationData(value.getClazz())
                         .useDefaultMigrationService()
                         .create());
@@ -91,6 +97,14 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     public SettingsManager getSettings() {
         return files.get(ConfigurationType.CONFIG);
+    }
+
+    public SettingsManager getDataSettings() {
+        return files.get(ConfigurationType.DATABASE);
+    }
+
+    public SettingsManager getGUISettings() {
+        return files.get(ConfigurationType.GUI);
     }
 
     private static WoolWars instance;

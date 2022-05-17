@@ -2,7 +2,7 @@ package me.buzz.woolwars.game.game.match.player.classes.classes;
 
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.WoolWars;
-import me.buzz.woolwars.game.configuration.files.LanguageFile;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
@@ -33,7 +33,7 @@ public class ArcherPlayableClass extends PlayableClass {
         items.put(5, new ItemBuilder(Material.WOOL, 32).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.ARCHER_KEYSTONE)
-                .toItemStack(WoolWars.get().getLanguage().getProperty(LanguageFile.KEYSTONE_MATERIAL)));
+                .toItemStack());
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));

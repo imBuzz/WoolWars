@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import lombok.Getter;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.commands.list.Join;
-import me.buzz.woolwars.game.configuration.files.LanguageFile;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

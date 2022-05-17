@@ -8,8 +8,9 @@ import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
-import me.buzz.woolwars.game.configuration.files.LanguageFile;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
+import me.buzz.woolwars.game.game.gui.ClassSelectorGui;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.listener.impl.BasicMatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
@@ -130,10 +131,9 @@ public class BasicWoolMatch extends WoolMatch {
             npc.setLocation(WoolWars.get().getSettings().getProperty(teamColor == TeamColor.RED ? ConfigFile.NPC_LOCATION_RED :
                     ConfigFile.NPC_LOCATION_BLUE).toBukkitLocation(arena.getWorld()));
 
-            npc.setCallback(player -> player.sendMessage("Ciao " + npc.getId()));
+            npc.setCallback(player -> ClassSelectorGui.getInventory(this, playerHolder.getMatchStats(player)).open(player));
             npc.setSkin(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_SKIN));
             npc.create();
-
             team.setTeamNPC(npc);
 
             for (WoolPlayer woolPlayer : groups.get(i))

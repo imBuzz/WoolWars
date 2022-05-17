@@ -2,7 +2,7 @@ package me.buzz.woolwars.game.commands.list;
 
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.commands.WoolCommand;
-import me.buzz.woolwars.game.configuration.files.LanguageFile;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

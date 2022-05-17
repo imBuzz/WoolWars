@@ -12,18 +12,20 @@ import java.util.List;
 @Data
 public class WoolItem {
 
+    private Material material;
     private String name;
     private List<String> lines;
 
-    public ItemStack toItemStack(Material material) {
-        return new ItemBuilder(material).setName(name).setLore(lines).build();
-    }
-
-    public static WoolItem from(String name, List<String> lines) {
+    public static WoolItem from(Material material, String name, List<String> lines) {
         WoolItem item = new WoolItem();
+        item.setMaterial(material);
         item.setName(name);
         item.setLines(lines);
         return item;
+    }
+
+    public ItemStack toItemStack() {
+        return new ItemBuilder(material).setName(name).setLore(lines).build();
     }
 
 }

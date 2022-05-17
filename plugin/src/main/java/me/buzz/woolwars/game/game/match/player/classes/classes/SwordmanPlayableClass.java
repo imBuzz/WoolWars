@@ -2,7 +2,7 @@ package me.buzz.woolwars.game.game.match.player.classes.classes;
 
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.WoolWars;
-import me.buzz.woolwars.game.configuration.files.LanguageFile;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
@@ -29,11 +29,11 @@ public class SwordmanPlayableClass extends PlayableClass {
         items.put(1, new ItemBuilder(Material.WOOD_PICKAXE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
         items.put(2, new ItemBuilder(Material.SHEARS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
 
-        items.put(4, new ItemBuilder(Material.POTION).potion(PotionType.INSTANT_HEAL, 2, true).build());
-        items.put(5, new ItemBuilder(Material.WOOL, 64).build());
+        items.put(3, new ItemBuilder(Material.POTION).potion(PotionType.INSTANT_HEAL, 2, true).build());
+        items.put(4, new ItemBuilder(Material.WOOL, 64).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.SWORDMAN_KEYSTONE)
-                .toItemStack(WoolWars.get().getLanguage().getProperty(LanguageFile.KEYSTONE_MATERIAL)));
+                .toItemStack());
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));
@@ -46,7 +46,7 @@ public class SwordmanPlayableClass extends PlayableClass {
     }
 
     public static String getBaseLayout() {
-        return "123456009";
+        return "123450009";
     }
 
     @Override
