@@ -9,7 +9,7 @@ import java.util.List;
 public interface WoolCommand {
 
     default boolean hasPermission(CommandSender sender) {
-        return true;
+        return sender.hasPermission(getPermission());
     }
 
     String getPermission();

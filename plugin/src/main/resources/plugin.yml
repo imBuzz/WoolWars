@@ -9,5 +9,3 @@ commands:
   woolwars:
     aliases:
       - "ww"
-    usage: "/woolwars"
-    description: "Basic Woolwars command"

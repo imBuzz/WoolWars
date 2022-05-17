@@ -33,8 +33,11 @@ public class GolemPlayableClass extends PlayableClass {
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.LEATHER_LEGGINGS));
-        armor.put(ArmorSlot.BOOTS, new ItemBuilder(Material.GOLD_BOOTS).addEnchant(Enchantment.PROTECTION_PROJECTILE, 2).build());
+        armor.put(ArmorSlot.LEGGINGS, new ItemBuilder(Material.LEATHER_LEGGINGS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.BOOTS, new ItemBuilder(Material.GOLD_BOOTS)
+                .addEnchant(Enchantment.PROTECTION_PROJECTILE, 2)
+                .setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true)
+                .build());
     }
 
     public GolemPlayableClass(Player player, TeamColor teamColor) {

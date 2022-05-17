@@ -5,7 +5,7 @@ import ch.jalu.configme.SettingsManagerBuilder;
 import fr.minuskube.inv.InventoryManager;
 import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
-import me.buzz.woolwars.game.commands.WoolCommandsHandler;
+import me.buzz.woolwars.game.commands.WoolCommandHandler;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
 import me.buzz.woolwars.game.configuration.files.DatabaseFile;
 import me.buzz.woolwars.game.data.DataProvider;
@@ -26,7 +26,8 @@ import java.util.Map;
 public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
-    private WoolCommandsHandler commandsHandler;
+
+    private WoolCommandHandler commandHandler;
 
     @Getter
     private InventoryManager inventoryManager;
@@ -64,7 +65,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         gameManager = new GameManager();
         gameManager.init();
 
-        commandsHandler = new WoolCommandsHandler();
+        commandHandler = new WoolCommandHandler();
 
         new PlayerAsyncTickTask().runTaskTimerAsynchronously(this, 5L, 5L);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);

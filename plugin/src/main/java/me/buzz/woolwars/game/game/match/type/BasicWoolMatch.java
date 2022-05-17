@@ -94,7 +94,7 @@ public class BasicWoolMatch extends WoolMatch {
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
                 matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.LEAVE_MESSAGE)
                         .replace("{player}", player.getName())
-                        .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
+                        .replace("{current}", String.valueOf(playerHolder.getPlayersCount() - 1))
                         .replace("{max}", String.valueOf(getMaxPlayers())));
             }
         }

@@ -30,7 +30,7 @@ public class EngineerPlayableClass extends PlayableClass {
         items.put(2, new ItemStack(Material.ARROW, 4));
         items.put(3, new ItemBuilder(Material.SHEARS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
 
-        items.put(4, new ItemStack(Material.STONE_PICKAXE));
+        items.put(4, new ItemBuilder(Material.STONE_PICKAXE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
         items.put(5, new ItemBuilder(Material.POTION).potion(PotionType.REGEN, 1, true).build());
         items.put(6, new ItemBuilder(Material.WOOL, 64).build());
 
@@ -38,7 +38,7 @@ public class EngineerPlayableClass extends PlayableClass {
                 .toItemStack());
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.LEATHER_CHESTPLATE));
+        armor.put(ArmorSlot.CHESTPLATE, new ItemBuilder(Material.LEATHER_CHESTPLATE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
         armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.BOOTS, new ItemStack(Material.AIR));
     }

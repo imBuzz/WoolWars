@@ -38,7 +38,7 @@ public class ArcherPlayableClass extends PlayableClass {
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.BOOTS, new ItemStack(Material.LEATHER_BOOTS));
+        armor.put(ArmorSlot.BOOTS, new ItemBuilder(Material.LEATHER_BOOTS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
     }
 
     public ArcherPlayableClass(Player player, TeamColor teamColor) {
