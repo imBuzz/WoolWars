@@ -33,8 +33,10 @@ public class ResetMatchTask extends SecondsTask {
         match.getRoundHolder().getTasks().remove(getID());
 
         SerializedLocation location = WoolWars.get().getSettings().getProperty(ConfigFile.LOBBY_LOCATION);
-        for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers())
+        for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
+            onlinePlayer.removeMetadata("spectator", WoolWars.get());
             onlinePlayer.teleport(location.toBukkitLocation(Bukkit.getWorld(location.getWorldName())));
+        }
         match.reset();
     }
 

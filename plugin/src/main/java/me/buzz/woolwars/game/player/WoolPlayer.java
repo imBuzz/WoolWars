@@ -63,12 +63,13 @@ public class WoolPlayer implements ApiWoolPlayer {
         return Bukkit.getPlayer(UUID);
     }
 
-    public void transferFrom(MatchStats stats) {
+    public void transferFrom(MatchStats stats, boolean victory) {
         woolPlaced += stats.getMatchWoolPlaced();
         blocksBroken += stats.getMatchBlocksBroken();
         powerUpsGotten += stats.getMatchPowerUpsGotten();
         played++;
-        deaths += stats.getMatchWoolPlaced();
+        if (victory) wins++;
+        deaths += stats.getMatchDeaths();
     }
 
 }

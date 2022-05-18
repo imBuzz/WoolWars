@@ -105,14 +105,13 @@ public class BasicWoolMatch extends WoolMatch {
 
         if (matchStats.getTeam() != null) matchStats.getTeam().remove(player);
 
-        woolPlayer.transferFrom(matchStats);
+        woolPlayer.transferFrom(matchStats, false);
         playerHolder.removePlayer(woolPlayer);
 
         if (shouldEnd && !isEnded()) {
             for (Player matchPlayer : playerHolder.getOnlinePlayers())
                 matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.NOT_ENOUGH_PLAYER_TO_PLAY));
-
-            setMatchState(MatchState.ENDING);
+            end(null);
         }
     }
 
@@ -156,6 +155,8 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void end(WoolTeam winnerTeam) {
+        setMatchState(MatchState.ENDING);
+
         Map<String, Integer> topKillers = TeamUtils.getTopKillers(this);
         Map<String, Integer> topWool = TeamUtils.getTopWool(this);
         Map<String, Integer> topBlocks = TeamUtils.getTopBroken(this);
@@ -173,12 +174,14 @@ public class BasicWoolMatch extends WoolMatch {
 
         for (WoolPlayer woolPlayer : playerHolder.getWoolPlayers()) {
             Player player = woolPlayer.toBukkitPlayer();
+
             MatchStats stats = playerHolder.getMatchStats(player);
 
-            woolPlayer.transferFrom(stats);
+            boolean isWinnerTeam = winnerTeam != null && stats.getTeam() == winnerTeam;
+
+            woolPlayer.transferFrom(stats, isWinnerTeam);
             playerHolder.setSpectator(player);
 
-            boolean isWinnerTeam = stats.getTeam() == winnerTeam;
             List<String> lines = new ArrayList<>();
             for (String tempLine : tempLines) {
                 lines.add(tempLine

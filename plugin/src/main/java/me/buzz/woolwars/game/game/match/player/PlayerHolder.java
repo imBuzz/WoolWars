@@ -96,8 +96,9 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
 
     @Override
     public void removeSpectator(Player player) {
-        player.getInventory().clear();
+        player.removeMetadata("spectator", WoolWars.get());
 
+        player.getInventory().clear();
         player.setFlying(false);
         player.setAllowFlight(false);
 

@@ -56,6 +56,15 @@ public class MatchStats implements ApiMatchStats {
         playableClass.reset();
     }
 
+    public void pickClass(Player player, TeamColor teamColor) {
+        if (playableClass == null) {
+            pickClass(player, teamColor, PlayableClassType.TANK);
+        } else {
+            playableClass.reset();
+        }
+    }
+
+
     @Override
     public PlayableClassType getClassType() {
         return playableClass.getType();

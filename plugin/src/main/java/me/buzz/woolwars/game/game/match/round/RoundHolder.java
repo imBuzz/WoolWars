@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
-import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
@@ -77,7 +76,7 @@ public class RoundHolder extends AbstractHolder {
 
                 MatchStats matchStats = playerHolder.getMatchStats(onlinePlayer);
 
-                matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor(), PlayableClassType.TANK);
+                matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor());
                 matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer), matchStats);
 
                 team.getTeamNPC().show(onlinePlayer);
@@ -103,7 +102,6 @@ public class RoundHolder extends AbstractHolder {
         if (woolTeam != null) {
             woolTeam.increasePoints(1);
             if (woolTeam.getPoints() == match.getPointsToWin()) {
-                match.setMatchState(MatchState.ENDING);
                 match.end(woolTeam);
                 return;
             }
