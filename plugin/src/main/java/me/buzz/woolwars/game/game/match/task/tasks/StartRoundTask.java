@@ -20,11 +20,14 @@ public class StartRoundTask extends SecondsTask {
     public StartRoundTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
+
+        System.out.println("NEW TASK CREATED " + getClass().getSimpleName());
     }
 
     @Override
     public void run() {
         if (shouldEnd()) {
+            super.stop();
             end();
             stop();
             return;
@@ -35,27 +38,24 @@ public class StartRoundTask extends SecondsTask {
 
     @Override
     public void end() {
-        CooldownTask task = match.getRoundHolder().getTasks().get("restGame");
+        CooldownTask task = match.getRoundHolder().getTasks().remove(TimeElapsedTask.ID);
         if (task != null) task.stop();
 
         match.setMatchState(MatchState.ROUND);
         match.getRoundHolder().removeWalls();
-        match.getRoundHolder().setCanBreakCenter(false);
+        match.getRoundHolder().canBreakCenter = false;
 
         Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_START_TITLE);
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
             onlinePlayer.sendTitle(title.getTitle(), title.getSubTitle().replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber())));
         }
 
-        match.getRoundHolder().getTasks().put(ProtectCenterTask.ID, new ProtectCenterTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CENTER_UNLOCKS_COOLDOWN))).start());
-        match.getRoundHolder().getTasks().put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,
-                TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.ROUND_DURATION))).start());
+        match.getRoundHolder().getTasks().put(ProtectCenterTask.ID, new ProtectCenterTask(match, TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CENTER_UNLOCKS_COOLDOWN))).start());
+        match.getRoundHolder().getTasks().put(TimeElapsedTask.ID, new TimeElapsedTask(match, TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.ROUND_DURATION))).start());
     }
 
     @Override
     public void stop() {
-        super.stop();
         match.getRoundHolder().getTasks().remove(getID());
     }
 

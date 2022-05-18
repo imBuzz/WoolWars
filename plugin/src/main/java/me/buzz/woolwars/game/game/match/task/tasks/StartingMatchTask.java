@@ -14,11 +14,14 @@ public class StartingMatchTask extends SecondsTask {
     public StartingMatchTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
+
+        System.out.println("NEW TASK CREATED " + getClass().getSimpleName());
     }
 
     @Override
     public void run() {
         if (shouldEnd()) {
+            super.stop();
             end();
             stop();
             return;
@@ -39,7 +42,6 @@ public class StartingMatchTask extends SecondsTask {
 
     @Override
     public void stop() {
-        super.stop();
         match.getRoundHolder().getTasks().remove(getID());
     }
 

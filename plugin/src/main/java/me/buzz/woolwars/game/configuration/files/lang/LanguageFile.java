@@ -4,6 +4,7 @@ import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
 import com.google.common.collect.Lists;
+import me.buzz.woolwars.game.game.match.entities.powerup.ConfigurablePowerup;
 import me.buzz.woolwars.game.utils.structures.Title;
 import me.buzz.woolwars.game.utils.structures.WoolItem;
 import net.jitse.npclib.api.skin.Skin;
@@ -60,6 +61,49 @@ public class LanguageFile implements SettingsHolder {
             "§c§lMost Blocks Broken §7{top_blocks_name} - {top_blocks}",
             "",
             "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
+
+    //POWERUPS
+
+    public static final Property<ConfigurablePowerup> STONE_PICKAXE_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.stone-pickaxe",
+                    ConfigurablePowerup.from("§6Stone Pickaxe", "§aYou got a Stone Pickaxe"));
+
+    public static final Property<ConfigurablePowerup> STONE_SWORD_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.stone-sword",
+                    ConfigurablePowerup.from("§6Stone Sword", "§aYou got a Stone Sword"));
+
+    public static final Property<ConfigurablePowerup> BOW_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.bow",
+                    ConfigurablePowerup.from("§6Bow", "§aYou got a Bow"));
+
+    public static final Property<ConfigurablePowerup> CHAINMAIL_HELMET_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.chainmail-helmet",
+                    ConfigurablePowerup.from("§6Chainmail Helmet", "§aYou got a Chainmail Helmet"));
+
+    public static final Property<ConfigurablePowerup> CHAINMAIL_CHESTPLATE_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.chainmail-chestplate",
+                    ConfigurablePowerup.from("§6Chainmail Chestplate", "§aYou got a Chainmail Chestplate"));
+
+    public static final Property<ConfigurablePowerup> CHAINMAIL_BOOTS_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.chainmail-boots",
+                    ConfigurablePowerup.from("§6Chainmail Boots", "§aYou got a Chainmail Boots"));
+
+    public static final Property<ConfigurablePowerup> IRON_BOOTS_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.iron-boots",
+                    ConfigurablePowerup.from("§6Iron Boots", "§aYou got a Iron Boots"));
+
+    public static final Property<ConfigurablePowerup> INSTANT_HEAL_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.instant-heal",
+                    ConfigurablePowerup.from("§6Instant Heal", "§aYou got healed"));
+    public static final Property<ConfigurablePowerup> STRENGTH_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.strength-boost",
+                    ConfigurablePowerup.from("§6Strength Boost", "§aYou got Strength Boost"));
+    public static final Property<ConfigurablePowerup> SPEED_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.speed-boost",
+                    ConfigurablePowerup.from("§6Speed Boost", "§aYou got Speed Boost"));
+    public static final Property<ConfigurablePowerup> JUMP_BOOST_POWERUP =
+            newBeanProperty(ConfigurablePowerup.class, "match.powerups.jump-boost",
+                    ConfigurablePowerup.from("§6Jump Boost", "§aYou got Jump Boost"));
 
     //NPCS
     public static final Property<List<String>> NPC_NAME = newListProperty("match.npc.hologram", Lists.newArrayList(

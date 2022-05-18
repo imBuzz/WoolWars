@@ -12,6 +12,8 @@ import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.gui.ClassSelectorGui;
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.game.match.entities.powerup.EntityPowerup;
+import me.buzz.woolwars.game.game.match.entities.powerup.PowerUPType;
 import me.buzz.woolwars.game.game.match.listener.impl.BasicMatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
@@ -53,7 +55,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public boolean checkJoin(WoolPlayer woolPlayer) {
-        return playerHolder.getPlayersCount() + 1 <= getMaxPlayers();
+        return playerHolder.getPlayersCount() + 1 <= getMaxPlayers() && matchState == MatchState.WAITING;
     }
 
     @Override
@@ -74,7 +76,9 @@ public class BasicWoolMatch extends WoolMatch {
                     .replace("{max}", String.valueOf(getMaxPlayers())));
         }
 
-        if (playerHolder.getPlayersCount() >= getMaxPlayers()) setMatchState(MatchState.STARTING);
+        if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
+            setMatchState(MatchState.STARTING);
+        }
     }
 
     @Override
@@ -114,6 +118,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void cooldown() {
+        System.out.println("STARTING TASK BY " + getClass().getSimpleName());
         roundHolder.getTasks().put(StartingMatchTask.ID, new StartingMatchTask(this,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.START_COOLDOWN))).start());
     }
@@ -147,6 +152,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void start() {
+        System.out.println("STARTED BY " + getClass().getSimpleName());
         roundHolder.startNewRound();
     }
 
@@ -217,6 +223,13 @@ public class BasicWoolMatch extends WoolMatch {
         roundHolder.reset();
         playerHolder.reset();
         matchState = MatchState.WAITING;
+    }
+
+    @Override
+    public void pickUP(Player player, EntityPowerup entity, PowerUPType type) {
+        playerHolder.getMatchStats(player).matchPowerUpsGotten++;
+        player.sendMessage(WoolWars.get().getLanguage().getProperty(type.getProperty()).getPickupMessage());
+        roundHolder.getEntities().remove(entity);
     }
 
     @Override

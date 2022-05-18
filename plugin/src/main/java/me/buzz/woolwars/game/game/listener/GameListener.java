@@ -10,19 +10,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class GameListener implements Listener {
 
     private final GameManager gameManager = WoolWars.get().getGameManager();
-
-    @EventHandler
-    public void interactAtEntity(PlayerInteractAtEntityEvent event) {
-        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
-        if (woolMatch == null) return;
-
-        woolMatch.getMatchListener().interactAtEntity(event);
-    }
 
     @EventHandler
     public void damage(EntityDamageEvent event) {

@@ -18,17 +18,15 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 @RequiredArgsConstructor
 public class BasicMatchListener implements MatchListener {
 
     private final WoolMatch match;
-
-    @Override
-    public void interactAtEntity(PlayerInteractAtEntityEvent event) {
-        //NPC DYNAMIC
-    }
 
     @Override
     public void damage(EntityDamageEvent event) {
@@ -71,7 +69,7 @@ public class BasicMatchListener implements MatchListener {
             event.setCancelled(true);
             return;
         }
-        if (!match.getRoundHolder().isCanBreakCenter()) {
+        if (!match.getRoundHolder().canBreakCenter) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(WoolWars.get().getLanguage()
                     .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
@@ -94,7 +92,10 @@ public class BasicMatchListener implements MatchListener {
             if (dyeColor == woolTeam.getTeamColor().getDC()) sameTypeBlocks++;
         }
 
-        if (totalBlocks == sameTypeBlocks) match.getRoundHolder().endRound(woolTeam);
+        if (totalBlocks == sameTypeBlocks) {
+            System.out.println("ENDED BY " + getClass().getSimpleName());
+            match.getRoundHolder().endRound(woolTeam);
+        }
     }
 
     @Override
@@ -102,7 +103,7 @@ public class BasicMatchListener implements MatchListener {
         Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
         event.setCancelled(true);
         if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
-        if (!match.getRoundHolder().isCanBreakCenter()) {
+        if (!match.getRoundHolder().canBreakCenter) {
             event.getPlayer().sendMessage(WoolWars.get().getLanguage()
                     .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
                             .getTasks().get("centerProtect").formatSecondsAndMillis()));

@@ -7,6 +7,7 @@ import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.game.game.match.task.tasks.TimeElapsedTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.Bukkit;
@@ -117,7 +118,7 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                         StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
                                                 WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
 
-                                .replace("{time_left}", match.getRoundHolder().getTasks().get(WaitForNewRoundTask.ID).formatSeconds())
+                                .replace("{time_left}", match.getRoundHolder().getTasks().get(TimeElapsedTask.ID).formatSeconds())
 
                                 .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
                                 .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))

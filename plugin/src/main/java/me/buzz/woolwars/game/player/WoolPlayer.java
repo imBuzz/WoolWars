@@ -23,11 +23,9 @@ public class WoolPlayer implements ApiWoolPlayer {
     public static WoolPlayer getWoolPlayer(Player player) {
         return woolPlayersByName.get(player.getName());
     }
-
     public static void trackPlayer(WoolPlayer player) {
         woolPlayersByName.put(player.getName(), player);
     }
-
     public static WoolPlayer removePlayer(Player player) {
         return woolPlayersByName.remove(player.getName());
     }

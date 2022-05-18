@@ -8,27 +8,28 @@ import me.buzz.woolwars.api.game.match.ApiMatch;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
+import me.buzz.woolwars.game.game.match.entities.powerup.EntityPowerup;
+import me.buzz.woolwars.game.game.match.entities.powerup.PowerUPType;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.round.RoundHolder;
-import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.UUIDUtils;
-import me.buzz.woolwars.game.utils.bucket.Bucket;
-import me.buzz.woolwars.game.utils.bucket.factory.BucketFactory;
-import me.buzz.woolwars.game.utils.bucket.partitioning.PartitioningStrategies;
+import me.buzz.woolwars.game.utils.workload.Workload;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
 public abstract class WoolMatch implements ApiMatch {
 
-    public final static Bucket<CooldownTask> cooldownTaskBucket = BucketFactory.newHashSetBucket(3, PartitioningStrategies.lowestSize());
+    public final static List<Workload> workloadObjects = new ArrayList<>();
 
     protected final String ID = UUIDUtils.getNewUUID();
     protected final PlayableArena arena;
@@ -63,6 +64,8 @@ public abstract class WoolMatch implements ApiMatch {
     public abstract void end(WoolTeam winnerTeam);
 
     public abstract void reset();
+
+    public abstract void pickUP(Player player, EntityPowerup entity, PowerUPType type);
 
     public abstract void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause);
 

@@ -16,11 +16,14 @@ public class ResetMatchTask extends SecondsTask {
     public ResetMatchTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
+
+        System.out.println("NEW TASK CREATED " + getClass().getSimpleName());
     }
 
     @Override
     public void run() {
         if (shouldEnd()) {
+            super.stop();
             end();
             stop();
             return;

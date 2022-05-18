@@ -6,6 +6,6 @@ authors: [ ImBuzz ]
 description: "WoolWars minigame"
 
 commands:
-  woolwars:
+  test:
     aliases:
       - "ww"

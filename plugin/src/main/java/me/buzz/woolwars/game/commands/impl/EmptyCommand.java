@@ -26,7 +26,7 @@ public class EmptyCommand implements WoolCommand {
 
     @Override
     public boolean onCommand(WoolWars woolWars, CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
+        //if (sender instanceof Player) {
             Player player = (Player) sender;
             WoolPlayer woolPlayer = WoolPlayer.getWoolPlayer(player);
 
@@ -34,10 +34,10 @@ public class EmptyCommand implements WoolCommand {
                 player.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.NO_MATCH_FOUND));
                 return false;
             }
-        } else {
+        /*} else {
             sender.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.CANNOT_EXECUTE_BY_THAT_ENTITY));
             return false;
-        }
+        }*/
 
         return true;
     }

@@ -3,12 +3,12 @@ package me.buzz.woolwars.game.game.match.task.tasks;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
 
-public class WaitForNewRoundTask extends SecondsTask {
+public class TimeElapsedTask extends SecondsTask {
 
-    public static final String ID = "waitForNewRound";
+    public static final String ID = "timeElapsed";
     private final WoolMatch match;
 
-    public WaitForNewRoundTask(WoolMatch match, long targetTime) {
+    public TimeElapsedTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
 
@@ -29,8 +29,8 @@ public class WaitForNewRoundTask extends SecondsTask {
 
     @Override
     public void end() {
-        System.out.println("STARTED BY " + getClass().getSimpleName());
-        match.getRoundHolder().startNewRound();
+        System.out.println("ENDED BY " + getClass().getSimpleName());
+        match.getRoundHolder().endRound(null);
     }
 
     @Override

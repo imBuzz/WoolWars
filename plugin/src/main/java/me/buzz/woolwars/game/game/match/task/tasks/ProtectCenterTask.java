@@ -15,11 +15,14 @@ public class ProtectCenterTask extends TickTask {
     public ProtectCenterTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
+
+        System.out.println("NEW TASK CREATED " + getClass().getSimpleName());
     }
 
     @Override
     public void run() {
         if (shouldEnd()) {
+            super.stop();
             end();
             stop();
             return;
@@ -37,15 +40,14 @@ public class ProtectCenterTask extends TickTask {
 
     @Override
     public void end() {
+        match.getRoundHolder().canBreakCenter = true;
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
             WoolWars.get().getNmsHandler().getPlayerHandler().sendActionBar(onlinePlayer, WoolWars.get().getLanguage().getProperty(LanguageFile.CENTER_UNLOCK));
         }
-        match.getRoundHolder().setCanBreakCenter(true);
     }
 
     @Override
     public void stop() {
-        super.stop();
         match.getRoundHolder().getTasks().remove(getID());
     }
 

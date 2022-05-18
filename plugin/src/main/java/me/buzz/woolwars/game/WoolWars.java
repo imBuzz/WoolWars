@@ -12,6 +12,7 @@ import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
 import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
+import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
 import me.buzz.woolwars.nms.INMSHandler;
 import me.buzz.woolwars.nms.ServerProtocols;
 import net.jitse.npclib.NPCLib;
@@ -62,6 +63,8 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         inventoryManager = new InventoryManager(this);
         inventoryManager.init();
 
+        WorkloadHandler.run();
+
         gameManager = new GameManager();
         gameManager.init();
 
@@ -69,6 +72,13 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
         new PlayerAsyncTickTask().runTaskTimerAsynchronously(this, 5L, 5L);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+
+        //new UpdateChecker(this, UpdateCheckSource.SPIGET, String.valueOf(SPIGOT_CODE))
+        //        .checkEveryXHours(12)
+        //        .setNotifyByPermissionOnJoin("petsreloaded.update")
+        //        .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
+        //        .setDownloadLink("https://www.spigotmc.org/resources/petsreloaded-create-your-own-custom-pets-eula-compliant-1-8-x-1-18-x.98113/")
+        //        .checkNow();
     }
 
     @Override

@@ -25,13 +25,13 @@ public class WoolCommandHandler implements CommandExecutor, TabCompleter {
 
     public WoolCommandHandler() {
 
-        commands.put("woolwars", new EmptyCommand());
+        commands.put("test", new EmptyCommand());
         commands.put("join", new JoinCommand());
         commands.put("leave", new LeaveCommand());
         commands.put("info", new InfoCommand());
 
-        woolWars.getCommand("woolwars").setExecutor(this);
-        woolWars.getCommand("woolwars").setTabCompleter(this);
+        woolWars.getCommand("test").setExecutor(this);
+        woolWars.getCommand("test").setTabCompleter(this);
     }
 
 

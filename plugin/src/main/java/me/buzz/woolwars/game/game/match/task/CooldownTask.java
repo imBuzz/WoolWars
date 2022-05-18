@@ -1,11 +1,12 @@
 package me.buzz.woolwars.game.game.match.task;
 
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.utils.workload.Workload;
 import org.apache.commons.lang.time.DurationFormatUtils;
 
 import java.util.concurrent.TimeUnit;
 
-public abstract class CooldownTask {
+public abstract class CooldownTask implements Workload {
 
     private final long sleepTime;
     private long nextActionTime;
@@ -19,7 +20,7 @@ public abstract class CooldownTask {
 
     public CooldownTask start() {
         targetTime = System.currentTimeMillis() + targetTime;
-        WoolMatch.cooldownTaskBucket.add(this);
+        WoolMatch.workloadObjects.add(this);
         return this;
     }
 
@@ -38,7 +39,7 @@ public abstract class CooldownTask {
     }
 
     public void stop() {
-        WoolMatch.cooldownTaskBucket.remove(this);
+        WoolMatch.workloadObjects.remove(this);
     }
 
     public String formatSeconds() {
@@ -58,4 +59,10 @@ public abstract class CooldownTask {
 
     public abstract String getID();
 
+    @Override
+    public void compute() {
+        if (canRun()) {
+            run();
+        }
+    }
 }

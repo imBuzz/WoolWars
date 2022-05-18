@@ -1,44 +1,53 @@
 package me.buzz.woolwars.game.game.match.round;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import lombok.Getter;
-import lombok.Setter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
+import me.buzz.woolwars.game.game.arena.location.SerializedLocation;
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.game.match.entities.powerup.EntityPowerup;
+import me.buzz.woolwars.game.game.match.entities.powerup.PowerUPType;
 import me.buzz.woolwars.game.game.match.player.PlayerHolder;
 import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
+import me.buzz.woolwars.game.game.match.task.tasks.TimeElapsedTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.manager.AbstractHolder;
 import me.buzz.woolwars.game.utils.random.RandomSelector;
 import me.buzz.woolwars.game.utils.structures.Title;
+import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class RoundHolder extends AbstractHolder {
 
     private final static RandomSelector<Material> centerMats = RandomSelector.uniform(ImmutableList.of(Material.SNOW_BLOCK, Material.WOOL, Material.QUARTZ_BLOCK));
+    private final static RandomSelector<PowerUPType> powerUPS = RandomSelector.uniform(Lists.newArrayList(PowerUPType.values()));
 
-    private final PlayerHolder playerHolder = match.getPlayerHolder();
     @Getter
     private final Map<String, CooldownTask> tasks = new HashMap<>();
-
     @Getter
-    @Setter
-    private boolean canBreakCenter = false;
+    private final List<EntityPowerup> entities = new ArrayList<>();
+
+    private final PlayerHolder playerHolder = match.getPlayerHolder();
+
+    public boolean canBreakCenter = false;
     @Getter
     private int roundNumber = 0;
 
@@ -50,12 +59,16 @@ public class RoundHolder extends AbstractHolder {
         match.setMatchState(MatchState.PRE_ROUND);
         roundNumber++;
 
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
-            block.setType(Material.GLASS);
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
-            block.setType(Material.GLASS);
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks())
-            block.setType(centerMats.pick());
+        WorkloadHandler.addLoad(() -> {
+            for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
+                block.setType(Material.GLASS);
+            for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
+                block.setType(Material.GLASS);
+            for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks())
+                block.setType(centerMats.pick());
+        });
+
+        spawnGenerators();
 
         for (WoolTeam team : match.getTeams().values()) {
             for (Player onlinePlayer : team.getOnlinePlayers()) {
@@ -79,14 +92,18 @@ public class RoundHolder extends AbstractHolder {
     }
 
     public void endRound(WoolTeam woolTeam) {
-        CooldownTask task = getTasks().remove(WaitForNewRoundTask.ID);
+        CooldownTask task = tasks.remove(TimeElapsedTask.ID);
         if (task != null) task.stop();
 
-        woolTeam.increasePoints(1);
-        if (woolTeam.getPoints() == match.getPointsToWin()) {
-            match.setMatchState(MatchState.ENDING);
-            match.end(woolTeam);
-            return;
+        despawnGenerators();
+
+        if (woolTeam != null) {
+            woolTeam.increasePoints(1);
+            if (woolTeam.getPoints() == match.getPointsToWin()) {
+                match.setMatchState(MatchState.ENDING);
+                match.end(woolTeam);
+                return;
+            }
         }
 
         match.setMatchState(MatchState.ROUND_OVER);
@@ -108,24 +125,53 @@ public class RoundHolder extends AbstractHolder {
     public void reset() {
         for (CooldownTask value : tasks.values()) value.stop();
         tasks.clear();
+
+        despawnGenerators();
+
         roundNumber = 0;
         canBreakCenter = false;
     }
 
     public void removeWalls() {
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
-            block.setType(Material.AIR);
-        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
-            block.setType(Material.AIR);
-
+        WorkloadHandler.addLoad(() -> {
+            for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
+                block.setType(Material.AIR);
+            for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
+                block.setType(Material.AIR);
+        });
         for (WoolTeam value : match.getTeams().values()) {
             for (Player onlinePlayer : value.getOnlinePlayers()) {
                 onlinePlayer.closeInventory();
-                value.getTeamNPC().hide(onlinePlayer);
+                if (value.getTeamNPC().isShown(onlinePlayer))
+                    value.getTeamNPC().hide(onlinePlayer);
             }
         }
-
     }
 
+    public void spawnGenerators() {
+        List<PowerUPType> alreadyPicked = new ArrayList<>();
+        System.out.println("Locations: " + match.getPlayableArena().getPowerups().size());
+        for (SerializedLocation powerup : match.getPlayableArena().getPowerups()) {
+            PowerUPType picked;
+
+            do {
+                picked = powerUPS.pick();
+            }
+            while (alreadyPicked.contains(picked));
+
+            alreadyPicked.add(picked);
+
+            EntityPowerup powerUP = new EntityPowerup(match, picked, powerup.toBukkitLocation(match.getArena().getWorld()));
+            powerUP.spawn();
+            powerUP.setName(WoolWars.get().getLanguage().getProperty(picked.getProperty()).getHoloName());
+
+            entities.add(powerUP);
+        }
+    }
+
+    public void despawnGenerators() {
+        entities.forEach(EntityPowerup::die);
+        entities.clear();
+    }
 
 }
