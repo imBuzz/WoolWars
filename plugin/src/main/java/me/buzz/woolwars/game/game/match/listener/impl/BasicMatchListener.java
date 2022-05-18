@@ -93,7 +93,6 @@ public class BasicMatchListener implements MatchListener {
         }
 
         if (totalBlocks == sameTypeBlocks) {
-            System.out.println("ENDED BY " + getClass().getSimpleName());
             match.getRoundHolder().endRound(woolTeam);
         }
     }

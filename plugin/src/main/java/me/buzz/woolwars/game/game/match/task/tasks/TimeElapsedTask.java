@@ -11,31 +11,21 @@ public class TimeElapsedTask extends SecondsTask {
     public TimeElapsedTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
-
-        System.out.println("NEW TASK CREATED " + getClass().getSimpleName());
     }
 
     @Override
     public void run() {
-        if (shouldEnd()) {
-            super.stop();
-            end();
-            stop();
-            return;
-        }
-
         super.run();
+
+        if (shouldEnd()) {
+            stop();
+            end();
+        }
     }
 
     @Override
     public void end() {
-        System.out.println("ENDED BY " + getClass().getSimpleName());
         match.getRoundHolder().endRound(null);
-    }
-
-    @Override
-    public void stop() {
-        match.getRoundHolder().getTasks().remove(getID());
     }
 
     @Override

@@ -16,23 +16,22 @@ public class ResetMatchTask extends SecondsTask {
     public ResetMatchTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
-
-        System.out.println("NEW TASK CREATED " + getClass().getSimpleName());
     }
 
     @Override
     public void run() {
-        if (shouldEnd()) {
-            super.stop();
-            end();
-            stop();
-            return;
-        }
         super.run();
+
+        if (shouldEnd()) {
+            stop();
+            end();
+        }
     }
 
     @Override
     public void end() {
+        match.getRoundHolder().getTasks().remove(getID());
+
         SerializedLocation location = WoolWars.get().getSettings().getProperty(ConfigFile.LOBBY_LOCATION);
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers())
             onlinePlayer.teleport(location.toBukkitLocation(Bukkit.getWorld(location.getWorldName())));

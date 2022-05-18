@@ -14,16 +14,17 @@ public class StartingMatchTask extends SecondsTask {
     public StartingMatchTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
-
-        System.out.println("NEW TASK CREATED " + getClass().getSimpleName());
     }
 
     @Override
     public void run() {
+        super.run();
+
         if (shouldEnd()) {
-            super.stop();
-            end();
+
             stop();
+            end();
+
             return;
         }
 
@@ -31,17 +32,11 @@ public class StartingMatchTask extends SecondsTask {
             onlinePlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.STARTING_COOLDOWN)
                     .replace("{seconds}", String.valueOf(getRemainingSeconds())));
         }
-
-        super.run();
     }
 
     @Override
     public void end() {
         match.prepare();
-    }
-
-    @Override
-    public void stop() {
         match.getRoundHolder().getTasks().remove(getID());
     }
 

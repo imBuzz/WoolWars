@@ -19,7 +19,6 @@ import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
-import me.buzz.woolwars.game.game.match.task.tasks.TimeElapsedTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.manager.AbstractHolder;
 import me.buzz.woolwars.game.utils.random.RandomSelector;
@@ -56,6 +55,8 @@ public class RoundHolder extends AbstractHolder {
     }
 
     public void startNewRound() {
+        System.out.println("Started a new Round");
+
         match.setMatchState(MatchState.PRE_ROUND);
         roundNumber++;
 
@@ -92,8 +93,10 @@ public class RoundHolder extends AbstractHolder {
     }
 
     public void endRound(WoolTeam woolTeam) {
-        CooldownTask task = tasks.remove(TimeElapsedTask.ID);
-        if (task != null) task.stop();
+        tasks.values().forEach(CooldownTask::stop);
+        tasks.clear();
+
+        System.out.println("Ended a Round");
 
         despawnGenerators();
 
@@ -150,7 +153,6 @@ public class RoundHolder extends AbstractHolder {
 
     public void spawnGenerators() {
         List<PowerUPType> alreadyPicked = new ArrayList<>();
-        System.out.println("Locations: " + match.getPlayableArena().getPowerups().size());
         for (SerializedLocation powerup : match.getPlayableArena().getPowerups()) {
             PowerUPType picked;
 

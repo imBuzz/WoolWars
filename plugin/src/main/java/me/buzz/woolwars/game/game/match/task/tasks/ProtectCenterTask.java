@@ -15,16 +15,15 @@ public class ProtectCenterTask extends TickTask {
     public ProtectCenterTask(WoolMatch match, long targetTime) {
         super(targetTime);
         this.match = match;
-
-        System.out.println("NEW TASK CREATED " + getClass().getSimpleName());
     }
 
     @Override
     public void run() {
+        super.run();
+
         if (shouldEnd()) {
-            super.stop();
-            end();
             stop();
+            end();
             return;
         }
 
@@ -34,8 +33,6 @@ public class ProtectCenterTask extends TickTask {
                             WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_UNLOCK_CENTER_BAR)
                                     .replace("{seconds}", formatSecondsAndMillis()));
         }
-
-        super.run();
     }
 
     @Override
@@ -44,10 +41,7 @@ public class ProtectCenterTask extends TickTask {
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
             WoolWars.get().getNmsHandler().getPlayerHandler().sendActionBar(onlinePlayer, WoolWars.get().getLanguage().getProperty(LanguageFile.CENTER_UNLOCK));
         }
-    }
 
-    @Override
-    public void stop() {
         match.getRoundHolder().getTasks().remove(getID());
     }
 

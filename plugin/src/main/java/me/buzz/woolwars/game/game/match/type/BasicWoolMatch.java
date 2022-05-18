@@ -118,7 +118,6 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void cooldown() {
-        System.out.println("STARTING TASK BY " + getClass().getSimpleName());
         roundHolder.getTasks().put(StartingMatchTask.ID, new StartingMatchTask(this,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.START_COOLDOWN))).start());
     }
@@ -152,7 +151,6 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void start() {
-        System.out.println("STARTED BY " + getClass().getSimpleName());
         roundHolder.startNewRound();
     }
 

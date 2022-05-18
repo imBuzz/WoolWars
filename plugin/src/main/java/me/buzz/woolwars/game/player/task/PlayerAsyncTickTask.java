@@ -118,7 +118,8 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
                                         StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
                                                 WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
 
-                                .replace("{time_left}", match.getRoundHolder().getTasks().get(TimeElapsedTask.ID).formatSeconds())
+                                .replace("{time_left}",
+                                        match.getRoundHolder().getTasks().containsKey(TimeElapsedTask.ID) ? match.getRoundHolder().getTasks().get(TimeElapsedTask.ID).formatSeconds() : "00:00")
 
                                 .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
                                 .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))

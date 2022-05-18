@@ -59,7 +59,7 @@ public class ArenaMetadata {
             powerups.add(SerializedLocation.fromString(serializedLoc));
 
 
-        return new ArenaMetadata(ID, name, matchType, worldName, powerups, locations, regions);
+        return new ArenaMetadata(ID, name, matchType, powerups, worldName, locations, regions);
     }
 
     public SerializedLocation getArenaLocation(ArenaLocationType type) {

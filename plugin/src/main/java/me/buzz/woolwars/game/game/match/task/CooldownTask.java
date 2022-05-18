@@ -10,7 +10,6 @@ public abstract class CooldownTask implements Workload {
 
     private final long sleepTime;
     private long nextActionTime;
-
     protected long targetTime;
 
     public CooldownTask(long targetTime, long sleepTime) {
@@ -18,17 +17,6 @@ public abstract class CooldownTask implements Workload {
         this.sleepTime = sleepTime;
     }
 
-    public CooldownTask start() {
-        targetTime = System.currentTimeMillis() + targetTime;
-        WoolMatch.workloadObjects.add(this);
-        return this;
-    }
-
-    public boolean shouldEnd() {
-        return targetTime - System.currentTimeMillis() <= 0;
-    }
-
-    public abstract void end();
 
     public boolean canRun() {
         return nextActionTime - System.currentTimeMillis() <= 0;
@@ -37,6 +25,18 @@ public abstract class CooldownTask implements Workload {
     public void run() {
         nextActionTime = System.currentTimeMillis() + sleepTime;
     }
+
+    public CooldownTask start() {
+        targetTime = System.currentTimeMillis() + targetTime;
+        WoolMatch.workloadObjects.add(this);
+        return this;
+    }
+
+    protected boolean shouldEnd() {
+        return targetTime - System.currentTimeMillis() <= 0;
+    }
+
+    public abstract void end();
 
     public void stop() {
         WoolMatch.workloadObjects.remove(this);

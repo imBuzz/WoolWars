@@ -70,7 +70,6 @@ public class EntityPowerup implements Workload, TickedEntity {
 
             picked = true;
             type.getAction().accept(player);
-            System.out.println(this);
             woolMatch.pickUP(player, this, type);
             die();
         }
