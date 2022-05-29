@@ -7,6 +7,7 @@ public enum MatchState {
     PRE_ROUND,
     ROUND,
     ROUND_OVER,
-    ENDING
+    ENDING,
+    RESETTING
 
 }

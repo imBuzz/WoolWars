@@ -14,11 +14,12 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
 
-    private final Map<String, WoolPlayer> players = new HashMap<>();
+    private final Map<String, WoolPlayer> players = new ConcurrentHashMap<>();
     @Getter
     private final Map<String, MatchStats> stats = new HashMap<>();
 

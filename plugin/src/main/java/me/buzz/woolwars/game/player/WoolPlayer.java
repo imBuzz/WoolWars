@@ -18,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class WoolPlayer implements ApiWoolPlayer {
 
-    private final static Map<String, WoolPlayer> woolPlayersByName = new HashMap<>();
+    public final static Map<String, WoolPlayer> woolPlayersByName = new HashMap<>();
 
     public static WoolPlayer getWoolPlayer(Player player) {
         return woolPlayersByName.get(player.getName());
@@ -30,7 +30,7 @@ public class WoolPlayer implements ApiWoolPlayer {
         return woolPlayersByName.remove(player.getName());
     }
 
-    public final UUID UUID;
+    private final UUID UUID;
     private final String name;
 
     @Setter

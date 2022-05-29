@@ -3,6 +3,7 @@ package me.buzz.woolwars.game.game;
 import me.buzz.woolwars.api.game.ApiGameManager;
 import me.buzz.woolwars.api.game.match.ApiMatch;
 import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
+import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.arena.ArenaMetadata;
 import me.buzz.woolwars.game.game.listener.GameListener;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class GameManager extends AbstractManager implements ApiGameManager {
 
-    private final Map<String, String> matchedIDbyWorldName = new HashMap<>();
+    private final Map<String, String> matchesIDbyWorldName = new HashMap<>();
     private final Map<String, WoolMatch> matchesByID = new HashMap<>();
 
     @Override
@@ -34,7 +35,17 @@ public class GameManager extends AbstractManager implements ApiGameManager {
 
     @Override
     public void stop() {
-
+        for (WoolMatch value : matchesByID.values()) {
+            for (WoolPlayer woolPlayer : value.getPlayerHolder().getWoolPlayers()) {
+                try {
+                    value.quit(woolPlayer, QuitGameReason.SHUTDOWN);
+                    WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(woolPlayer.toBukkitPlayer()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            value.getRoundHolder().despawnGenerators();
+        }
     }
 
     private void loadGames() {
@@ -63,7 +74,7 @@ public class GameManager extends AbstractManager implements ApiGameManager {
             woolMatch.init();
 
             matchesByID.put(woolMatch.getMatchID(), woolMatch);
-            matchedIDbyWorldName.put(arenaMetadata.getWorldName(), woolMatch.getMatchID());
+            matchesIDbyWorldName.put(arenaMetadata.getWorldName(), woolMatch.getMatchID());
 
             matchesCounter++;
         }
@@ -94,7 +105,7 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     }
 
     public WoolMatch getMatchByWorldName(String worldName) {
-        return getInternalMatch(matchedIDbyWorldName.get(worldName));
+        return getInternalMatch(matchesIDbyWorldName.get(worldName));
     }
 
     @Override

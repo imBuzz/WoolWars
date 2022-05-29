@@ -225,11 +225,14 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void reset() {
+        matchState = MatchState.RESETTING;
+
         for (WoolTeam value : teams.values()) value.getTeamNPC().delete();
         teams.clear();
         roundHolder.reset();
         playerHolder.reset();
-        matchState = MatchState.WAITING;
+
+        Bukkit.getScheduler().runTaskLater(WoolWars.get(), () -> matchState = MatchState.WAITING, 20 * 3L);
     }
 
     @Override
