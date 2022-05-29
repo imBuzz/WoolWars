@@ -1,6 +1,8 @@
 package me.buzz.woolwars.game.game.match.type;
 
 import com.google.common.collect.Lists;
+import com.hakan.core.HCore;
+import com.hakan.core.npc.HNPC;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.match.events.PlayerJoinGameEvent;
 import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
@@ -25,8 +27,8 @@ import me.buzz.woolwars.game.game.match.task.tasks.StartingMatchTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.TeamUtils;
+import me.buzz.woolwars.game.utils.UUIDUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
-import net.jitse.npclib.api.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -130,13 +132,15 @@ public class BasicWoolMatch extends WoolMatch {
             TeamColor teamColor = TeamColor.values()[i];
             WoolTeam team = new WoolTeam(ID, teamColor, arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.SPAWN_RED : ArenaLocationType.SPAWN_BLUE));
 
-            NPC npc = WoolWars.get().getNpcLib().createNPC(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME));
-            npc.setLocation(WoolWars.get().getSettings().getProperty(teamColor == TeamColor.RED ? ConfigFile.NPC_LOCATION_RED :
-                    ConfigFile.NPC_LOCATION_BLUE).toBukkitLocation(arena.getWorld()));
+            HNPC npc = HCore.buildNpc(UUIDUtils.getNewUUID())
+                    .showEveryone(false)
+                    .location(WoolWars.get().getSettings().getProperty(teamColor == TeamColor.RED ? ConfigFile.NPC_LOCATION_RED :
+                            ConfigFile.NPC_LOCATION_BLUE).toBukkitLocation(arena.getWorld()))
+                    .lines(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME))
+                    .skin(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_SKIN))
+                    .action((player -> new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player)))
+                    .build();
 
-            npc.setCallback(player -> ClassSelectorGui.getInventory(this, playerHolder.getMatchStats(player)).open(player));
-            npc.setSkin(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_SKIN));
-            npc.create();
             team.setTeamNPC(npc);
 
             for (WoolPlayer woolPlayer : groups.get(i))
@@ -219,7 +223,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void reset() {
-        for (WoolTeam value : teams.values()) value.getTeamNPC().destroy();
+        for (WoolTeam value : teams.values()) value.getTeamNPC().delete();
         teams.clear();
         roundHolder.reset();
         playerHolder.reset();

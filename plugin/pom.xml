@@ -76,18 +76,10 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- SmartINVS -->
         <dependency>
-            <groupId>fr.minuskube.inv</groupId>
-            <artifactId>smart-invs</artifactId>
-            <version>1.2.7</version>
-        </dependency>
-
-        <!-- NPCLib -->
-        <dependency>
-            <groupId>net.jitse</groupId>
-            <artifactId>npclib-plugin</artifactId>
-            <version>2.12.2-SNAPSHOT</version>
+            <groupId>com.hakan</groupId>
+            <artifactId>bukkit-primary</artifactId>
+            <version>0.3.3</version>
         </dependency>
 
         <!-- UpdateChecker -->

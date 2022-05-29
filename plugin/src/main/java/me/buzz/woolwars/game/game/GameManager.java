@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameManager extends AbstractManager implements ApiGameManager {
 
@@ -28,13 +29,7 @@ public class GameManager extends AbstractManager implements ApiGameManager {
         Bukkit.getPluginManager().registerEvents(new GameListener(), WoolWars.get());
         loadGames();
 
-        Bukkit.getScheduler().runTaskTimer(WoolWars.get(), () -> {
-            WoolMatch.workloadObjects.forEach(WorkloadHandler::addLoad);
-            //WoolMatch.cooldownTask.forEach(task -> {
-            //    if (task.canRun()) WorkloadHandler.addLoad(task::run);
-            //});
-            //WoolMatch.tickEntities.forEach(entity -> WorkloadHandler.addLoad(entity::tick));
-        }, 1L, 1L);
+        Bukkit.getScheduler().runTaskTimer(WoolWars.get(), () -> WoolMatch.workloadObjects.forEach(WorkloadHandler::addLoad), 1L, 1L);
     }
 
     @Override
@@ -77,7 +72,10 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     }
 
     public boolean sendToFreeGame(WoolPlayer woolPlayer) {
-        for (WoolMatch value : matchesByID.values()) {
+        List<WoolMatch> matches = matchesByID.values().stream()
+                .sorted(Comparator.comparingInt(o -> o.getPlayerHolder().getPlayersCount())).collect(Collectors.toList());
+
+        for (WoolMatch value : matches) {
             if (value.checkJoin(woolPlayer)) {
                 value.join(woolPlayer);
                 return true;

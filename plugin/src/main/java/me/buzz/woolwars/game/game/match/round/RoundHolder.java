@@ -79,7 +79,9 @@ public class RoundHolder extends AbstractHolder {
                 matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor());
                 matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer), matchStats);
 
-                team.getTeamNPC().show(onlinePlayer);
+                if (!team.getTeamNPC().isShownFor(onlinePlayer))
+                    team.getTeamNPC().addViewer(onlinePlayer);
+
                 onlinePlayer.teleport(team.getSpawnLocation());
 
                 Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.PRE_ROUND_TITLE);
@@ -143,8 +145,8 @@ public class RoundHolder extends AbstractHolder {
         for (WoolTeam value : match.getTeams().values()) {
             for (Player onlinePlayer : value.getOnlinePlayers()) {
                 onlinePlayer.closeInventory();
-                if (value.getTeamNPC().isShown(onlinePlayer))
-                    value.getTeamNPC().hide(onlinePlayer);
+                if (value.getTeamNPC().isShownFor(onlinePlayer))
+                    value.getTeamNPC().removeViewer(onlinePlayer);
             }
         }
     }

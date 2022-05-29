@@ -2,10 +2,10 @@ package me.buzz.woolwars.game;
 
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
-import fr.minuskube.inv.InventoryManager;
+import com.hakan.core.HCore;
 import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
-import me.buzz.woolwars.game.commands.WoolCommandHandler;
+import me.buzz.woolwars.game.commands.WoolCommand;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
 import me.buzz.woolwars.game.configuration.files.DatabaseFile;
 import me.buzz.woolwars.game.data.DataProvider;
@@ -13,10 +13,6 @@ import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
 import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
-import me.buzz.woolwars.nms.INMSHandler;
-import me.buzz.woolwars.nms.ServerProtocols;
-import net.jitse.npclib.NPCLib;
-import net.jitse.npclib.NPCLibOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,18 +24,10 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
 
-    private WoolCommandHandler commandHandler;
-
-    @Getter
-    private InventoryManager inventoryManager;
-    @Getter
-    private NPCLib npcLib;
     @Getter
     private DataProvider dataProvider;
     @Getter
     private GameManager gameManager;
-    @Getter
-    private INMSHandler nmsHandler;
 
     @Override
     public void onEnable() {
@@ -50,28 +38,20 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
             return;
         }
 
-        nmsHandler = ServerProtocols.getNmsHandler(this);
-        if (nmsHandler == null) {
-            setEnabled(false);
-            return;
-        }
+        HCore.initialize(this);
 
-        npcLib = new NPCLib(this, new NPCLibOptions().setMovementHandling(NPCLibOptions.MovementHandling.repeatingTask(40)));
         dataProvider = getDataSettings().getProperty(DatabaseFile.DATABASE_TYPE).getProviderSupplier().get();
         dataProvider.init();
-
-        inventoryManager = new InventoryManager(this);
-        inventoryManager.init();
 
         WorkloadHandler.run();
 
         gameManager = new GameManager();
         gameManager.init();
 
-        commandHandler = new WoolCommandHandler();
-
         new PlayerAsyncTickTask().runTaskTimerAsynchronously(this, 5L, 5L);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+
+        HCore.registerCommands(new WoolCommand());
 
         //new UpdateChecker(this, UpdateCheckSource.SPIGET, String.valueOf(SPIGOT_CODE))
         //        .checkEveryXHours(12)

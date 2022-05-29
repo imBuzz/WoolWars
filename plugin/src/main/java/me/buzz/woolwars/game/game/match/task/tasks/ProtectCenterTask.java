@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.task.tasks;
 
+import com.hakan.core.HCore;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
@@ -28,10 +29,8 @@ public class ProtectCenterTask extends TickTask {
         }
 
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            WoolWars.get().getNmsHandler().getPlayerHandler()
-                    .sendActionBar(onlinePlayer,
-                            WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_UNLOCK_CENTER_BAR)
-                                    .replace("{seconds}", formatSecondsAndMillis()));
+            HCore.sendActionBar(onlinePlayer, WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_UNLOCK_CENTER_BAR)
+                    .replace("{seconds}", formatSecondsAndMillis()));
         }
     }
 
@@ -39,7 +38,7 @@ public class ProtectCenterTask extends TickTask {
     public void end() {
         match.getRoundHolder().canBreakCenter = true;
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            WoolWars.get().getNmsHandler().getPlayerHandler().sendActionBar(onlinePlayer, WoolWars.get().getLanguage().getProperty(LanguageFile.CENTER_UNLOCK));
+            HCore.sendActionBar(onlinePlayer, WoolWars.get().getLanguage().getProperty(LanguageFile.CENTER_UNLOCK));
         }
 
         match.getRoundHolder().getTasks().remove(getID());
