@@ -1,4 +1,4 @@
-package me.buzz.woolwars.api.game.match.events;
+package me.buzz.woolwars.api.game.match.player.events;
 
 import lombok.Getter;
 import lombok.Setter;

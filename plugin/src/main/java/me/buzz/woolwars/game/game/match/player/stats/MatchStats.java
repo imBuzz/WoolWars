@@ -3,12 +3,14 @@ package me.buzz.woolwars.game.game.match.player.stats;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import me.buzz.woolwars.api.game.match.player.events.PlayerSelectClassEvent;
 import me.buzz.woolwars.api.game.match.player.player.ApiMatchStats;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.classes.classes.*;
 import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -54,6 +56,8 @@ public class MatchStats implements ApiMatchStats {
             }
         }
         playableClass.reset();
+
+        Bukkit.getPluginManager().callEvent(new PlayerSelectClassEvent(player, type));
     }
 
     public void pickClass(Player player, TeamColor teamColor) {

@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import com.hakan.core.HCore;
 import com.hakan.core.npc.HNPC;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
-import me.buzz.woolwars.api.game.match.events.PlayerJoinGameEvent;
-import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
+import me.buzz.woolwars.api.game.match.player.events.PlayerDeathByPlayerEvent;
+import me.buzz.woolwars.api.game.match.player.events.PlayerDeathEvent;
+import me.buzz.woolwars.api.game.match.player.events.PlayerJoinGameEvent;
+import me.buzz.woolwars.api.game.match.player.events.PlayerQuitGameEvent;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
@@ -251,6 +253,9 @@ public class BasicWoolMatch extends WoolMatch {
             Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED_TITLE);
             victim.sendTitle(title.getTitle(), title.getSubTitle());
         }
+
+        if (killer != null) Bukkit.getPluginManager().callEvent(new PlayerDeathByPlayerEvent(killer, victim));
+        else Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(victim));
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {
             victim.teleport(victimStats.getTeam().getSpawnLocation());
