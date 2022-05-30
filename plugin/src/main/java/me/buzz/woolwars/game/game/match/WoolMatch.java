@@ -5,16 +5,16 @@ import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
 import me.buzz.woolwars.api.game.match.ApiMatch;
 import me.buzz.woolwars.api.game.match.events.MatchChangeStateEvent;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.entities.powerup.EntityPowerup;
 import me.buzz.woolwars.game.game.match.entities.powerup.PowerUPType;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
-import me.buzz.woolwars.game.game.match.player.PlayerHolder;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.game.game.match.player.PlayerMatchHolder;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
-import me.buzz.woolwars.game.game.match.round.RoundHolder;
+import me.buzz.woolwars.game.game.match.round.RoundMatchHolder;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.UUIDUtils;
 import me.buzz.woolwars.game.utils.workload.Workload;
@@ -43,9 +43,9 @@ public abstract class WoolMatch implements ApiMatch {
     protected MatchListener matchListener;
 
     @Getter
-    protected PlayerHolder playerHolder;
+    protected PlayerMatchHolder playerHolder;
     @Getter
-    protected RoundHolder roundHolder;
+    protected RoundMatchHolder roundHolder;
 
     public abstract void init();
 

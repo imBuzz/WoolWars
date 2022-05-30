@@ -24,9 +24,6 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> YOUR_ARE_IN_A_MATCH = newProperty("commands.join.already-in-match", "§cYou are already in a match");
     public static final Property<String> NO_MATCH_FOUND = newProperty("commands.join.no-match-found", "§cThere aren't free match to join");
 
-    public static final Property<String> JOINED_MESSAGE = newProperty("match.joined", "§7{player} §ehas joined (§b{current}§e/§b{max}§e)");
-    public static final Property<String> LEAVE_MESSAGE = newProperty("match.quit", "§7{player} §eleft from the game (§b{current}§e/§b{max}§e)");
-
     public static final Property<String> NOT_ENOUGH_PLAYER_TO_PLAY = newProperty("match.not-enough-player-to-play",
             "§cThere are not enough player to keep playing!");
 
@@ -125,52 +122,6 @@ public class LanguageFile implements SettingsHolder {
     //SCOREBOARDs
 
     public static final Property<List<String>> SCOREBOARD_MATCH_LOBBY = newListProperty("scoreboard.lobby", Lists.newArrayList("", "CIAO", ""));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_WAITING = newListProperty("scoreboard.match.waiting", Lists.newArrayList(
-            "   ", "§fMap: §a{map_name}", "§fPlayers: §a{current_players}/{max_players}", "  ", "§fWaiting...", " ", "§eyour.server.ip"));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_STARTING = newListProperty("scoreboard.match.starting", Lists.newArrayList(
-            "   ", "§fMap: §a{map_name}", "§fPlayers: §a{current_players}/{max_players}", "  ", "§fStarting in §a{remaning_seconds}s", " ", "§eyour.server.ip"));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_PRE_ROUND = newListProperty("scoreboard.match.pre_round", Lists.newArrayList(
-            "    ",
-            "§fRound: §b{round}",
-            "§fState: §e{round_type}",
-            "§fMap: §a{map_name}",
-            "   ",
-            "§c[R] {red_team_progress} §8({red_team_points}/3)",
-            "§9[B] {blue_team_progress} §8({blue_team_points}/3)",
-            "  ",
-            "§fTime Left: §a{time_left}",
-            " ",
-            "§eyour.server.ip"));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_ROUND = newListProperty("scoreboard.match.round", Lists.newArrayList(
-            "     ",
-            "§fRound: §b{round}",
-            "§fState: §e{round_type}",
-            "    ",
-            "§c[R] {red_team_progress} §8({red_team_points}/3)",
-            "§9[B] {blue_team_progress} §8({blue_team_points}/3)",
-            "   ",
-            "§cRed Players: §f{red_team_players} §7{red_team_isYou}",
-            "§9Blue Players: §f{blue_team_players} §7{blue_team_isYou}",
-            "  ",
-            "§fTime Left: §a{time_left}",
-            " ",
-            "§eyour.server.ip"));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_ROUND_OVER = newListProperty("scoreboard.match.round-over", Lists.newArrayList(
-            "    ",
-            "§fRound: §b{round}",
-            "§fState: §e{round_type}",
-            "   ",
-            "§c[R] {red_team_progress} §8({red_team_points}/3)",
-            "§9[B] {blue_team_progress} §8({blue_team_points}/3)",
-            "  ",
-            "§fTime Left: §a{time_left}",
-            " ",
-            "§eyour.server.ip"));
 
     //VARIABLES (SCOREBOARD)
 

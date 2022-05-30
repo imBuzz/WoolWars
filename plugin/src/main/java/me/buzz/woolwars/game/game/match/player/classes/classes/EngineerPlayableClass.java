@@ -1,12 +1,12 @@
 package me.buzz.woolwars.game.game.match.player.classes.classes;
 
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.ItemBuilder;
 import org.bukkit.GameMode;
@@ -52,7 +52,7 @@ public class EngineerPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void equip(WoolPlayer woolPlayer, MatchStats stats) {
+    public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().setArmorContents(null);
         player.getInventory().clear();

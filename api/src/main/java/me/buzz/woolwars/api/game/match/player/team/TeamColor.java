@@ -1,4 +1,4 @@
-package me.buzz.woolwars.game.game.match.player.team.color;
+package me.buzz.woolwars.api.game.match.player.team;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

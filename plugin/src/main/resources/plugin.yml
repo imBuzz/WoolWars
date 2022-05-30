@@ -4,3 +4,5 @@ main: me.buzz.woolwars.game.WoolWars
 api-version: 1.13
 authors: [ ImBuzz ]
 description: "WoolWars minigame"
+softdepend:
+  - PlaceholderAPI

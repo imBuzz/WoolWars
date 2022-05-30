@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 
 @RequiredArgsConstructor
-public abstract class AbstractHolder {
+public abstract class AbstractMatchHolder {
 
     protected final WoolMatch match;
 

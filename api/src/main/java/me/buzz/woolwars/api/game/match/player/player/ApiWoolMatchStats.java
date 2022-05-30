@@ -1,8 +1,9 @@
 package me.buzz.woolwars.api.game.match.player.player;
 
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
+import me.buzz.woolwars.api.game.match.player.team.ApiWoolTeam;
 
-public interface ApiMatchStats {
+public interface ApiWoolMatchStats {
 
     PlayableClassType getClassType();
 
@@ -15,5 +16,7 @@ public interface ApiMatchStats {
     int getMatchPowerUpsGotten();
 
     int getMatchWoolPlaced();
+
+    ApiWoolTeam getTeam();
 
 }

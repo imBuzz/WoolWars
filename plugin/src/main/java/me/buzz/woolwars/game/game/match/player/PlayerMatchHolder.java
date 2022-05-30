@@ -5,8 +5,8 @@ import lombok.Getter;
 import me.buzz.woolwars.api.game.match.player.ApiPlayerHolder;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.WoolMatch;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
-import me.buzz.woolwars.game.manager.AbstractHolder;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
+import me.buzz.woolwars.game.manager.AbstractMatchHolder;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -14,16 +14,16 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
+public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerHolder {
 
-    private final Map<String, WoolPlayer> players = new ConcurrentHashMap<>();
+    private final Map<String, WoolPlayer> players = Collections.synchronizedMap(new LinkedHashMap());
     @Getter
-    private final Map<String, MatchStats> stats = new HashMap<>();
+    private final Map<String, WoolMatchStats> stats = new HashMap<>();
 
-    public PlayerHolder(WoolMatch match) {
+    public PlayerMatchHolder(WoolMatch match) {
         super(match);
     }
 
@@ -35,15 +35,25 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
         return players.get(player.getName());
     }
 
+    public void forWoolPlayers(Consumer<WoolPlayer> consumer) {
+        synchronized (players) {
+            for (WoolPlayer value : players.values()) {
+                consumer.accept(value);
+            }
+        }
+    }
+
     public Collection<WoolPlayer> getWoolPlayers() {
         return players.values();
     }
 
     public Set<Player> getOnlinePlayers() {
-        return players.values().stream()
-                .map(WoolPlayer::toBukkitPlayer)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        synchronized (players) {
+            return players.values().stream()
+                    .map(WoolPlayer::toBukkitPlayer)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+        }
     }
 
     public void registerPlayer(WoolPlayer player) {
@@ -51,7 +61,7 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
         bukkitPlayer.setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getMatchID()));
 
         players.put(player.getName(), player);
-        stats.put(player.getName(), new MatchStats(player.getUUID()));
+        stats.put(player.getName(), new WoolMatchStats(player.getUUID()));
 
         for (PotionEffect activePotionEffect : bukkitPlayer.getActivePotionEffects())
             bukkitPlayer.removePotionEffect(activePotionEffect.getType());
@@ -110,12 +120,12 @@ public class PlayerHolder extends AbstractHolder implements ApiPlayerHolder {
     }
 
     @Override
-    public MatchStats getMatchStats(Player player) {
+    public WoolMatchStats getMatchStats(Player player) {
         return getMatchStats(player.getName());
     }
 
     @Override
-    public MatchStats getMatchStats(String name) {
+    public WoolMatchStats getMatchStats(String name) {
         return stats.get(name);
     }
 

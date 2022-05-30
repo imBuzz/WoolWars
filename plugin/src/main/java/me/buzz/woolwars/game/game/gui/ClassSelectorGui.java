@@ -5,7 +5,7 @@ import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.gui.GuiFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.utils.ItemBuilder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -15,9 +15,9 @@ import org.bukkit.inventory.ItemFlag;
 public class ClassSelectorGui extends HInventory {
 
     private final WoolMatch match;
-    private final MatchStats stats;
+    private final WoolMatchStats stats;
 
-    public ClassSelectorGui(WoolMatch match, MatchStats stats) {
+    public ClassSelectorGui(WoolMatch match, WoolMatchStats stats) {
         super("class-selector-gui-" + stats.getUuid().toString(),
                 WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_TITLE),
                 5,

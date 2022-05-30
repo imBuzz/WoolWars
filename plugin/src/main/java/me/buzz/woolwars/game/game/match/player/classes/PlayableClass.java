@@ -3,8 +3,8 @@ package me.buzz.woolwars.game.game.match.player.classes;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.ItemBuilder;
 import org.bukkit.entity.Player;
@@ -38,7 +38,7 @@ public abstract class PlayableClass {
 
     public abstract void useAbility();
 
-    public abstract void equip(WoolPlayer woolPlayer, MatchStats stats);
+    public abstract void equip(WoolPlayer woolPlayer, WoolMatchStats stats);
 
     public abstract void reset();
 

@@ -1,11 +1,12 @@
 package me.buzz.woolwars.game.game.match.player.team;
 
+import me.buzz.woolwars.api.game.match.player.team.ApiWoolTeam;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public interface MatchTeam {
+public interface MatchTeam extends ApiWoolTeam {
 
     List<Player> getOnlinePlayers();
 

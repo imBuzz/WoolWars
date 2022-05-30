@@ -36,14 +36,14 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     @Override
     public void stop() {
         for (WoolMatch value : matchesByID.values()) {
-            for (WoolPlayer woolPlayer : value.getPlayerHolder().getWoolPlayers()) {
+            value.getPlayerHolder().forWoolPlayers(woolPlayer -> {
                 try {
                     value.quit(woolPlayer, QuitGameReason.SHUTDOWN);
                     WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(woolPlayer.toBukkitPlayer()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            });
             value.getRoundHolder().despawnGenerators();
         }
     }

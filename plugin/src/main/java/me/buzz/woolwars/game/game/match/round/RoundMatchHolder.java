@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
@@ -12,14 +13,13 @@ import me.buzz.woolwars.game.game.arena.location.SerializedLocation;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.entities.powerup.EntityPowerup;
 import me.buzz.woolwars.game.game.match.entities.powerup.PowerUPType;
-import me.buzz.woolwars.game.game.match.player.PlayerHolder;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.game.game.match.player.PlayerMatchHolder;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
-import me.buzz.woolwars.game.manager.AbstractHolder;
+import me.buzz.woolwars.game.manager.AbstractMatchHolder;
 import me.buzz.woolwars.game.utils.random.RandomSelector;
 import me.buzz.woolwars.game.utils.structures.Title;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class RoundHolder extends AbstractHolder {
+public class RoundMatchHolder extends AbstractMatchHolder {
 
     private final static RandomSelector<Material> centerMats = RandomSelector.uniform(ImmutableList.of(Material.SNOW_BLOCK, Material.WOOL, Material.QUARTZ_BLOCK));
     private final static RandomSelector<PowerUPType> powerUPS = RandomSelector.uniform(Lists.newArrayList(PowerUPType.values()));
@@ -43,13 +43,13 @@ public class RoundHolder extends AbstractHolder {
     @Getter
     private final List<EntityPowerup> entities = new ArrayList<>();
 
-    private final PlayerHolder playerHolder = match.getPlayerHolder();
+    private final PlayerMatchHolder playerHolder = match.getPlayerHolder();
 
     public boolean canBreakCenter = false;
     @Getter
     private int roundNumber = 0;
 
-    public RoundHolder(WoolMatch match) {
+    public RoundMatchHolder(WoolMatch match) {
         super(match);
     }
 
@@ -74,7 +74,7 @@ public class RoundHolder extends AbstractHolder {
             for (Player onlinePlayer : team.getOnlinePlayers()) {
                 if (playerHolder.isSpectator(onlinePlayer)) playerHolder.removeSpectator(onlinePlayer);
 
-                MatchStats matchStats = playerHolder.getMatchStats(onlinePlayer);
+                WoolMatchStats matchStats = playerHolder.getMatchStats(onlinePlayer);
 
                 matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor());
                 matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer), matchStats);

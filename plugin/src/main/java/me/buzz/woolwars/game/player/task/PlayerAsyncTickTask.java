@@ -3,15 +3,11 @@ package me.buzz.woolwars.game.player.task;
 import fr.minuskube.netherboard.Netherboard;
 import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import me.buzz.woolwars.game.WoolWars;
-import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.GameManager;
+import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
+import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
 import me.buzz.woolwars.game.game.match.WoolMatch;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
-import me.buzz.woolwars.game.game.match.task.tasks.TimeElapsedTask;
-import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
-import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -37,146 +33,9 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
 
     public List<String> getScoreboardLinesByMatchState(Player player, WoolMatch match) {
         try {
-            List<String> tempLines, lines;
-            if (match == null)
-                tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_LOBBY);
-            else {
-                switch (match.getMatchState()) {
-                    case WAITING: {
-                        tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_WAITING);
-                        break;
-                    }
-                    case STARTING: {
-                        tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_STARTING);
-                        break;
-                    }
-                    case PRE_ROUND: {
-                        tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_PRE_ROUND);
-                        break;
-                    }
-                    case ROUND: {
-                        tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_ROUND);
-                        break;
-                    }
-                    default: {
-                        tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_ROUND_OVER);
-                        break;
-                    }
-                }
-            }
-
-            lines = new ArrayList<>();
-            for (String tempLine : tempLines) {
-                if (match != null) {
-                    switch (match.getMatchState()) {
-                        case WAITING: {
-                            tempLine = tempLine
-                                    .replace("{map_name}", match.getArena().getName())
-                                    .replace("{current_players}", String.valueOf(match.getPlayerHolder().getPlayersCount()))
-                                    .replace("{max_players}", String.valueOf(match.getMaxPlayers()));
-                            break;
-                        }
-                        case STARTING: {
-                            tempLine = tempLine
-                                    .replace("{map_name}", match.getArena().getName())
-                                    .replace("{current_players}", String.valueOf(match.getPlayerHolder().getPlayersCount()))
-                                    .replace("{max_players}", String.valueOf(match.getMaxPlayers()))
-                                    .replace("{remaning_seconds}", String.valueOf(match.getRoundHolder()
-                                            .getTasks().get("startTask").getRemainingSeconds()));
-                            break;
-                        }
-                        case PRE_ROUND: {
-                            tempLine = tempLine
-                                    .replace("{round}", String.valueOf(match.getRoundHolder().getRoundNumber()))
-                                    .replace("{round_type}", WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_PRE_ROUND))
-                                    .replace("{map_name}", match.getArena().getName())
-
-                                    .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
-                                    .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
-
-                                    .replace("{red_team_progress}",
-                                            StringsUtils.getProgressBar(match.getTeams().get(TeamColor.RED).getPoints(), 3, 3,
-                                                    WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.RED, ChatColor.GRAY))
-                                    .replace("{blue_team_progress}",
-                                            StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
-                                                    WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
-
-                                    .replace("{time_left}", match.getRoundHolder().getTasks().get("startRound").formatSeconds())
-
-                                    .replace("{red_team_players}", String.valueOf(match.getTeams().get(TeamColor.RED).getPlayers().size()))
-                                    .replace("{blue_team_players}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPlayers().size()));
-                            break;
-                        }
-                        case ROUND: {
-                            tempLine = tempLine
-                                    .replace("{round}", String.valueOf(match.getRoundHolder().getRoundNumber()))
-                                    .replace("{round_type}", getMatchName(match))
-                                    .replace("{map_name}", match.getArena().getName())
-
-                                    .replace("{red_team_progress}",
-                                            StringsUtils.getProgressBar(match.getTeams().get(TeamColor.RED).getPoints(), 3, 3,
-                                                    WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.RED, ChatColor.GRAY))
-                                    .replace("{blue_team_progress}",
-                                            StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
-                                                    WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
-
-                                    .replace("{time_left}",
-                                            match.getRoundHolder().getTasks().containsKey(TimeElapsedTask.ID) ? match.getRoundHolder().getTasks().get(TimeElapsedTask.ID).formatSeconds() : "00:00")
-
-                                    .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
-                                    .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
-
-                                    .replace("{red_team_isYou}", match.getTeams().get(TeamColor.RED).getPlayers().contains(player) ? WoolWars.get().getLanguage().getProperty(LanguageFile.IS_YOU) : "")
-                                    .replace("{blue_team_isYou}", match.getTeams().get(TeamColor.BLUE).getPlayers().contains(player) ? WoolWars.get().getLanguage().getProperty(LanguageFile.IS_YOU) : "")
-
-                                    .replace("{red_team_players}", String.valueOf(match.getTeams().get(TeamColor.RED).getPlayers().size()))
-                                    .replace("{blue_team_players}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPlayers().size()));
-                            break;
-                        }
-                        default: {
-                            tempLine = tempLine
-                                    .replace("{round}", String.valueOf(match.getRoundHolder().getRoundNumber()))
-                                    .replace("{round_type}", getMatchName(match))
-                                    .replace("{map_name}", match.getArena().getName())
-
-                                    .replace("{red_team_progress}",
-                                            StringsUtils.getProgressBar(match.getTeams().get(TeamColor.RED).getPoints(), 3, 3,
-                                                    WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.RED, ChatColor.GRAY))
-                                    .replace("{blue_team_progress}",
-                                            StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
-                                                    WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
-
-                                    .replace("{time_left}",
-                                            match.getRoundHolder().getTasks().containsKey(WaitForNewRoundTask.ID) ? match.getRoundHolder().getTasks().get(WaitForNewRoundTask.ID).formatSeconds() : "00:00")
-
-                                    .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))
-                                    .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
-
-                                    .replace("{red_team_isYou}", match.getTeams().get(TeamColor.RED).getPlayers().contains(player) ? WoolWars.get().getLanguage().getProperty(LanguageFile.IS_YOU) : "")
-                                    .replace("{blue_team_isYou}", match.getTeams().get(TeamColor.BLUE).getPlayers().contains(player) ? WoolWars.get().getLanguage().getProperty(LanguageFile.IS_YOU) : "");
-                            break;
-                        }
-                    }
-                }
-                lines.add(tempLine);
-            }
-
-            return lines;
+            return ((ApplicablePreset<List<String>, WoolMatch, Player, Void>) match.getPlayableArena().getPreset(PresetType.SCOREBOARD)).apply(match, player, null);
         } catch (Exception e) {
             return new ArrayList<>();
-        }
-    }
-
-    private String getMatchName(WoolMatch match) {
-        switch (match.getMatchState()) {
-            case WAITING:
-                return WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_WAITING);
-            case PRE_ROUND:
-                return WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_PRE_ROUND);
-            case ROUND:
-                return WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_ROUND);
-            default:
-                return WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_ENDED);
         }
     }
 

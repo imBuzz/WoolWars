@@ -10,6 +10,8 @@ import me.buzz.woolwars.game.configuration.ConfigurationType;
 import me.buzz.woolwars.game.configuration.files.DatabaseFile;
 import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
+import me.buzz.woolwars.game.hook.ExternalPluginHook;
+import me.buzz.woolwars.game.hook.ImplementedHookType;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
 import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
@@ -23,6 +25,7 @@ import java.util.Map;
 public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
+    private final Map<ImplementedHookType, ExternalPluginHook> hooks = new HashMap<>();
 
     @Getter
     private DataProvider dataProvider;
@@ -48,6 +51,8 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         gameManager = new GameManager();
         gameManager.init();
 
+        checkForHooks();
+
         new PlayerAsyncTickTask().runTaskTimerAsynchronously(this, 5L, 5L);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 
@@ -63,7 +68,10 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     @Override
     public void onDisable() {
+        hooks.values().forEach(ExternalPluginHook::stop);
         gameManager.stop();
+
+        hooks.clear();
     }
 
     private boolean setupFiles() {
@@ -80,6 +88,22 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private void checkForHooks() {
+        for (ImplementedHookType value : ImplementedHookType.values()) {
+            if (value.isEnabled()) {
+                ExternalPluginHook hook = value.getSupplier().get();
+                hook.init();
+                hooks.put(value, hook);
+            }
+        }
+
+        getLogger().info("Loaded " + hooks.size() + " hooks " + hooks.keySet());
+    }
+
+    public ExternalPluginHook getHook(ImplementedHookType hook) {
+        return hooks.get(hook);
     }
 
     public SettingsManager getLanguage() {

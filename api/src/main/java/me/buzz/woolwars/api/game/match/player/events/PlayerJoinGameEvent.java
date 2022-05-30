@@ -11,7 +11,12 @@ public class PlayerJoinGameEvent extends Event implements Cancellable {
 
     @Getter private final Player player;
     private static final HandlerList HANDLERS_LIST = new HandlerList();
-    @Getter @Setter private boolean isCancelled = false;
+    @Getter
+    @Setter
+    private boolean isCancelled = false;
+    @Getter
+    @Setter
+    private boolean sendMessage = true;
 
     public PlayerJoinGameEvent(Player player){
         this.player = player;

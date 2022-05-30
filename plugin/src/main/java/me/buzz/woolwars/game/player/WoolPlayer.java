@@ -6,7 +6,7 @@ import lombok.Setter;
 import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.game.match.player.classes.classes.*;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -63,7 +63,7 @@ public class WoolPlayer implements ApiWoolPlayer {
         return Bukkit.getPlayer(UUID);
     }
 
-    public void transferFrom(MatchStats stats, boolean victory) {
+    public void transferFrom(WoolMatchStats stats, boolean victory) {
         woolPlaced += stats.getMatchWoolPlaced();
         blocksBroken += stats.getMatchBlocksBroken();
         powerUpsGotten += stats.getMatchPowerUpsGotten();

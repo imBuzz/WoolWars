@@ -8,22 +8,25 @@ import me.buzz.woolwars.api.game.match.player.events.PlayerDeathByPlayerEvent;
 import me.buzz.woolwars.api.game.match.player.events.PlayerDeathEvent;
 import me.buzz.woolwars.api.game.match.player.events.PlayerJoinGameEvent;
 import me.buzz.woolwars.api.game.match.player.events.PlayerQuitGameEvent;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
+import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
+import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
+import me.buzz.woolwars.game.game.arena.settings.preset.impl.ChatPreset;
 import me.buzz.woolwars.game.game.gui.ClassSelectorGui;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.entities.powerup.EntityPowerup;
 import me.buzz.woolwars.game.game.match.entities.powerup.PowerUPType;
 import me.buzz.woolwars.game.game.match.listener.impl.BasicMatchListener;
-import me.buzz.woolwars.game.game.match.player.PlayerHolder;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.game.game.match.player.PlayerMatchHolder;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
-import me.buzz.woolwars.game.game.match.round.RoundHolder;
+import me.buzz.woolwars.game.game.match.round.RoundMatchHolder;
 import me.buzz.woolwars.game.game.match.task.tasks.ResetMatchTask;
 import me.buzz.woolwars.game.game.match.task.tasks.StartingMatchTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
@@ -52,8 +55,8 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void init() {
-        playerHolder = new PlayerHolder(this);
-        roundHolder = new RoundHolder(this);
+        playerHolder = new PlayerMatchHolder(this);
+        roundHolder = new RoundMatchHolder(this);
         matchListener = new BasicMatchListener(this);
     }
 
@@ -73,11 +76,13 @@ public class BasicWoolMatch extends WoolMatch {
         playerHolder.registerPlayer(woolPlayer);
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
-        for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
-            matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.JOINED_MESSAGE)
-                    .replace("{player}", player.getName())
-                    .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
-                    .replace("{max}", String.valueOf(getMaxPlayers())));
+        if (joinGameEvent.isSendMessage()) {
+            String leaveMessage = ((ApplicablePreset<String, WoolMatch, Player, ChatPreset.AskingChatMotivation>) arena.getPreset(PresetType.CHAT))
+                    .apply(this, player, ChatPreset.AskingChatMotivation.JOIN);
+
+            for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
+                matchPlayer.sendMessage(leaveMessage);
+            }
         }
 
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
@@ -93,17 +98,17 @@ public class BasicWoolMatch extends WoolMatch {
         PlayerQuitGameEvent quitGameEvent = new PlayerQuitGameEvent(player, reason);
         Bukkit.getPluginManager().callEvent(quitGameEvent);
 
-        MatchStats matchStats = playerHolder.getMatchStats(player);
+        WoolMatchStats matchStats = playerHolder.getMatchStats(player);
 
         if (isPlaying())
             shouldEnd = matchStats.getTeam().getOnlinePlayers().size() - 1 < MIN_PLAYERS_PER_TEAM;
 
         if (quitGameEvent.isSendMessage()) {
+            String leaveMessage = ((ApplicablePreset<String, WoolMatch, Player, ChatPreset.AskingChatMotivation>) arena.getPreset(PresetType.CHAT))
+                    .apply(this, player, ChatPreset.AskingChatMotivation.QUIT);
+
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
-                matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.LEAVE_MESSAGE)
-                        .replace("{player}", player.getName())
-                        .replace("{current}", String.valueOf(playerHolder.getPlayersCount() - 1))
-                        .replace("{max}", String.valueOf(getMaxPlayers())));
+                matchPlayer.sendMessage(leaveMessage);
             }
         }
 
@@ -178,10 +183,10 @@ public class BasicWoolMatch extends WoolMatch {
 
         List<String> tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.ENDED_RESUME);
 
-        for (WoolPlayer woolPlayer : playerHolder.getWoolPlayers()) {
+        playerHolder.forWoolPlayers(woolPlayer -> {
             Player player = woolPlayer.toBukkitPlayer();
 
-            MatchStats stats = playerHolder.getMatchStats(player);
+            WoolMatchStats stats = playerHolder.getMatchStats(player);
 
             boolean isWinnerTeam = winnerTeam != null && stats.getTeam() == winnerTeam;
 
@@ -217,7 +222,7 @@ public class BasicWoolMatch extends WoolMatch {
                     player.sendMessage(line);
                 }
             }
-        }
+        });
 
         roundHolder.getTasks().put(ResetMatchTask.ID, new ResetMatchTask(this,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CLOSE_GAME_COOLDOWN))).start());
@@ -244,7 +249,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause) {
-        MatchStats victimStats = playerHolder.getMatchStats(victim);
+        WoolMatchStats victimStats = playerHolder.getMatchStats(victim);
         if (!playerHolder.isSpectator(victim)) {
             playerHolder.setSpectator(victim);
 
