@@ -3,6 +3,7 @@ package me.buzz.woolwars.game.player.listener;
 import fr.minuskube.netherboard.Netherboard;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void join(PlayerJoinEvent event) {
-        Netherboard.instance().createBoard(event.getPlayer(), "§e§lWOOL WARS");
+        Netherboard.instance().createBoard(event.getPlayer(), WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_TITLE));
         WoolWars.get().getDataProvider().loadPlayer(event.getPlayer()).whenComplete((woolPlayer, throwable) -> WoolPlayer.trackPlayer(woolPlayer));
     }
 

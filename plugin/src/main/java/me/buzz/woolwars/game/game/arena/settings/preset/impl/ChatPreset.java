@@ -50,7 +50,7 @@ public class ChatPreset implements ApplicablePreset<String, WoolMatch, Player, C
             }
         }
 
-        ExternalPluginHook<String, Player> placeholderHook = WoolWars.get().getHook(ImplementedHookType.PLACEHOLDER_API);
+        ExternalPluginHook<String, Player> placeholderHook = (ExternalPluginHook<String, Player>) WoolWars.get().getHook(ImplementedHookType.PLACEHOLDER_API);
         return ChatColor.translateAlternateColorCodes('&', placeholderHook != null ? placeholderHook.apply(returnString, player) : returnString);
     }
 

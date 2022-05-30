@@ -121,6 +121,7 @@ public class LanguageFile implements SettingsHolder {
 
     //SCOREBOARDs
 
+    public static final Property<String> SCOREBOARD_TITLE = newProperty("scoreboard.title", "§e§lWOOL WARS");
     public static final Property<List<String>> SCOREBOARD_MATCH_LOBBY = newListProperty("scoreboard.lobby", Lists.newArrayList("", "CIAO", ""));
 
     //VARIABLES (SCOREBOARD)

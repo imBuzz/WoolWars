@@ -25,7 +25,7 @@ import java.util.Map;
 public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
-    private final Map<ImplementedHookType, ExternalPluginHook> hooks = new HashMap<>();
+    private final Map<ImplementedHookType, ExternalPluginHook<?, ?>> hooks = new HashMap<>();
 
     @Getter
     private DataProvider dataProvider;
@@ -93,7 +93,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private void checkForHooks() {
         for (ImplementedHookType value : ImplementedHookType.values()) {
             if (value.isEnabled()) {
-                ExternalPluginHook hook = value.getSupplier().get();
+                ExternalPluginHook<?, ?> hook = value.getSupplier().get();
                 hook.init();
                 hooks.put(value, hook);
             }
@@ -102,7 +102,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         getLogger().info("Loaded " + hooks.size() + " hooks " + hooks.keySet());
     }
 
-    public ExternalPluginHook getHook(ImplementedHookType hook) {
+    public ExternalPluginHook<?, ?> getHook(ImplementedHookType hook) {
         return hooks.get(hook);
     }
 

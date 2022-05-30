@@ -38,7 +38,7 @@ public class ScoreboardPreset implements ApplicablePreset<List<String>, WoolMatc
     @Override
     public List<String> apply(WoolMatch match, Player player, Void v) {
         List<String> strings, tempLines = new ArrayList<>();
-        ExternalPluginHook<String, Player> placeholderHook = WoolWars.get().getHook(ImplementedHookType.PLACEHOLDER_API);
+        ExternalPluginHook<String, Player> placeholderHook = (ExternalPluginHook<String, Player>) WoolWars.get().getHook(ImplementedHookType.PLACEHOLDER_API);
         if (match == null) {
             strings = WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_LOBBY);
             for (String line : strings) {
