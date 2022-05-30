@@ -27,9 +27,12 @@ public class WoolCommand implements HCommandAdapter {
     public void joinCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            WoolPlayer woolPlayer = WoolPlayer.getWoolPlayer(player);
 
-            if (!woolWars.getGameManager().sendToFreeGame(woolPlayer)) {
+            WoolPlayer woolPlayer = WoolPlayer.getWoolPlayer(player);
+            WoolMatch match = woolWars.getGameManager().getInternalMatchByPlayer(player);
+            if (match != null) {
+                player.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.YOUR_ARE_IN_A_MATCH));
+            } else if (!woolWars.getGameManager().sendToFreeGame(woolPlayer)) {
                 player.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.NO_MATCH_FOUND));
             }
         } else {

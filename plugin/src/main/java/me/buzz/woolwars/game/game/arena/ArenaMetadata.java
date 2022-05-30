@@ -34,10 +34,10 @@ public class ArenaMetadata {
     protected final MatchType matchType;
     @Getter
     protected final List<SerializedLocation> powerups;
-    protected final Map<PresetType, ApplicablePreset<?, ?, ?, ?>> presets;
 
     protected final Map<ArenaLocationType, SerializedLocation> locations;
     protected final Map<ArenaRegionType, ImplementedRegion> regions;
+    protected final Map<PresetType, ApplicablePreset<?, ?, ?, ?>> presets;
     @Getter
     private final String worldName;
 
@@ -67,7 +67,7 @@ public class ArenaMetadata {
         presets.put(PresetType.SCOREBOARD, new ScoreboardPreset(data));
         presets.put(PresetType.CHAT, new ChatPreset(data));
 
-        return new ArenaMetadata(ID, name, matchType, powerups, worldName, locations, regions, presets);
+        return new ArenaMetadata(ID, name, matchType, powerups, locations, regions, worldName, presets);
     }
 
     public SerializedLocation getArenaLocation(ArenaLocationType type) {

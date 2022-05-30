@@ -54,8 +54,6 @@ public class RoundMatchHolder extends AbstractMatchHolder {
     }
 
     public void startNewRound() {
-        System.out.println("Started a new Round");
-
         match.setMatchState(MatchState.PRE_ROUND);
         roundNumber++;
 
@@ -96,8 +94,6 @@ public class RoundMatchHolder extends AbstractMatchHolder {
     public void endRound(WoolTeam woolTeam) {
         tasks.values().forEach(CooldownTask::stop);
         tasks.clear();
-
-        System.out.println("Ended a Round");
 
         despawnGenerators();
 

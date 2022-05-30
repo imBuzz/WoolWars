@@ -23,37 +23,76 @@ public enum PowerUPType {
 
     STONE_PICKAXE(LanguageFile.STONE_PICKAXE_POWERUP, player -> {
         boolean hasItem = false;
+        int slot = 99;
+
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = player.getInventory().getItem(i);
-            if (itemStack != null && itemStack.getType() == Material.STONE_PICKAXE) hasItem = true;
+            if (itemStack != null) {
+                if (itemStack.getType() == Material.STONE_PICKAXE) {
+                    hasItem = true;
+                    continue;
+                }
+                if (itemStack.getType().toString().endsWith("_PICKAXE")) slot = i;
+            }
         }
-        if (!hasItem)
-            player.getInventory().addItem(new ItemBuilder(Material.STONE_PICKAXE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        if (!hasItem) {
+            if (slot != 99) {
+                player.getInventory().setItem(slot, new ItemBuilder(Material.STONE_PICKAXE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            } else {
+                player.getInventory().addItem(new ItemBuilder(Material.STONE_PICKAXE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            }
+        }
     }, armorStand -> {
         armorStand.setItemInHand(new ItemStack(Material.STONE_PICKAXE));
         armorStand.setRightArmPose(new EulerAngle(Math.toRadians(280), Math.toRadians(100), 0));
     }),
     STONE_SWORD(LanguageFile.STONE_SWORD_POWERUP, player -> {
         boolean hasItem = false;
+        int slot = 99;
+
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = player.getInventory().getItem(i);
-            if (itemStack != null && itemStack.getType() == Material.STONE_SWORD) hasItem = true;
+            if (itemStack != null) {
+                if (itemStack.getType() == Material.STONE_SWORD) {
+                    hasItem = true;
+                    continue;
+                }
+                if (itemStack.getType().toString().endsWith("_SWORD")) slot = i;
+            }
         }
-        if (!hasItem)
-            player.getInventory().addItem(new ItemBuilder(Material.STONE_SWORD).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        if (!hasItem) {
+            if (slot != 99) {
+                player.getInventory().setItem(slot, new ItemBuilder(Material.STONE_SWORD).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            } else {
+                player.getInventory().addItem(new ItemBuilder(Material.STONE_SWORD).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            }
+        }
     }, armorStand -> {
         armorStand.setItemInHand(new ItemStack(Material.STONE_SWORD));
         armorStand.setRightArmPose(new EulerAngle(Math.toRadians(280), Math.toRadians(100), 0));
     }),
     BOW(LanguageFile.BOW_POWERUP, player -> {
         boolean hasItem = false;
+        int slot = 99;
+
         for (int i = 0; i < 9; i++) {
             ItemStack itemStack = player.getInventory().getItem(i);
-            if (itemStack != null && itemStack.getType() == Material.BOW) hasItem = true;
+            if (itemStack != null) {
+                if (itemStack.getType() == Material.BOW) {
+                    hasItem = true;
+                    continue;
+                }
+                if (itemStack.getType().toString().endsWith("BOW")) slot = i;
+            }
         }
         if (!hasItem) {
-            player.getInventory().addItem(new ItemBuilder(Material.BOW).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-            player.getInventory().addItem(new ItemStack(Material.ARROW, 2));
+            if (slot != 99) {
+                player.getInventory().setItem(slot, new ItemBuilder(Material.BOW).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().addItem(new ItemStack(Material.ARROW, 2));
+            } else {
+                player.getInventory().addItem(new ItemBuilder(Material.BOW).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().addItem(new ItemStack(Material.ARROW, 2));
+            }
         }
     }, armorStand -> {
         armorStand.setItemInHand(new ItemStack(Material.BOW));

@@ -3,7 +3,6 @@ package me.buzz.woolwars.game.game;
 import me.buzz.woolwars.api.game.ApiGameManager;
 import me.buzz.woolwars.api.game.match.ApiMatch;
 import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
-import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.arena.ArenaMetadata;
 import me.buzz.woolwars.game.game.listener.GameListener;
@@ -36,16 +35,13 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     @Override
     public void stop() {
         for (WoolMatch value : matchesByID.values()) {
-            value.getPlayerHolder().forWoolPlayers(woolPlayer -> {
-                try {
-                    value.quit(woolPlayer, QuitGameReason.SHUTDOWN);
-                    WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(woolPlayer.toBukkitPlayer()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+            value.getPlayerHolder().forWoolPlayers(woolPlayer -> WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(woolPlayer.toBukkitPlayer())));
             value.getRoundHolder().despawnGenerators();
+            Bukkit.unloadWorld(value.getPlayableArena().getWorld(), false);
         }
+
+        matchesByID.clear();
+        matchesIDbyWorldName.clear();
     }
 
     private void loadGames() {
@@ -64,34 +60,33 @@ public class GameManager extends AbstractManager implements ApiGameManager {
             return;
         }
 
-        int matchesCounter = 0;
-
         for (File file : files) {
             ArenaMetadata arenaMetadata = ArenaMetadata.fromFile(file);
-
             WorldCreator worldCreator = new WorldCreator(arenaMetadata.getWorldName());
+
             WoolMatch woolMatch = new BasicWoolMatch(arenaMetadata.toPlayableArena(worldCreator.createWorld()));
             woolMatch.init();
 
             matchesByID.put(woolMatch.getMatchID(), woolMatch);
             matchesIDbyWorldName.put(arenaMetadata.getWorldName(), woolMatch.getMatchID());
-
-            matchesCounter++;
         }
 
-        plugin.getLogger().info("Loaded " + matchesCounter + " matches from files");
+        plugin.getLogger().info("Loaded " + matchesByID.size() + " matches from files");
     }
 
     public boolean sendToFreeGame(WoolPlayer woolPlayer) {
-        List<WoolMatch> matches = matchesByID.values().stream()
-                .sorted(Comparator.comparingInt(o -> o.getPlayerHolder().getPlayersCount())).collect(Collectors.toList());
+        List<WoolMatch> matches = matchesByID.values().stream().sorted(((o1, o2) -> Integer.compare(o2.getPlayerHolder().getPlayersCount(),
+                o1.getPlayerHolder().getPlayersCount()))).collect(Collectors.toList());
 
         for (WoolMatch value : matches) {
             if (value.checkJoin(woolPlayer)) {
                 value.join(woolPlayer);
                 return true;
+            } else {
+                System.out.println("Cannot join");
             }
         }
+
         return false;
     }
 
@@ -131,5 +126,6 @@ public class GameManager extends AbstractManager implements ApiGameManager {
             return null;
         }
     }
+
 
 }

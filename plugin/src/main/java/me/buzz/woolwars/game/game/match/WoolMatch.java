@@ -74,7 +74,7 @@ public abstract class WoolMatch implements ApiMatch {
     public abstract int getPointsToWin();
 
     public boolean isPlaying() {
-        return matchState == MatchState.PRE_ROUND || matchState == MatchState.ROUND;
+        return matchState == MatchState.PRE_ROUND || matchState == MatchState.ROUND || matchState == MatchState.ROUND_OVER;
     }
 
     public void setMatchState(MatchState matchState) {

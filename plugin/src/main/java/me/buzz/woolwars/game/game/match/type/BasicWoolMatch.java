@@ -249,6 +249,11 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause) {
+        if (!isPlaying() || isEnded()) {
+            victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+            return;
+        }
+
         WoolMatchStats victimStats = playerHolder.getMatchStats(victim);
         if (!playerHolder.isSpectator(victim)) {
             playerHolder.setSpectator(victim);
@@ -289,6 +294,6 @@ public class BasicWoolMatch extends WoolMatch {
     }
 
     private boolean isEnded() {
-        return matchState == MatchState.ENDING;
+        return matchState == MatchState.ENDING || matchState == MatchState.RESETTING;
     }
 }

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerHolder {
 
-    private final Map<String, WoolPlayer> players = Collections.synchronizedMap(new LinkedHashMap());
+    private final Map<String, WoolPlayer> players = new LinkedHashMap();
     @Getter
     private final Map<String, WoolMatchStats> stats = new HashMap<>();
 
@@ -36,7 +36,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
     }
 
     public void forWoolPlayers(Consumer<WoolPlayer> consumer) {
-        synchronized (players) {
+        synchronized (players.values()) {
             for (WoolPlayer value : players.values()) {
                 consumer.accept(value);
             }
