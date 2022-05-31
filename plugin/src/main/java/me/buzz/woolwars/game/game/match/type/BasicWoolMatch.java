@@ -37,6 +37,7 @@ import me.buzz.woolwars.game.utils.structures.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -66,7 +67,7 @@ public class BasicWoolMatch extends WoolMatch {
     }
 
     @Override
-    public void join(WoolPlayer woolPlayer) {
+    public void joinAsPlayer(WoolPlayer woolPlayer) {
         Player player = woolPlayer.toBukkitPlayer();
 
         PlayerJoinGameEvent joinGameEvent = new PlayerJoinGameEvent(player);
@@ -88,6 +89,15 @@ public class BasicWoolMatch extends WoolMatch {
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
             setMatchState(MatchState.STARTING);
         }
+    }
+
+    @Override
+    public void joinAsSpectator(WoolPlayer woolPlayer) {
+        Player player = woolPlayer.toBukkitPlayer();
+
+        player.setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), ID));
+        playerHolder.setSpectator(player, true);
+        player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
     }
 
     @Override

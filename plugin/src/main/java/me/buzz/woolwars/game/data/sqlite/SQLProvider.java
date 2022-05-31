@@ -89,7 +89,7 @@ public class SQLProvider implements DataProvider {
                         getInt(player, "wins", "wool_players"),
                         getInt(player, "played", "wool_players"),
                         getInt(player, "kills", "wool_players"),
-                        getInt(player, "deaths", "wool_players"));
+                        getInt(player, "deaths", "wool_players"), false);
             } else {
                 woolPlayer = new WoolPlayer(player);
             }

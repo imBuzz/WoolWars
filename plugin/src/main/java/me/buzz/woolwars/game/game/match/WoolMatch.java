@@ -51,7 +51,9 @@ public abstract class WoolMatch implements ApiMatch {
 
     public abstract boolean checkJoin(WoolPlayer woolPlayer);
 
-    public abstract void join(WoolPlayer woolPlayer);
+    public abstract void joinAsPlayer(WoolPlayer woolPlayer);
+
+    public abstract void joinAsSpectator(WoolPlayer woolPlayer);
 
     public abstract void quit(WoolPlayer woolPlayer, QuitGameReason reason);
 

@@ -1,9 +1,12 @@
 package me.buzz.woolwars.game.game.listener;
 
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -83,12 +86,28 @@ public class GameListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onChat(AsyncPlayerChatEvent event) {
-        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
-        if (woolMatch == null) return;
+        WoolMatch worldMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
+        WoolMatch playerMatch = gameManager.getInternalMatchByPlayer(event.getPlayer());
 
-        woolMatch.getMatchListener().chat(event);
+        if (worldMatch == null || playerMatch == null) {
+            event.setCancelled(true);
+
+            String message = WoolWars.get().getLanguage().getProperty(LanguageFile.LOBBY_CHAT)
+                    .replace("{prefix}", "prefix")
+                    .replace("{player}", event.getPlayer().getName())
+                    .replace("{message}", event.getMessage());
+
+            for (WoolPlayer woolOnlinePlayer : WoolPlayer.getWoolOnlinePlayers()) {
+                if (woolOnlinePlayer.isInMatch()) continue;
+                woolOnlinePlayer.toBukkitPlayer().sendMessage(message);
+            }
+
+            return;
+        }
+
+        worldMatch.getMatchListener().chat(event);
     }
 
 }

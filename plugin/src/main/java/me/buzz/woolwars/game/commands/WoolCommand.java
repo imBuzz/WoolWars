@@ -16,16 +16,21 @@ public class WoolCommand implements HCommandAdapter {
 
     private final WoolWars woolWars = WoolWars.get();
 
-    @SubCommand(permission = "woolwars.base")
+    @SubCommand()
     public void mainCommand(CommandSender sender, String[] args) {
         sender.sendMessage("");
         sender.sendMessage("  §e§l• §7You're running §e§lWOOLWARS " + woolWars.getDescription().getVersion() + " §7by §e" + woolWars.getDescription().getAuthors().get(0));
         sender.sendMessage("");
     }
 
-    @SubCommand(args = {"join"}, permission = "woolwars.join")
+    @SubCommand(args = {"join"})
     public void joinCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
+            if (!sender.hasPermission("woolwars.join")) {
+                sender.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.COMMANDS_NO_PERMISSION));
+                return;
+            }
+
             Player player = (Player) sender;
 
             WoolPlayer woolPlayer = WoolPlayer.getWoolPlayer(player);
@@ -40,9 +45,14 @@ public class WoolCommand implements HCommandAdapter {
         }
     }
 
-    @SubCommand(args = {"leave"}, permission = "woolwars.join")
+    @SubCommand(args = {"leave"})
     public void leaveCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {
+            if (!sender.hasPermission("woolwars.leave")) {
+                sender.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.COMMANDS_NO_PERMISSION));
+                return;
+            }
+
             Player player = (Player) sender;
             WoolMatch match = woolWars.getGameManager().getInternalMatchByPlayer(player);
             if (match == null) {

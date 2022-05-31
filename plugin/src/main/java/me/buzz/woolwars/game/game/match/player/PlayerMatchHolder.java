@@ -14,12 +14,13 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerHolder {
 
-    private final Map<String, WoolPlayer> players = new LinkedHashMap();
+    private final Map<String, WoolPlayer> players = new ConcurrentHashMap<>();
     @Getter
     private final Map<String, WoolMatchStats> stats = new HashMap<>();
 
@@ -36,10 +37,8 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
     }
 
     public void forWoolPlayers(Consumer<WoolPlayer> consumer) {
-        synchronized (players.values()) {
-            for (WoolPlayer value : players.values()) {
-                consumer.accept(value);
-            }
+        for (WoolPlayer value : players.values()) {
+            consumer.accept(value);
         }
     }
 
@@ -48,15 +47,23 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
     }
 
     public Set<Player> getOnlinePlayers() {
-        synchronized (players) {
-            return players.values().stream()
-                    .map(WoolPlayer::toBukkitPlayer)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
-        }
+        return players.values().stream()
+                .map(WoolPlayer::toBukkitPlayer)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<Player> getOnlineSpectators() {
+        return players.values().stream()
+                .map(WoolPlayer::toBukkitPlayer)
+                .filter(Objects::nonNull)
+                .filter(player -> player.hasMetadata("spectator") || player.hasMetadata("default-spectator"))
+                .collect(Collectors.toSet());
     }
 
     public void registerPlayer(WoolPlayer player) {
+        player.setInMatch(true);
+
         Player bukkitPlayer = player.toBukkitPlayer();
         bukkitPlayer.setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getMatchID()));
 
@@ -75,6 +82,10 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
 
     public void removePlayer(WoolPlayer player) {
         player.toBukkitPlayer().removeMetadata("wl-playing-game", WoolWars.get());
+
+        Player bukkitPlayer = player.toBukkitPlayer();
+        if (isSpectator(bukkitPlayer)) removeSpectator(bukkitPlayer);
+
         players.remove(player.getName());
     }
 
@@ -90,10 +101,14 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
 
     @Override
     public void setSpectator(Player player) {
+        setSpectator(player, false);
+    }
+
+    public void setSpectator(Player player, boolean internal) {
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
 
-        player.setMetadata("spectator", new FixedMetadataValue(WoolWars.get(), true));
+        player.setMetadata(internal ? "default-spectator" : "spectator", new FixedMetadataValue(WoolWars.get(), true));
         player.setAllowFlight(true);
         player.setFlying(true);
 
@@ -108,6 +123,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
     @Override
     public void removeSpectator(Player player) {
         player.removeMetadata("spectator", WoolWars.get());
+        player.removeMetadata("default-spectator", WoolWars.get());
 
         player.getInventory().clear();
         player.setFlying(false);

@@ -1,12 +1,13 @@
 package me.buzz.woolwars.game.game.match.task.tasks;
 
+import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.game.arena.location.SerializedLocation;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
+import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 public class ResetMatchTask extends SecondsTask {
 
@@ -33,9 +34,9 @@ public class ResetMatchTask extends SecondsTask {
         match.getRoundHolder().getTasks().remove(getID());
 
         SerializedLocation location = WoolWars.get().getSettings().getProperty(ConfigFile.LOBBY_LOCATION);
-        for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            onlinePlayer.removeMetadata("spectator", WoolWars.get());
-            onlinePlayer.teleport(location.toBukkitLocation(Bukkit.getWorld(location.getWorldName())));
+        for (WoolPlayer woolPlayer : match.getPlayerHolder().getWoolPlayers()) {
+            match.quit(woolPlayer, QuitGameReason.GAME_ENDED);
+            woolPlayer.toBukkitPlayer().teleport(location.toBukkitLocation(Bukkit.getWorld(location.getWorldName())));
         }
         match.reset();
     }

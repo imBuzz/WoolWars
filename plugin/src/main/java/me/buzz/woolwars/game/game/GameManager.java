@@ -80,7 +80,7 @@ public class GameManager extends AbstractManager implements ApiGameManager {
 
         for (WoolMatch value : matches) {
             if (value.checkJoin(woolPlayer)) {
-                value.join(woolPlayer);
+                value.joinAsPlayer(woolPlayer);
                 return true;
             } else {
                 System.out.println("Cannot join");

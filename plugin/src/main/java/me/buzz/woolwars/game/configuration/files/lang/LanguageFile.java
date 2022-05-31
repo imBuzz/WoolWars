@@ -22,7 +22,10 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> NO_MATCH = newProperty("commands.general.no-match-for-player", "§cYou have to be in a match to do that!");
 
     public static final Property<String> YOUR_ARE_IN_A_MATCH = newProperty("commands.join.already-in-match", "§cYou are already in a match");
-    public static final Property<String> NO_MATCH_FOUND = newProperty("commands.join.no-match-found", "§cThere aren't free match to join");
+    public static final Property<String> NO_MATCH_FOUND = newProperty("commands.join.no-match-found", "§cThere isn't a free match to join");
+
+    @Comment("Global chat format")
+    public static final Property<String> LOBBY_CHAT = newProperty("global.chat.lobby.format", "{prefix} {player}: {message}");
 
     public static final Property<String> NOT_ENOUGH_PLAYER_TO_PLAY = newProperty("match.not-enough-player-to-play",
             "§cThere are not enough player to keep playing!");

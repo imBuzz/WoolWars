@@ -91,7 +91,7 @@ public class MySQLProvider implements DataProvider {
                             mySQl.getInteger("uuid", player.getUniqueId(), "wins", "wool_players"),
                             mySQl.getInteger("uuid", player.getUniqueId(), "played", "wool_players"),
                             mySQl.getInteger("uuid", player.getUniqueId(), "kills", "wool_players"),
-                            mySQl.getInteger("uuid", player.getUniqueId(), "deaths", "wool_players"));
+                            mySQl.getInteger("uuid", player.getUniqueId(), "deaths", "wool_players"), false);
 
                 } else {
                     woolPlayer = new WoolPlayer(player);

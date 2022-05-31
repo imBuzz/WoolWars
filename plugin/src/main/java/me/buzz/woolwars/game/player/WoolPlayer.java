@@ -10,6 +10,7 @@ import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -18,14 +19,18 @@ import java.util.UUID;
 @AllArgsConstructor
 public class WoolPlayer implements ApiWoolPlayer {
 
-    public final static Map<String, WoolPlayer> woolPlayersByName = new HashMap<>();
+    private final static Map<String, WoolPlayer> woolPlayersByName = new HashMap<>();
+    @Setter
+    private boolean inMatch;
 
     public static WoolPlayer getWoolPlayer(Player player) {
         return woolPlayersByName.get(player.getName());
     }
+
     public static void trackPlayer(WoolPlayer player) {
         woolPlayersByName.put(player.getName(), player);
     }
+
     public static WoolPlayer removePlayer(Player player) {
         return woolPlayersByName.remove(player.getName());
     }
@@ -38,6 +43,10 @@ public class WoolPlayer implements ApiWoolPlayer {
 
     public int woolPlaced, blocksBroken, powerUpsGotten;
     public int wins, played, kills, deaths;
+
+    public static Collection<WoolPlayer> getWoolOnlinePlayers() {
+        return woolPlayersByName.values();
+    }
 
     public WoolPlayer(Player player) {
         this.UUID = player.getUniqueId();

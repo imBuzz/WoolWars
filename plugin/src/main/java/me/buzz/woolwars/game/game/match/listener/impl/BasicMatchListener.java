@@ -3,8 +3,12 @@ package me.buzz.woolwars.game.game.match.listener.impl;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.arena.region.Region;
+import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
+import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
+import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
+import me.buzz.woolwars.game.game.arena.settings.preset.impl.ChatPreset;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
@@ -30,6 +34,10 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void damage(EntityDamageEvent event) {
+        if (match.getMatchState() != MatchState.ROUND) {
+            event.setCancelled(true);
+            return;
+        }
         if (event.getCause() == EntityDamageEvent.DamageCause.CONTACT) return;
         if (event.getEntityType() != EntityType.PLAYER) return;
         Player victim = (Player) event.getEntity();
@@ -42,14 +50,24 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void damageByEntity(EntityDamageByEntityEvent event) {
+        if (match.getMatchState() != MatchState.ROUND) {
+            event.setCancelled(true);
+            return;
+        }
         if (event.getDamager().getType() != EntityType.PLAYER) return;
         if (event.getEntityType() != EntityType.PLAYER) return;
 
         Player victim = (Player) event.getEntity();
+        Player damager = (Player) event.getDamager();
+
+        if (match.getPlayerHolder().getMatchStats(victim).getTeam() == match.getPlayerHolder().getMatchStats(damager).getTeam()) {
+            event.setCancelled(true);
+            return;
+        }
 
         if (victim.getHealth() - event.getFinalDamage() <= 0) {
             event.setCancelled(true);
-            match.handleDeath(victim, (Player) event.getDamager(), event.getCause());
+            match.handleDeath(victim, damager, event.getCause());
         }
     }
 
@@ -121,7 +139,15 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void chat(AsyncPlayerChatEvent event) {
+        event.setCancelled(true);
 
+        String message = ((ApplicablePreset<String, WoolMatch, Player, ChatPreset.AskingChatMotivation>) match.getPlayableArena().getPreset(PresetType.CHAT))
+                .apply(match, event.getPlayer(), match.getPlayerHolder().isSpectator(event.getPlayer()) ? ChatPreset.AskingChatMotivation.SPECTATOR_CHAT :
+                        ChatPreset.AskingChatMotivation.CHAT).replace("{message}", event.getMessage());
+
+        if (match.getPlayerHolder().isSpectator(event.getPlayer()))
+            match.getPlayerHolder().getOnlineSpectators().forEach(player -> player.sendMessage(message));
+        else match.getPlayerHolder().getOnlinePlayers().forEach(player -> player.sendMessage(message));
     }
 
 }

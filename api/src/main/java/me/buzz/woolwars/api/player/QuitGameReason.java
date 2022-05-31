@@ -4,6 +4,7 @@ public enum QuitGameReason {
 
     DISCONNECT,
     SHUTDOWN,
+    GAME_ENDED,
     OTHER;
 
 }

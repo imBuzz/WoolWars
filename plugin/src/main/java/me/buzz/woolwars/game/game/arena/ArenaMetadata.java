@@ -67,7 +67,7 @@ public class ArenaMetadata {
         presets.put(PresetType.SCOREBOARD, new ScoreboardPreset(data));
         presets.put(PresetType.CHAT, new ChatPreset(data));
 
-        return new ArenaMetadata(ID, name, matchType, powerups, locations, regions, worldName, presets);
+        return new ArenaMetadata(ID, name, matchType, powerups, locations, regions, presets, worldName);
     }
 
     public SerializedLocation getArenaLocation(ArenaLocationType type) {

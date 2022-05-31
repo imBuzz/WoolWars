@@ -11,7 +11,7 @@ import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 public class ConfigFile implements SettingsHolder {
 
     public static final Property<SerializedLocation> LOBBY_LOCATION = newBeanProperty(SerializedLocation.class, "match.locations.lobby",
-            SerializedLocation.from("lobby", 0, 0, 0, 0, 0));
+            SerializedLocation.from("world", 0, 100, 0, 0, 0));
 
     @Comment("Leave the worldName property empty")
     public static final Property<SerializedLocation> NPC_LOCATION_BLUE = newBeanProperty(SerializedLocation.class, "match.locations.npc.blue",

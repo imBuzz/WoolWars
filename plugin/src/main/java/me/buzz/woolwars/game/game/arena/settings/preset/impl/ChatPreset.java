@@ -1,7 +1,6 @@
 package me.buzz.woolwars.game.game.arena.settings.preset.impl;
 
 import lombok.Getter;
-import me.buzz.woolwars.api.game.match.player.team.ApiWoolTeam;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
 import me.buzz.woolwars.game.game.match.WoolMatch;
@@ -14,12 +13,13 @@ import org.bukkit.entity.Player;
 @Getter
 public class ChatPreset implements ApplicablePreset<String, WoolMatch, Player, ChatPreset.AskingChatMotivation> {
 
-    private final String joinMessage, quitMessage, chatFormat;
+    private final String joinMessage, quitMessage, chatFormat, spectatorFormat;
 
     public ChatPreset(FileConfiguration data) {
         joinMessage = data.getString("options.chat.join");
         quitMessage = data.getString("options.chat.quit");
         chatFormat = data.getString("options.chat.format");
+        spectatorFormat = data.getString("options.chat.spectatorFormat");
     }
 
     @Override
@@ -27,10 +27,16 @@ public class ChatPreset implements ApplicablePreset<String, WoolMatch, Player, C
         String returnString;
 
         switch (motivation) {
+            case SPECTATOR_CHAT: {
+                returnString = spectatorFormat.replace("{player}", player.getName());
+                break;
+            }
             case CHAT: {
-                ApiWoolTeam team = woolMatch.getPlayerHolder().getMatchStats(player).getTeam();
+                boolean matchStatsNull = woolMatch.getPlayerHolder().getMatchStats(player) == null;
                 returnString = chatFormat
-                        .replace("{teamColor}", String.valueOf((team != null ? team.getTeamColor().getCC() : ChatColor.WHITE)))
+                        .replace("{teamColor}", String.valueOf(matchStatsNull ? "" :
+                                woolMatch.isPlaying() ? woolMatch.getPlayerHolder().getMatchStats(player).getTeam().getTeamColor().getCC().toString() : ""
+                        ))
                         .replace("{player}", player.getName());
                 break;
             }
@@ -57,7 +63,8 @@ public class ChatPreset implements ApplicablePreset<String, WoolMatch, Player, C
     public enum AskingChatMotivation {
         CHAT,
         JOIN,
-        QUIT
+        QUIT,
+        SPECTATOR_CHAT
     }
 
 }
