@@ -10,9 +10,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 
@@ -80,6 +82,22 @@ public class GameListener implements Listener {
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().blockBreak(event);
+    }
+
+    @EventHandler
+    public void entityExplode(EntityExplodeEvent event) {
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getEntity().getWorld().getName());
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().entityExplode(event);
+    }
+
+    @EventHandler
+    public void blockExplode(BlockExplodeEvent event) {
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getBlock().getWorld().getName());
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().blockExplode(event);
     }
 
     @EventHandler

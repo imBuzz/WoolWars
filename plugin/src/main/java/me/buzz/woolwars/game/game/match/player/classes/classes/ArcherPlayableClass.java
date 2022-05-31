@@ -4,6 +4,7 @@ import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
+import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
@@ -14,6 +15,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +53,19 @@ public class ArcherPlayableClass extends PlayableClass {
         return "123456009";
     }
 
+    public static Vector fixVelocity(Vector vector) {
+        vector.setX(vector.getX() > 4 ? 4 : vector.getX() < -4 ? -4 : vector.getX());
+        vector.setY(vector.getY() > 4 ? 4 : vector.getY() < -4 ? -4 : vector.getY());
+        vector.setZ(vector.getZ() > 4 ? 4 : vector.getZ() < -4 ? -4 : vector.getZ());
+
+        return vector;
+    }
+
     @Override
     public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+        for (PotionEffect activePotionEffect : player.getActivePotionEffects())
+            player.removePotionEffect(activePotionEffect.getType());
+
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().setArmorContents(null);
         player.getInventory().clear();
@@ -64,16 +79,22 @@ public class ArcherPlayableClass extends PlayableClass {
             if (slot < 0) continue;
             player.getInventory().setItem(slot, PlayableClass.adjustItem(teamColor, items.get(slot).clone()));
         }
-    }
 
-    @Override
-    public void useAbility() {
-
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
     }
 
     @Override
     public void reset() {
         used = false;
+    }
+
+    @Override
+    public void useAbility(WoolMatch match, Player player) {
+        if (used) return;
+        used = true;
+
+        player.setVelocity(fixVelocity(player.getVelocity().add(player.getLocation().getDirection().setY(0).normalize().multiply(-4))));
+        player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
     }
 
 }

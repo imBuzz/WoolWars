@@ -14,12 +14,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 @AllArgsConstructor
 public class WoolPlayer implements ApiWoolPlayer {
 
-    private final static Map<String, WoolPlayer> woolPlayersByName = new HashMap<>();
+    private final static Map<String, WoolPlayer> woolPlayersByName = new ConcurrentHashMap<>();
 
     public static WoolPlayer getWoolPlayer(Player player) {
         return woolPlayersByName.get(player.getName());

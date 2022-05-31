@@ -1,6 +1,7 @@
 package me.buzz.woolwars.game.game.match.listener.impl;
 
 import lombok.RequiredArgsConstructor;
+import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.arena.region.Region;
 import me.buzz.woolwars.api.game.match.state.MatchState;
@@ -11,17 +12,23 @@ import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
 import me.buzz.woolwars.game.game.arena.settings.preset.impl.ChatPreset;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
+import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.ArcherPlayableClass;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -41,10 +48,17 @@ public class BasicMatchListener implements MatchListener {
         if (event.getCause() == EntityDamageEvent.DamageCause.CONTACT) return;
         if (event.getEntityType() != EntityType.PLAYER) return;
 
+        if (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+            event.setCancelled(true);
+            return;
+        }
 
         Player victim = (Player) event.getEntity();
         if (match.getPlayerHolder().isSpectator(victim)) {
             event.setCancelled(true);
+            if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                victim.teleport(match.getPlayableArena().getLocation(ArenaLocationType.WAITING_LOBBY));
+            }
             return;
         }
 
@@ -85,6 +99,28 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void interact(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (player.getItemInHand() != null) {
+            switch (player.getItemInHand().getType()) {
+                case BLAZE_POWDER: {
+                    WoolMatchStats stats = match.getPlayerHolder().getMatchStats(player);
+                    if (stats != null) {
+                        if (match.getMatchState() != MatchState.ROUND) {
+                            player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.YOU_CANNOT_USE_THIS_ABILITY_YET));
+                            return;
+                        }
+
+                        PlayableClass playableClass = stats.getPlayableClass();
+                        if (playableClass.isUsed()) {
+                            player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_ALREADY_USED));
+                        } else {
+                            playableClass.useAbility(match, player);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -170,4 +206,21 @@ public class BasicMatchListener implements MatchListener {
         else match.getPlayerHolder().getOnlinePlayers().forEach(player -> player.sendMessage(message));
     }
 
+    @Override
+    public void entityExplode(EntityExplodeEvent event) {
+        if (event.getEntityType() != EntityType.PRIMED_TNT) return;
+
+        if (event.getEntity().hasMetadata("assault-tnt")) {
+            event.setCancelled(true);
+            for (Entity nearbyEntity : event.getLocation().getWorld().getNearbyEntities(event.getLocation(), 3, 1, 3)) {
+                nearbyEntity.setVelocity(ArcherPlayableClass.fixVelocity(nearbyEntity.getVelocity().add(nearbyEntity.getLocation()
+                        .getDirection().setY(0).normalize().multiply(-5))));
+            }
+        }
+    }
+
+    @Override
+    public void blockExplode(BlockExplodeEvent event) {
+        event.setCancelled(true);
+    }
 }

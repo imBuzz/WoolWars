@@ -61,14 +61,14 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
                 .collect(Collectors.toSet());
     }
 
-    public void registerPlayer(WoolPlayer player) {
+    public void registerPlayer(WoolPlayer player, boolean createStats) {
         player.setInMatch(true);
 
         Player bukkitPlayer = player.toBukkitPlayer();
         bukkitPlayer.setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), match.getMatchID()));
 
         players.put(player.getName(), player);
-        stats.put(player.getName(), new WoolMatchStats(player.getUUID()));
+        if (createStats) stats.put(player.getName(), new WoolMatchStats(player.getUUID()));
 
         for (PotionEffect activePotionEffect : bukkitPlayer.getActivePotionEffects())
             bukkitPlayer.removePotionEffect(activePotionEffect.getType());
@@ -108,6 +108,9 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
     }
 
     public void setSpectator(Player player, boolean internal) {
+        player.setHealth(20);
+        player.setFoodLevel(20);
+
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
 

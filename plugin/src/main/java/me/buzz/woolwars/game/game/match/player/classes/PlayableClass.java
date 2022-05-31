@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
+import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.ItemBuilder;
@@ -36,7 +37,7 @@ public abstract class PlayableClass {
         }
     }
 
-    public abstract void useAbility();
+    public abstract void useAbility(WoolMatch match, Player player);
 
     public abstract void equip(WoolPlayer woolPlayer, WoolMatchStats stats);
 

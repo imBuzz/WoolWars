@@ -29,6 +29,7 @@ public class WoolMatchStats implements ApiWoolMatchStats {
     public int matchKills, matchDeaths;
 
     public void pickClass(Player player, TeamColor teamColor, PlayableClassType type) {
+
         switch (type) {
             case TANK: {
                 playableClass = new TankPlayableClass(player, teamColor);

@@ -32,6 +32,8 @@ public class PlayerListener implements Listener {
         WoolWars.get().getDataProvider().loadPlayer(player).whenComplete((woolPlayer, throwable) -> WoolPlayer.trackPlayer(woolPlayer));
 
         for (WoolPlayer woolOnlinePlayer : WoolPlayer.getWoolOnlinePlayers()) {
+            if (woolOnlinePlayer.toBukkitPlayer() == player) continue;
+
             if (woolOnlinePlayer.isInMatch()) {
                 player.hidePlayer(woolOnlinePlayer.toBukkitPlayer());
                 woolOnlinePlayer.toBukkitPlayer().hidePlayer(player);

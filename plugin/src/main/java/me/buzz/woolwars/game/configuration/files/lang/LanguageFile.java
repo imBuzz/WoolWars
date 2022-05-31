@@ -41,6 +41,12 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ROUND_UNLOCK_CENTER_BAR = newProperty("match.round.protectCenter-bar", "§e§lCENTER UNLOCKS IN {seconds} SECONDS!");
     public static final Property<String> ROUND_CANNOT_BE_CAPTURED = newProperty("match.round.cannot-be-captured", "§cYou cannot capture the center for another {seconds} seconds!");
 
+    public static final Property<String> TEN_SECONDS_REMAINING = newProperty("match.seconds.ten-seconds-remaining", "§c§l10 §fseconds left in the round!");
+
+    //KILL
+    public static final Property<String> DIED = newProperty("match.kills.died", "{victimTeamColor}{victim} §7died");
+    public static final Property<String> KILL_BY_SOMEONE = newProperty("match.kills.killedBySomeone", "{victimTeamColor}{victim} §7was killed by {killerTeamColor}{killer}.");
+
     //ENDED MATCH
 
     public static final Property<String> ENDED_STATUS_LOST = newProperty("match.ended.variables.status.lost", "§cYour team lost!");
@@ -48,6 +54,13 @@ public class LanguageFile implements SettingsHolder {
 
     public static final Property<Title> ENDED_VICTORY_TITLE = newBeanProperty(Title.class, "match.ended.victory.title", new Title("§c§lVICTORY", "§6Your team won!"));
     public static final Property<Title> ENDED_LOST_TITLE = newBeanProperty(Title.class, "match.ended.lost.title", new Title("§c§lDEFEAT", "§6Your team was defeated!"));
+
+    public static final Property<List<String>> MATCH_START_INFORMATION = newListProperty("match.started.resume", Lists.newArrayList(
+            "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+            "",
+            "§e&lWELCOME TO WOOLWARS",
+            "",
+            "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
 
     public static final Property<Boolean> ENDED_RESUME_CENTERED = newProperty("match.ended.resume.centered", true);
     public static final Property<List<String>> ENDED_RESUME = newListProperty("match.ended.resume.lines", Lists.newArrayList(
@@ -138,6 +151,11 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ROUND_ENDED = newProperty("scoreboard.variables.round.ended", "Round Over!");
 
     //ITEMS
+
+    @Comment("Used when a player use tries to use an ability too soon for example: When an engineer try to use his ability while the middle area is in cooldown")
+    public static final Property<String> YOU_CANNOT_USE_THIS_ABILITY_YET = newProperty("classes.ability.cannot-use-yet", "§cYou can't use this ability yet");
+    public static final Property<String> ABILITY_USED = newProperty("classes.ability.used", "§aAbility Used");
+    public static final Property<String> ABILITY_ALREADY_USED = newProperty("classes.ability.used-message", "§cYou already used this ability for this round");
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> TANK_KEYSTONE = newBeanProperty(WoolItem.class, "classes.tank.keystone",

@@ -4,16 +4,19 @@ import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
+import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.ItemBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
@@ -53,6 +56,9 @@ public class EngineerPlayableClass extends PlayableClass {
 
     @Override
     public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+        for (PotionEffect activePotionEffect : player.getActivePotionEffects())
+            player.removePotionEffect(activePotionEffect.getType());
+
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().setArmorContents(null);
         player.getInventory().clear();
@@ -69,8 +75,17 @@ public class EngineerPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void useAbility() {
+    public void useAbility(WoolMatch match, Player player) {
+        if (used) return;
+        if (!match.getRoundHolder().canBreakCenter) {
+            player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.YOU_CANNOT_USE_THIS_ABILITY_YET));
+            return;
+        }
 
+        used = true;
+        match.getRoundHolder().canBreakCenter = false;
+        Bukkit.getScheduler().runTaskLater(WoolWars.get(), () -> match.getRoundHolder().canBreakCenter = true, 20 * 5L);
+        player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
     }
 
     @Override

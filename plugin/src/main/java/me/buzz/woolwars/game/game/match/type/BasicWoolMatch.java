@@ -37,7 +37,6 @@ import me.buzz.woolwars.game.utils.structures.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -91,7 +90,7 @@ public class BasicWoolMatch extends WoolMatch {
             player.hidePlayer(onlinePlayer);
         }
 
-        playerHolder.registerPlayer(woolPlayer);
+        playerHolder.registerPlayer(woolPlayer, true);
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
         if (joinGameEvent.isSendMessage()) {
@@ -111,9 +110,8 @@ public class BasicWoolMatch extends WoolMatch {
     public void joinAsSpectator(WoolPlayer woolPlayer) {
         Player player = woolPlayer.toBukkitPlayer();
 
-        player.setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), ID));
+        playerHolder.registerPlayer(woolPlayer, false);
         playerHolder.setSpectator(player, true);
-        player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
         Set<Player> playerSet = playerHolder.getOnlinePlayers();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -204,8 +202,14 @@ public class BasicWoolMatch extends WoolMatch {
 
             team.setTeamNPC(npc);
 
-            for (WoolPlayer woolPlayer : groups.get(i))
+            for (WoolPlayer woolPlayer : groups.get(i)) {
                 team.join(woolPlayer, playerHolder.getMatchStats(woolPlayer.getName()));
+
+                Player player = woolPlayer.toBukkitPlayer();
+                for (String s : WoolWars.get().getLanguage().getProperty(LanguageFile.MATCH_START_INFORMATION)) {
+                    player.sendMessage(s);
+                }
+            }
 
             teams.put(teamColor, team);
         }
@@ -307,27 +311,48 @@ public class BasicWoolMatch extends WoolMatch {
             victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
             return;
         }
-        boolean killedByAPlayer = killer != null && !playerHolder.isSpectator(killer);
 
+        boolean wasASpectator = playerHolder.isSpectator(victim);
+        boolean killedByAPlayer = killer != null && !playerHolder.isSpectator(killer);
+        String diedMessage;
 
         WoolMatchStats victimStats = playerHolder.getMatchStats(victim);
-        if (!playerHolder.isSpectator(victim)) {
+        if (!wasASpectator) {
             playerHolder.setSpectator(victim);
 
             victimStats.matchDeaths++;
-            if (killedByAPlayer) playerHolder.getMatchStats(killer).matchKills++;
-
             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 2, 1));
 
             Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED_TITLE);
             victim.sendTitle(title.getTitle(), title.getSubTitle());
         }
 
-        if (killedByAPlayer) Bukkit.getPluginManager().callEvent(new PlayerDeathByPlayerEvent(killer, victim));
-        else Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(victim));
+        if (killedByAPlayer) {
+            Bukkit.getPluginManager().callEvent(new PlayerDeathByPlayerEvent(killer, victim));
+
+            WoolMatchStats killerStats = playerHolder.getMatchStats(killer);
+            killerStats.matchKills++;
+
+            diedMessage = WoolWars.get().getLanguage().getProperty(LanguageFile.KILL_BY_SOMEONE)
+                    .replace("{victim}", victim.getName())
+                    .replace("{victimTeamColor}", victimStats.getTeam().getTeamColor().getCC().toString())
+                    .replace("{killer}", killer.getName())
+                    .replace("{killerTeamColor}", killerStats.getTeam().getTeamColor().getCC().toString());
+        } else {
+            Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(victim));
+            diedMessage = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED)
+                    .replace("{victim}", victim.getName())
+                    .replace("{victimTeamColor}", victimStats.getTeam().getTeamColor().getCC().toString());
+        }
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {
-            victim.teleport(victimStats.getTeam().getSpawnLocation());
+            victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+        }
+
+        if (!wasASpectator) {
+            for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
+                onlinePlayer.sendMessage(diedMessage);
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
+import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
@@ -12,9 +13,13 @@ import me.buzz.woolwars.game.utils.ItemBuilder;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
@@ -55,6 +60,9 @@ public class AssaultPlayableClass extends PlayableClass {
 
     @Override
     public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+        for (PotionEffect activePotionEffect : player.getActivePotionEffects())
+            player.removePotionEffect(activePotionEffect.getType());
+
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().setArmorContents(null);
         player.getInventory().clear();
@@ -71,8 +79,15 @@ public class AssaultPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void useAbility() {
+    public void useAbility(WoolMatch match, Player player) {
+        if (used) return;
+        used = true;
 
+        TNTPrimed tnt = (TNTPrimed) player.getWorld().spawnEntity(player.getLocation(), EntityType.PRIMED_TNT);
+        tnt.setFuseTicks(20 * 4);
+        tnt.setMetadata("assault-tnt", new FixedMetadataValue(WoolWars.get(), true));
+
+        player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
     }
 
     @Override

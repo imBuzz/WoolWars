@@ -4,6 +4,7 @@ import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
+import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
@@ -50,6 +51,9 @@ public class TankPlayableClass extends PlayableClass {
 
     @Override
     public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+        for (PotionEffect activePotionEffect : player.getActivePotionEffects())
+            player.removePotionEffect(activePotionEffect.getType());
+
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().setArmorContents(null);
         player.getInventory().clear();
@@ -66,10 +70,11 @@ public class TankPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void useAbility() {
+    public void useAbility(WoolMatch match, Player player) {
         if (used) return;
         used = true;
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 3, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 2, 4));
+        player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
     }
 
     @Override
