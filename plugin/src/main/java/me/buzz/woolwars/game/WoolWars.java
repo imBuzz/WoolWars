@@ -12,6 +12,7 @@ import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.hook.ExternalPluginHook;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
+import me.buzz.woolwars.game.player.TabHandler;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
 import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
@@ -31,6 +32,8 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private DataProvider dataProvider;
     @Getter
     private GameManager gameManager;
+    @Getter
+    private TabHandler tabHandler;
 
     @Override
     public void onEnable() {
@@ -50,6 +53,8 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
         gameManager = new GameManager();
         gameManager.init();
+
+        tabHandler = new TabHandler();
 
         checkForHooks();
 

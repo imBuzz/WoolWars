@@ -20,17 +20,13 @@ import java.util.UUID;
 public class WoolPlayer implements ApiWoolPlayer {
 
     private final static Map<String, WoolPlayer> woolPlayersByName = new HashMap<>();
-    @Setter
-    private boolean inMatch;
 
     public static WoolPlayer getWoolPlayer(Player player) {
         return woolPlayersByName.get(player.getName());
     }
-
     public static void trackPlayer(WoolPlayer player) {
         woolPlayersByName.put(player.getName(), player);
     }
-
     public static WoolPlayer removePlayer(Player player) {
         return woolPlayersByName.remove(player.getName());
     }
@@ -43,6 +39,9 @@ public class WoolPlayer implements ApiWoolPlayer {
 
     public int woolPlaced, blocksBroken, powerUpsGotten;
     public int wins, played, kills, deaths;
+
+    @Setter
+    private boolean inMatch;
 
     public static Collection<WoolPlayer> getWoolOnlinePlayers() {
         return woolPlayersByName.values();

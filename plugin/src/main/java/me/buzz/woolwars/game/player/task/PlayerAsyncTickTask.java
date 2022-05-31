@@ -10,6 +10,7 @@ import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.hook.ExternalPluginHook;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
+import me.buzz.woolwars.game.player.TabHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,6 +23,7 @@ import java.util.Set;
 public class PlayerAsyncTickTask extends BukkitRunnable {
 
     private final GameManager gameManager = WoolWars.get().getGameManager();
+    private final TabHandler tabHandler = WoolWars.get().getTabHandler();
 
     @Override
     public void run() {
@@ -31,6 +33,11 @@ public class PlayerAsyncTickTask extends BukkitRunnable {
 
             WoolMatch match = gameManager.getInternalMatchByPlayer(player);
             applyScoreboardLines(getScoreboardLinesByMatchState(player, match), board);
+
+            if (match != null) {
+                if (tabHandler.isTracked(player)) continue;
+                tabHandler.trackPlayer(player, match);
+            }
         }
     }
 

@@ -9,11 +9,12 @@ import org.bukkit.DyeColor;
 @Getter
 public enum TeamColor {
 
-    RED(ChatColor.RED, DyeColor.RED, 5),
-    BLUE(ChatColor.BLUE, DyeColor.BLUE, 10);
+    RED(ChatColor.RED, DyeColor.RED, 5, "R"),
+    BLUE(ChatColor.BLUE, DyeColor.BLUE, 10, "B");
 
     private final ChatColor CC;
     private final DyeColor DC;
     private final int priority;
+    private final String tag;
 
 }

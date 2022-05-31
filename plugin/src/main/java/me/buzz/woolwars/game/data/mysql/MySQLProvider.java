@@ -82,9 +82,7 @@ public class MySQLProvider implements DataProvider {
                         }
                     }
 
-                    woolPlayer = new WoolPlayer(player.getUniqueId(), player.getName(),
-                            kitLayout,
-
+                    woolPlayer = new WoolPlayer(player.getUniqueId(), player.getName(), kitLayout,
                             mySQl.getInteger("uuid", player.getUniqueId(), "woolPlaced", "wool_players"),
                             mySQl.getInteger("uuid", player.getUniqueId(), "blocksBroken", "wool_players"),
                             mySQl.getInteger("uuid", player.getUniqueId(), "powerUpsGotten", "wool_players"),

@@ -82,6 +82,8 @@ public class RoundMatchHolder extends AbstractMatchHolder {
 
                 onlinePlayer.teleport(team.getSpawnLocation());
 
+                WoolWars.get().getTabHandler().update(onlinePlayer, match);
+
                 Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.PRE_ROUND_TITLE);
                 onlinePlayer.sendTitle(title.getTitle(), title.getSubTitle());
             }

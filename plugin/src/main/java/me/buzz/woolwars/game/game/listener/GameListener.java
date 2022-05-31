@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.listener;
 
+import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.GameManager;
@@ -13,14 +14,25 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.*;
 
 public class GameListener implements Listener {
 
     private final GameManager gameManager = WoolWars.get().getGameManager();
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void teleport(PlayerTeleportEvent event) {
+        if (event.getCause() == PlayerTeleportEvent.TeleportCause.PLUGIN) return;
+
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getTo().getWorld().getName());
+        if (woolMatch == null) return;
+
+        if (woolMatch.getMatchState() != MatchState.WAITING) {
+            woolMatch.joinAsSpectator(WoolPlayer.getWoolPlayer(event.getPlayer()));
+        } else {
+            woolMatch.joinAsPlayer(WoolPlayer.getWoolPlayer(event.getPlayer()));
+        }
+    }
 
     @EventHandler
     public void damage(EntityDamageEvent event) {

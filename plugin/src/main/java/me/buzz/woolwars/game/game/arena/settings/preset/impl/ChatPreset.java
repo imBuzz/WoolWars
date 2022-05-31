@@ -28,16 +28,11 @@ public class ChatPreset implements ApplicablePreset<String, WoolMatch, Player, C
 
         switch (motivation) {
             case SPECTATOR_CHAT: {
-                returnString = spectatorFormat.replace("{player}", player.getName());
+                returnString = spectatorFormat.replace("{displayPlayerName}", player.getDisplayName());
                 break;
             }
             case CHAT: {
-                boolean matchStatsNull = woolMatch.getPlayerHolder().getMatchStats(player) == null;
-                returnString = chatFormat
-                        .replace("{teamColor}", String.valueOf(matchStatsNull ? "" :
-                                woolMatch.isPlaying() ? woolMatch.getPlayerHolder().getMatchStats(player).getTeam().getTeamColor().getCC().toString() : ""
-                        ))
-                        .replace("{player}", player.getName());
+                returnString = chatFormat.replace("{displayPlayerName}", player.getDisplayName());
                 break;
             }
             case JOIN: {

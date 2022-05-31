@@ -44,6 +44,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class BasicWoolMatch extends WoolMatch {
@@ -74,6 +75,22 @@ public class BasicWoolMatch extends WoolMatch {
         Bukkit.getPluginManager().callEvent(joinGameEvent);
         if (joinGameEvent.isCancelled()) return;
 
+        Set<Player> playerSet = playerHolder.getOnlinePlayers();
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer == player) continue;
+            if (playerSet.contains(onlinePlayer)) {
+                if (playerHolder.isSpectator(onlinePlayer)) continue;
+
+                if (!player.canSee(onlinePlayer)) player.showPlayer(onlinePlayer);
+                if (!onlinePlayer.canSee(player)) onlinePlayer.showPlayer(player);
+
+                continue;
+            }
+
+            onlinePlayer.hidePlayer(player);
+            player.hidePlayer(onlinePlayer);
+        }
+
         playerHolder.registerPlayer(woolPlayer);
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
@@ -85,7 +102,6 @@ public class BasicWoolMatch extends WoolMatch {
                 matchPlayer.sendMessage(leaveMessage);
             }
         }
-
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
             setMatchState(MatchState.STARTING);
         }
@@ -98,6 +114,21 @@ public class BasicWoolMatch extends WoolMatch {
         player.setMetadata("wl-playing-game", new FixedMetadataValue(WoolWars.get(), ID));
         playerHolder.setSpectator(player, true);
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+
+        Set<Player> playerSet = playerHolder.getOnlinePlayers();
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer == player) continue;
+            if (playerSet.contains(onlinePlayer)) {
+                if (!playerHolder.isSpectator(onlinePlayer)) {
+                    if (!player.canSee(onlinePlayer)) player.showPlayer(onlinePlayer);
+                    if (!onlinePlayer.canSee(player)) onlinePlayer.showPlayer(player);
+                }
+                continue;
+            }
+
+            onlinePlayer.hidePlayer(player);
+            player.hidePlayer(onlinePlayer);
+        }
     }
 
     @Override
@@ -119,6 +150,19 @@ public class BasicWoolMatch extends WoolMatch {
 
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
                 matchPlayer.sendMessage(leaveMessage);
+            }
+        }
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer == player) continue;
+
+            WoolPlayer woolPlayer1 = WoolPlayer.getWoolPlayer(onlinePlayer);
+            if (woolPlayer1.isInMatch()) {
+                player.hidePlayer(onlinePlayer);
+                onlinePlayer.hidePlayer(player);
+            } else if (!onlinePlayer.canSee(player)) {
+                onlinePlayer.showPlayer(player);
+                player.showPlayer(onlinePlayer);
             }
         }
 
@@ -263,13 +307,15 @@ public class BasicWoolMatch extends WoolMatch {
             victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
             return;
         }
+        boolean killedByAPlayer = killer != null && !playerHolder.isSpectator(killer);
+
 
         WoolMatchStats victimStats = playerHolder.getMatchStats(victim);
         if (!playerHolder.isSpectator(victim)) {
             playerHolder.setSpectator(victim);
 
             victimStats.matchDeaths++;
-            if (killer != null) playerHolder.getMatchStats(killer).matchKills++;
+            if (killedByAPlayer) playerHolder.getMatchStats(killer).matchKills++;
 
             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 2, 1));
 
@@ -277,7 +323,7 @@ public class BasicWoolMatch extends WoolMatch {
             victim.sendTitle(title.getTitle(), title.getSubTitle());
         }
 
-        if (killer != null) Bukkit.getPluginManager().callEvent(new PlayerDeathByPlayerEvent(killer, victim));
+        if (killedByAPlayer) Bukkit.getPluginManager().callEvent(new PlayerDeathByPlayerEvent(killer, victim));
         else Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(victim));
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {

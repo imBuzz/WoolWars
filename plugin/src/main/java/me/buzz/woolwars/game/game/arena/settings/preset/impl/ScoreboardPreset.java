@@ -6,6 +6,7 @@ import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
 import me.buzz.woolwars.game.game.match.task.tasks.TimeElapsedTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.hook.ExternalPluginHook;
@@ -79,7 +80,7 @@ public class ScoreboardPreset implements ApplicablePreset<List<String>, WoolMatc
                                     StringsUtils.getProgressBar(match.getTeams().get(TeamColor.BLUE).getPoints(), 3, 3,
                                             WoolWars.get().getLanguage().getProperty(LanguageFile.PROGRESS_SYMBOL).toCharArray()[0], ChatColor.BLUE, ChatColor.GRAY))
 
-                            .replace("{time_left}", match.getRoundHolder().getTasks().get("startRound").formatSeconds())
+                            .replace("{time_left}", match.getRoundHolder().getTasks().containsKey(StartRoundTask.ID) ? match.getRoundHolder().getTasks().get(StartRoundTask.ID).formatSeconds() : "00:00")
 
                             .replace("{red_team_players}", String.valueOf(match.getTeams().get(TeamColor.RED).getPlayers().size()))
                             .replace("{blue_team_players}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPlayers().size()));

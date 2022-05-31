@@ -81,9 +81,12 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
     }
 
     public void removePlayer(WoolPlayer player) {
-        player.toBukkitPlayer().removeMetadata("wl-playing-game", WoolWars.get());
-
+        player.setInMatch(false);
         Player bukkitPlayer = player.toBukkitPlayer();
+
+        WoolWars.get().getTabHandler().stopTrackPlayer(bukkitPlayer);
+        bukkitPlayer.removeMetadata("wl-playing-game", WoolWars.get());
+
         if (isSpectator(bukkitPlayer)) removeSpectator(bukkitPlayer);
 
         players.remove(player.getName());
@@ -96,7 +99,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
 
     @Override
     public boolean isSpectator(Player player) {
-        return player.hasMetadata("spectator");
+        return player.hasMetadata("spectator") || player.hasMetadata("default-spectator");
     }
 
     @Override
@@ -114,6 +117,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
 
         //TODO: ADD SPECTATORS ITEM
 
+        WoolWars.get().getTabHandler().update(player, match);
         for (Player onlinePlayer : getOnlinePlayers()) {
             if (onlinePlayer == player) continue;
             onlinePlayer.hidePlayer(player);
@@ -129,6 +133,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
         player.setFlying(false);
         player.setAllowFlight(false);
 
+        WoolWars.get().getTabHandler().update(player, match);
         for (Player onlinePlayer : getOnlinePlayers()) {
             if (onlinePlayer == player) continue;
             onlinePlayer.showPlayer(player);

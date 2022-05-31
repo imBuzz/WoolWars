@@ -40,7 +40,13 @@ public class BasicMatchListener implements MatchListener {
         }
         if (event.getCause() == EntityDamageEvent.DamageCause.CONTACT) return;
         if (event.getEntityType() != EntityType.PLAYER) return;
+
+
         Player victim = (Player) event.getEntity();
+        if (match.getPlayerHolder().isSpectator(victim)) {
+            event.setCancelled(true);
+            return;
+        }
 
         if (event.getCause() == EntityDamageEvent.DamageCause.VOID || victim.getHealth() - event.getFinalDamage() <= 0) {
             event.setCancelled(true);
@@ -54,11 +60,17 @@ public class BasicMatchListener implements MatchListener {
             event.setCancelled(true);
             return;
         }
+
         if (event.getDamager().getType() != EntityType.PLAYER) return;
         if (event.getEntityType() != EntityType.PLAYER) return;
 
         Player victim = (Player) event.getEntity();
         Player damager = (Player) event.getDamager();
+
+        if (match.getPlayerHolder().isSpectator(damager)) {
+            event.setCancelled(true);
+            return;
+        }
 
         if (match.getPlayerHolder().getMatchStats(victim).getTeam() == match.getPlayerHolder().getMatchStats(damager).getTeam()) {
             event.setCancelled(true);
@@ -82,6 +94,11 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void place(BlockPlaceEvent event) {
+        if (match.getPlayerHolder().isSpectator(event.getPlayer())) {
+            event.setCancelled(true);
+            return;
+        }
+
         Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
         if (!centerRegion.isInRegion(event.getBlockPlaced().getLocation())) {
             event.setCancelled(true);
@@ -119,7 +136,10 @@ public class BasicMatchListener implements MatchListener {
     public void blockBreak(BlockBreakEvent event) {
         Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
         event.setCancelled(true);
+
+        if (match.getPlayerHolder().isSpectator(event.getPlayer())) return;
         if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
+
         if (!match.getRoundHolder().canBreakCenter) {
             event.getPlayer().sendMessage(WoolWars.get().getLanguage()
                     .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
