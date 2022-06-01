@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.round;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RoundMatchHolder extends AbstractMatchHolder {
 
-    private final static RandomSelector<Material> centerMats = RandomSelector.uniform(ImmutableList.of(Material.SNOW_BLOCK, Material.WOOL, Material.QUARTZ_BLOCK));
+    private final static RandomSelector<XMaterial> centerMats = RandomSelector.uniform(ImmutableList.of(XMaterial.SNOW_BLOCK, XMaterial.WHITE_WOOL, XMaterial.QUARTZ_BLOCK));
     private final static RandomSelector<PowerUPType> powerUPS = RandomSelector.uniform(Lists.newArrayList(PowerUPType.values()));
 
     @Getter
@@ -59,11 +60,11 @@ public class RoundMatchHolder extends AbstractMatchHolder {
 
         WorkloadHandler.addLoad(() -> {
             for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
-                block.setType(Material.GLASS);
+                block.setType(XMaterial.GLASS.parseMaterial());
             for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
-                block.setType(Material.GLASS);
+                block.setType(XMaterial.GLASS.parseMaterial());
             for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks())
-                block.setType(centerMats.pick());
+                block.setType(centerMats.pick().parseMaterial());
         });
 
         spawnGenerators();

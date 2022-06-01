@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.listener.impl;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
@@ -149,7 +150,7 @@ public class BasicMatchListener implements MatchListener {
         }
 
         Player player = event.getPlayer();
-        if (event.getBlockPlaced().getType() != Material.WOOL) return;
+        if (event.getBlockPlaced().getType() != XMaterial.WHITE_WOOL.parseMaterial()) return;
         match.getPlayerHolder().getMatchStats(event.getPlayer()).matchWoolPlaced++;
 
         WoolTeam woolTeam = match.getPlayerHolder().getMatchStats(player).getTeam();
@@ -157,7 +158,7 @@ public class BasicMatchListener implements MatchListener {
         int totalBlocks = 0, sameTypeBlocks = 0;
         for (Block block : centerRegion.getBlocks()) {
             totalBlocks++;
-            if (block.getType() != Material.WOOL) continue;
+            if (block.getType() != XMaterial.WHITE_WOOL.parseMaterial()) continue;
 
             DyeColor dyeColor = DyeColor.getByWoolData(block.getData());
             if (dyeColor == woolTeam.getTeamColor().getDC()) sameTypeBlocks++;

@@ -1,5 +1,7 @@
 package me.buzz.woolwars.game.game.match.player.classes.classes;
 
+import com.cryptomorin.xseries.XMaterial;
+import com.hakan.core.item.HItemBuilder;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
@@ -9,7 +11,6 @@ import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
-import me.buzz.woolwars.game.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -28,8 +29,8 @@ public class GolemPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new ItemBuilder(Material.STONE_SWORD).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(1, new ItemBuilder(Material.WOOL, 32).build());
+        items.put(0, new HItemBuilder(XMaterial.STONE_SWORD.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(1, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 32).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.GOLEM_KEYSTONE)
                 .toItemStack());
@@ -37,7 +38,7 @@ public class GolemPlayableClass extends PlayableClass {
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.BOOTS, new ItemBuilder(Material.GOLD_BOOTS)
+        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.GOLDEN_BOOTS.parseMaterial())
                 .addEnchant(Enchantment.PROTECTION_PROJECTILE, 2)
                 .setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true)
                 .build());
@@ -78,9 +79,9 @@ public class GolemPlayableClass extends PlayableClass {
 
         ItemStack boots = player.getInventory().getBoots().clone();
 
-        player.getInventory().setChestplate(new ItemStack(Material.GOLD_CHESTPLATE));
-        player.getInventory().setLeggings(new ItemStack(Material.GOLD_LEGGINGS));
-        player.getInventory().setBoots(new ItemStack(Material.GOLD_BOOTS));
+        player.getInventory().setChestplate(XMaterial.GOLDEN_CHESTPLATE.parseItem());
+        player.getInventory().setLeggings(XMaterial.GOLDEN_LEGGINGS.parseItem());
+        player.getInventory().setBoots(XMaterial.GOLDEN_BOOTS.parseItem());
 
         player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
 

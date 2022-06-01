@@ -1,5 +1,7 @@
 package me.buzz.woolwars.game.game.match.player.classes.classes;
 
+import com.cryptomorin.xseries.XMaterial;
+import com.hakan.core.item.HItemBuilder;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
@@ -9,7 +11,6 @@ import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
-import me.buzz.woolwars.game.utils.ItemBuilder;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,13 +29,13 @@ public class ArcherPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new ItemBuilder(Material.BOW).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(1, new ItemBuilder(Material.WOOD_PICKAXE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(2, new ItemBuilder(Material.WOOD_AXE).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(3, new ItemBuilder(Material.SHEARS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(0, new HItemBuilder(XMaterial.BOW.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(1, new HItemBuilder(XMaterial.WOODEN_PICKAXE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(2, new HItemBuilder(XMaterial.WOODEN_AXE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(3, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
 
         items.put(4, new ItemStack(Material.ARROW, 6));
-        items.put(5, new ItemBuilder(Material.WOOL, 32).build());
+        items.put(5, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 32).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.ARCHER_KEYSTONE)
                 .toItemStack());
@@ -42,7 +43,7 @@ public class ArcherPlayableClass extends PlayableClass {
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.BOOTS, new ItemBuilder(Material.LEATHER_BOOTS).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.LEATHER_BOOTS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
     }
 
     public ArcherPlayableClass(Player player, TeamColor teamColor) {

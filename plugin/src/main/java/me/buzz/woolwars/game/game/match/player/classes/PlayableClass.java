@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.player.classes;
 
+import com.hakan.core.item.HItemBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
@@ -7,7 +8,6 @@ import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
-import me.buzz.woolwars.game.utils.ItemBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -24,13 +24,13 @@ public abstract class PlayableClass {
     public static ItemStack adjustItem(TeamColor team, ItemStack itemStack) {
         switch (itemStack.getType()) {
             case WOOL: {
-                return new ItemBuilder(itemStack).wool(team.getDC()).build();
+                return new HItemBuilder(itemStack).wool(team.getDC()).build();
             }
             case LEATHER_HELMET:
             case LEATHER_CHESTPLATE:
             case LEATHER_LEGGINGS:
             case LEATHER_BOOTS: {
-                return new ItemBuilder(itemStack).setLeatherColor(team.getDC().getColor()).build();
+                return new HItemBuilder(itemStack).setLeatherColor(team.getDC().getColor()).build();
             }
             default:
                 return itemStack;

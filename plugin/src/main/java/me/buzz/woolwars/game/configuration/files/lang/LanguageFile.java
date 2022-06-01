@@ -3,12 +3,12 @@ package me.buzz.woolwars.game.configuration.files.lang;
 import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
+import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Lists;
 import com.hakan.core.npc.skin.HNPCSkin;
 import me.buzz.woolwars.game.game.match.entities.powerup.ConfigurablePowerup;
 import me.buzz.woolwars.game.utils.structures.Title;
 import me.buzz.woolwars.game.utils.structures.WoolItem;
-import org.bukkit.Material;
 
 import java.util.List;
 
@@ -159,7 +159,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> TANK_KEYSTONE = newBeanProperty(WoolItem.class, "classes.tank.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lGIGAHEAL",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lGIGAHEAL",
                     Lists.newArrayList(
                             "§7Give yourself a high amount of",
                             "§7regen for 2 seconds.",
@@ -172,7 +172,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ARCHER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.archer.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lSTEP BACK",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lSTEP BACK",
                     Lists.newArrayList(
                             "§7Push yourself back instantly!",
                             "",
@@ -184,7 +184,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> SWORDMAN_KEYSTONE = newBeanProperty(WoolItem.class, "classes.swordman.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lSPRINT",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lSPRINT",
                     Lists.newArrayList(
                             "§7Give yourself a speed boost for",
                             "§73 seconds.",
@@ -197,7 +197,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> GOLEM_KEYSTONE = newBeanProperty(WoolItem.class, "classes.golem.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lGOLDEN SHELL",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lGOLDEN SHELL",
                     Lists.newArrayList(
                             "§7Encase yourself in Golden Armor",
                             "§7for 5 seconds.",
@@ -210,7 +210,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ENGINEER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.engineer.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lHACK",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lHACK",
                     Lists.newArrayList(
                             "§7Disable players from placing or",
                             "§7breaking middle blocks for 3",
@@ -224,7 +224,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ASSAULT_KEYSTONE = newBeanProperty(WoolItem.class, "classes.assault.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lKNOCKBACK TNT",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lKNOCKBACK TNT",
                     Lists.newArrayList(
                             "§7Place a TNT that doesn't deal",
                             "§7damage, but deals massive",

@@ -28,8 +28,14 @@ public class PlayerListener implements Listener {
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        WoolWars.get().getDataProvider().loadPlayer(player).whenComplete((woolPlayer, throwable) -> {
+            if (throwable != null) {
+                throwable.printStackTrace();
+            }
+
+            WoolPlayer.trackPlayer(woolPlayer);
+        });
         Netherboard.instance().createBoard(player, WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_TITLE));
-        WoolWars.get().getDataProvider().loadPlayer(player).whenComplete((woolPlayer, throwable) -> WoolPlayer.trackPlayer(woolPlayer));
 
         for (WoolPlayer woolOnlinePlayer : WoolPlayer.getWoolOnlinePlayers()) {
             if (woolOnlinePlayer.toBukkitPlayer() == player) continue;

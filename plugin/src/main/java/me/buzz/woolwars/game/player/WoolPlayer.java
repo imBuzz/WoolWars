@@ -27,6 +27,8 @@ public class WoolPlayer implements ApiWoolPlayer {
     }
     public static void trackPlayer(WoolPlayer player) {
         woolPlayersByName.put(player.getName(), player);
+
+        System.out.println("Tracked: " + player.getName());
     }
     public static WoolPlayer removePlayer(Player player) {
         return woolPlayersByName.remove(player.getName());

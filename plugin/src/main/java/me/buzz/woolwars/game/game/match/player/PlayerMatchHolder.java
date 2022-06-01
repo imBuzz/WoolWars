@@ -84,12 +84,12 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
         player.setInMatch(false);
         Player bukkitPlayer = player.toBukkitPlayer();
 
-        WoolWars.get().getTabHandler().stopTrackPlayer(bukkitPlayer);
         bukkitPlayer.removeMetadata("wl-playing-game", WoolWars.get());
 
         if (isSpectator(bukkitPlayer)) removeSpectator(bukkitPlayer);
 
         players.remove(player.getName());
+        WoolWars.get().getTabHandler().stopTrackPlayer(bukkitPlayer);
     }
 
     public void reset() {

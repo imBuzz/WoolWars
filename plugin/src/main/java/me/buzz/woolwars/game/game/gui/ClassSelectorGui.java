@@ -1,12 +1,12 @@
 package me.buzz.woolwars.game.game.gui;
 
+import com.hakan.core.item.HItemBuilder;
 import com.hakan.core.ui.inventory.HInventory;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.gui.GuiFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
-import me.buzz.woolwars.game.utils.ItemBuilder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -37,7 +37,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createTankClass(Player player) {
-        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings()
+        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings()
                 .getProperty(GuiFile.CLASS_SELECTOR_TANK).toItemStack());
         if (stats.getClassType() == PlayableClassType.TANK) itemBuilder.setFlags(ItemFlag.HIDE_ENCHANTS)
                 .addEnchant(Enchantment.DURABILITY, 1);
@@ -50,7 +50,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createAssaultClass(Player player) {
-        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ASSAULT).toItemStack());
+        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ASSAULT).toItemStack());
         if (stats.getClassType() == PlayableClassType.ASSAULT) itemBuilder.setFlags(ItemFlag.HIDE_ENCHANTS)
                 .addEnchant(Enchantment.DURABILITY, 1);
 
@@ -62,7 +62,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createArcherClass(Player player) {
-        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ARCHER).toItemStack());
+        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ARCHER).toItemStack());
         if (stats.getClassType() == PlayableClassType.ARCHER) itemBuilder.setFlags(ItemFlag.HIDE_ENCHANTS)
                 .addEnchant(Enchantment.DURABILITY, 1);
 
@@ -74,7 +74,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createSwordsmanClass(Player player) {
-        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_SWORDMAN).toItemStack());
+        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_SWORDMAN).toItemStack());
         if (stats.getClassType() == PlayableClassType.SWORDMAN) itemBuilder.setFlags(ItemFlag.HIDE_ENCHANTS)
                 .addEnchant(Enchantment.DURABILITY, 1);
 
@@ -86,7 +86,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createGolemClass(Player player) {
-        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_GOLEM).toItemStack());
+        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_GOLEM).toItemStack());
         if (stats.getClassType() == PlayableClassType.GOLEM) itemBuilder.setFlags(ItemFlag.HIDE_ENCHANTS)
                 .addEnchant(Enchantment.DURABILITY, 1);
 
@@ -98,7 +98,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createEngineerClass(Player player) {
-        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ENGINEER).toItemStack());
+        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ENGINEER).toItemStack());
         if (stats.getClassType() == PlayableClassType.ENGINEER) itemBuilder.setFlags(ItemFlag.HIDE_ENCHANTS)
                 .addEnchant(Enchantment.DURABILITY, 1);
 
