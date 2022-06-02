@@ -49,9 +49,11 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void quit(PlayerQuitEvent event) {
+        event.setQuitMessage(null);
+
         WoolMatch woolMatch = WoolWars.get().getGameManager().getInternalMatchByPlayer(event.getPlayer());
-        if (woolMatch != null)
-            woolMatch.quit(WoolPlayer.getWoolPlayer(event.getPlayer()), QuitGameReason.DISCONNECT);
+        if (woolMatch != null) woolMatch.quit(WoolPlayer.getWoolPlayer(event.getPlayer()), QuitGameReason.DISCONNECT);
+
         WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(event.getPlayer()));
     }
 

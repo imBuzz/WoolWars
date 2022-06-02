@@ -4,10 +4,13 @@ import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import me.buzz.woolwars.api.game.match.player.ApiPlayerHolder;
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
+import me.buzz.woolwars.game.game.arena.location.SerializedLocation;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.manager.AbstractMatchHolder;
 import me.buzz.woolwars.game.player.WoolPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -90,6 +93,18 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
 
         players.remove(player.getName());
         WoolWars.get().getTabHandler().stopTrackPlayer(bukkitPlayer);
+
+        SerializedLocation location = WoolWars.get().getSettings().getProperty(ConfigFile.LOBBY_LOCATION);
+
+        for (PotionEffect activePotionEffect : bukkitPlayer.getActivePotionEffects())
+            bukkitPlayer.removePotionEffect(activePotionEffect.getType());
+        bukkitPlayer.setGameMode(GameMode.SURVIVAL);
+        bukkitPlayer.setHealth(20);
+        bukkitPlayer.setFoodLevel(20);
+        bukkitPlayer.getInventory().clear();
+        bukkitPlayer.getInventory().setArmorContents(null);
+
+        bukkitPlayer.teleport(location.toBukkitLocation(Bukkit.getWorld(location.getWorldName())));
     }
 
     public void reset() {

@@ -53,6 +53,8 @@ public class ArenaMetadata {
         locations.put(ArenaLocationType.WAITING_LOBBY, SerializedLocation.fromString(data.getString("locations.spawns.waitingLobby")));
         locations.put(ArenaLocationType.SPAWN_RED, SerializedLocation.fromString(data.getString("locations.spawns.teamRed")));
         locations.put(ArenaLocationType.SPAWN_BLUE, SerializedLocation.fromString(data.getString("locations.spawns.teamBlue")));
+        locations.put(ArenaLocationType.NPC_BLUE, SerializedLocation.fromString(data.getString("locations.npc.blue")));
+        locations.put(ArenaLocationType.NPC_RED, SerializedLocation.fromString(data.getString("locations.npc.red")));
 
         Map<ArenaRegionType, ImplementedRegion> regions = new HashMap<>();
         regions.put(ArenaRegionType.RED_WALL, new CuboidRegion(SerializedLocation.fromString(data.getString("locations.walls.teamRedWall.pos1")), SerializedLocation.fromString(data.getString("locations.walls.teamRedWall.pos2"))));

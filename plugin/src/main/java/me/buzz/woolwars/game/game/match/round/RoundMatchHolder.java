@@ -3,6 +3,7 @@ package me.buzz.woolwars.game.game.match.round;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.hakan.core.HCore;
 import lombok.Getter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
@@ -58,14 +59,7 @@ public class RoundMatchHolder extends AbstractMatchHolder {
         match.setMatchState(MatchState.PRE_ROUND);
         roundNumber++;
 
-        WorkloadHandler.addLoad(() -> {
-            for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
-                block.setType(XMaterial.GLASS.parseMaterial());
-            for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
-                block.setType(XMaterial.GLASS.parseMaterial());
-            for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks())
-                block.setType(centerMats.pick().parseMaterial());
-        });
+        WorkloadHandler.addLoad(this::makeWalls);
 
         spawnGenerators();
 
@@ -86,7 +80,7 @@ public class RoundMatchHolder extends AbstractMatchHolder {
                 WoolWars.get().getTabHandler().update(onlinePlayer, match);
 
                 Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.PRE_ROUND_TITLE);
-                onlinePlayer.sendTitle(title.getTitle(), title.getSubTitle());
+                HCore.sendTitle(onlinePlayer, title.getTitle(), title.getSubTitle());
             }
         }
 
@@ -113,7 +107,7 @@ public class RoundMatchHolder extends AbstractMatchHolder {
             playerHolder.setSpectator(onlinePlayer);
 
             Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_OVER_TITLE);
-            onlinePlayer.sendTitle(title.getTitle()
+            HCore.sendTitle(onlinePlayer, title.getTitle()
                             .replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints()))
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints())),
                     title.getSubTitle().replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints())
@@ -132,6 +126,17 @@ public class RoundMatchHolder extends AbstractMatchHolder {
 
         roundNumber = 0;
         canBreakCenter = false;
+
+        makeWalls();
+    }
+
+    public void makeWalls() {
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.RED_WALL).getBlocks())
+            block.setType(XMaterial.GLASS.parseMaterial());
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.BLUE_WALL).getBlocks())
+            block.setType(XMaterial.GLASS.parseMaterial());
+        for (Block block : match.getPlayableArena().getRegion(ArenaRegionType.CENTER).getBlocks())
+            block.setType(centerMats.pick().parseMaterial());
     }
 
     public void removeWalls() {

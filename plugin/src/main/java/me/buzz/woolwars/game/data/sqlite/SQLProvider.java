@@ -211,7 +211,7 @@ public class SQLProvider implements DataProvider {
 
     private String[] getStrings(Player player, String table, String... columns) {
         try (Statement statement = connection.createStatement()) {
-            ResultSet set = statement.executeQuery("SELECT * FROM " + table + " WHERE uuid=" + player.getUniqueId().toString() + " LIMIT 1");
+            ResultSet set = statement.executeQuery("SELECT * FROM " + table + " WHERE uuid='" + player.getUniqueId().toString() + "' LIMIT 1");
             set.next();
 
             List<String> values = new ArrayList<>();

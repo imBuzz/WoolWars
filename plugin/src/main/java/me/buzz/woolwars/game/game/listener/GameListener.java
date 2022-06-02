@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 
 public class GameListener implements Listener {
@@ -90,6 +91,14 @@ public class GameListener implements Listener {
         if (woolMatch == null) return;
 
         woolMatch.getMatchListener().entityExplode(event);
+    }
+
+    @EventHandler
+    public void inventoryClick(InventoryClickEvent event) {
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getWhoClicked().getWorld().getName());
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().inventoryClick(event);
     }
 
     @EventHandler

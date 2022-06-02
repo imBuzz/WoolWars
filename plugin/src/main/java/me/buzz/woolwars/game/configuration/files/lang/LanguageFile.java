@@ -27,6 +27,8 @@ public class LanguageFile implements SettingsHolder {
     @Comment("Global chat format")
     public static final Property<String> LOBBY_CHAT = newProperty("global.chat.lobby.format", "{prefix} {player}: {message}");
 
+    public static final Property<String> YOU_LEFT_FROM_THE_GAME = newProperty("match.you-left-from-the-game", "§cYou left from the game");
+
     public static final Property<String> NOT_ENOUGH_PLAYER_TO_PLAY = newProperty("match.not-enough-player-to-play",
             "§cThere are not enough player to keep playing!");
 

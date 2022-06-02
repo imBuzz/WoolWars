@@ -30,6 +30,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -222,6 +223,12 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void blockExplode(BlockExplodeEvent event) {
+        event.setCancelled(true);
+    }
+
+    @Override
+    public void inventoryClick(InventoryClickEvent event) {
+        if (event.getWhoClicked().getGameMode() != GameMode.SURVIVAL) return;
         event.setCancelled(true);
     }
 }

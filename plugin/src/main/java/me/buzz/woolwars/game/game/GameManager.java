@@ -35,9 +35,9 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     @Override
     public void stop() {
         for (WoolMatch value : matchesByID.values()) {
-            value.getPlayerHolder().forWoolPlayers(woolPlayer -> WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(woolPlayer.toBukkitPlayer())));
-            value.getRoundHolder().despawnGenerators();
-            Bukkit.unloadWorld(value.getPlayableArena().getWorld(), false);
+            value.getRoundHolder().reset();
+            //value.getPlayerHolder().forWoolPlayers(woolPlayer -> WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(woolPlayer.toBukkitPlayer())));
+            Bukkit.unloadWorld(value.getPlayableArena().getWorld(), true);
         }
 
         matchesByID.clear();

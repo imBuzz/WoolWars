@@ -147,6 +147,11 @@ public class BasicWoolMatch extends WoolMatch {
                     .apply(this, player, ChatPreset.AskingChatMotivation.QUIT);
 
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
+                if (matchPlayer == player) {
+                    matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.YOU_LEFT_FROM_THE_GAME));
+                    continue;
+                }
+
                 matchPlayer.sendMessage(leaveMessage);
             }
         }
@@ -193,8 +198,7 @@ public class BasicWoolMatch extends WoolMatch {
 
             HNPC npc = HCore.buildNpc(UUIDUtils.getNewUUID())
                     .showEveryone(false)
-                    .location(WoolWars.get().getSettings().getProperty(teamColor == TeamColor.RED ? ConfigFile.NPC_LOCATION_RED :
-                            ConfigFile.NPC_LOCATION_BLUE).toBukkitLocation(arena.getWorld()))
+                    .location(arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.NPC_RED : ArenaLocationType.NPC_BLUE))
                     .lines(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME))
                     .skin(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_SKIN))
                     .action((player -> new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player)))
@@ -268,7 +272,7 @@ public class BasicWoolMatch extends WoolMatch {
             }
 
             Title title = WoolWars.get().getLanguage().getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE);
-            player.sendTitle(title.getTitle(), title.getSubTitle());
+            HCore.sendTitle(player, title.getTitle(), title.getSubTitle());
 
             if (WoolWars.get().getLanguage().getProperty(LanguageFile.ENDED_RESUME_CENTERED)) {
                 for (String line : lines) {
@@ -324,7 +328,7 @@ public class BasicWoolMatch extends WoolMatch {
             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 2, 1));
 
             Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED_TITLE);
-            victim.sendTitle(title.getTitle(), title.getSubTitle());
+            HCore.sendTitle(victim, title.getTitle(), title.getSubTitle());
         }
 
         if (killedByAPlayer) {
