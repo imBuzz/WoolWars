@@ -16,7 +16,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -72,6 +76,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
 
         players.put(player.getName(), player);
         if (createStats) stats.put(player.getName(), new WoolMatchStats(player.getUUID()));
+        WoolWars.get().getTabHandler().update(bukkitPlayer, match);
 
         for (PotionEffect activePotionEffect : bukkitPlayer.getActivePotionEffects())
             bukkitPlayer.removePotionEffect(activePotionEffect.getType());
@@ -92,7 +97,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
         if (isSpectator(bukkitPlayer)) removeSpectator(bukkitPlayer);
 
         players.remove(player.getName());
-        WoolWars.get().getTabHandler().stopTrackPlayer(bukkitPlayer);
+        WoolWars.get().getTabHandler().update(bukkitPlayer, match);
 
         SerializedLocation location = WoolWars.get().getSettings().getProperty(ConfigFile.LOBBY_LOCATION);
 

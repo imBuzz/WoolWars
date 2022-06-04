@@ -200,8 +200,10 @@ public class BasicWoolMatch extends WoolMatch {
                     .showEveryone(false)
                     .location(arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.NPC_RED : ArenaLocationType.NPC_BLUE))
                     .lines(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME))
-                    .skin(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_SKIN))
-                    .action((player -> new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player)))
+
+                    .skin(LanguageFile.getFromFile())
+                    .whenClicked(((player, action) -> new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player)))
+
                     .build();
 
             team.setTeamNPC(npc);

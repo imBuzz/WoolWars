@@ -29,7 +29,7 @@ public class GolemPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new HItemBuilder(XMaterial.STONE_SWORD.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(0, new HItemBuilder(XMaterial.STONE_SWORD.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
         items.put(1, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 32).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.GOLEM_KEYSTONE)
@@ -40,7 +40,7 @@ public class GolemPlayableClass extends PlayableClass {
         armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.GOLDEN_BOOTS.parseMaterial())
                 .addEnchant(Enchantment.PROTECTION_PROJECTILE, 2)
-                .setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true)
+                .addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true)
                 .build());
     }
 

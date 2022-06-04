@@ -1,11 +1,9 @@
 package me.buzz.woolwars.game.hook;
 
-public interface ExternalPluginHook<E, K> {
+public interface ExternalPluginHook {
 
     void init();
 
     void stop();
-
-    E apply(E e, K k);
 
 }

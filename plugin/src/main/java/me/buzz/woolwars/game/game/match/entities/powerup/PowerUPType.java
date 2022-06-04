@@ -6,6 +6,7 @@ import com.hakan.core.item.HItemBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
+import me.buzz.woolwars.game.utils.structures.itembuilder.PotionAndWoolItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -40,9 +41,9 @@ public enum PowerUPType {
         }
         if (!hasItem) {
             if (slot != 99) {
-                player.getInventory().setItem(slot, new HItemBuilder(material).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
             } else {
-                player.getInventory().addItem(new HItemBuilder(material).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
             }
         }
     }, armorStand -> {
@@ -66,9 +67,9 @@ public enum PowerUPType {
         }
         if (!hasItem) {
             if (slot != 99) {
-                player.getInventory().setItem(slot, new HItemBuilder(material).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
             } else {
-                player.getInventory().addItem(new HItemBuilder(material).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
             }
         }
     }, armorStand -> {
@@ -92,10 +93,10 @@ public enum PowerUPType {
         }
         if (!hasItem) {
             if (slot != 99) {
-                player.getInventory().setItem(slot, new HItemBuilder(material).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
                 player.getInventory().addItem(new ItemStack(Material.ARROW, 2));
             } else {
-                player.getInventory().addItem(new HItemBuilder(material).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
                 player.getInventory().addItem(new ItemStack(Material.ARROW, 2));
             }
         }
@@ -105,31 +106,31 @@ public enum PowerUPType {
     }),
 
     INSTANT_HEAL(LanguageFile.INSTANT_HEAL_POWERUP, player -> player.setHealth(20), armorStand -> {
-        armorStand.setItemInHand(new HItemBuilder(Material.POTION).potion(PotionType.INSTANT_HEAL, 1, false).build());
+        armorStand.setItemInHand(new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.INSTANT_HEAL, 1, false).build());
         armorStand.setRightArmPose(new EulerAngle(Math.toRadians(280), Math.toRadians(100), 0));
     }),
     STRENGTH(LanguageFile.STRENGTH_POWERUP, player -> player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * 3, 1)), armorStand -> {
-        armorStand.setItemInHand(new HItemBuilder(Material.POTION).potion(PotionType.STRENGTH, 1, false).build());
+        armorStand.setItemInHand(new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.STRENGTH, 1, false).build());
         armorStand.setRightArmPose(new EulerAngle(Math.toRadians(280), Math.toRadians(100), 0));
     }),
     SPEED(LanguageFile.SPEED_POWERUP, player -> player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 3, 2)), armorStand -> {
-        armorStand.setItemInHand(new HItemBuilder(Material.POTION).potion(PotionType.SPEED, 1, false).build());
+        armorStand.setItemInHand(new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.SPEED, 1, false).build());
         armorStand.setRightArmPose(new EulerAngle(Math.toRadians(280), Math.toRadians(100), 0));
     }),
     JUMP_BOOST(LanguageFile.JUMP_BOOST_POWERUP, player -> player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 20 * 3, 4)), armorStand -> {
-        armorStand.setItemInHand(new HItemBuilder(Material.POTION).potion(PotionType.JUMP, 1, false).build());
+        armorStand.setItemInHand(new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.JUMP, 1, false).build());
         armorStand.setRightArmPose(new EulerAngle(Math.toRadians(280), Math.toRadians(100), 0));
     }),
 
     CHAINMAIL_HELMET(LanguageFile.CHAINMAIL_HELMET_POWERUP, player -> {
         boolean hasItem = player.getInventory().getHelmet() != null && player.getInventory().getBoots().getType() == XMaterial.CHAINMAIL_HELMET.parseMaterial();
         if (!hasItem)
-            player.getInventory().setHelmet(new HItemBuilder(XMaterial.CHAINMAIL_HELMET.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            player.getInventory().setHelmet(new HItemBuilder(XMaterial.CHAINMAIL_HELMET.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
     }, armorStand -> armorStand.setHelmet(XMaterial.CHAINMAIL_HELMET.parseItem())),
     CHAINMAIL_CHESTPLATE(LanguageFile.CHAINMAIL_CHESTPLATE_POWERUP, player -> {
         boolean hasItem = player.getInventory().getChestplate() != null && player.getInventory().getBoots().getType() == XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial();
         if (!hasItem)
-            player.getInventory().setChestplate(new HItemBuilder(XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            player.getInventory().setChestplate(new HItemBuilder(XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
     }, armorStand -> {
         armorStand.setChestplate(XMaterial.CHAINMAIL_CHESTPLATE.parseItem());
         armorStand.teleport(armorStand.getLocation().clone().add(0, 0.5, 0));
@@ -137,7 +138,7 @@ public enum PowerUPType {
     CHAINMAIL_BOOTS(LanguageFile.CHAINMAIL_BOOTS_POWERUP, player -> {
         boolean hasItem = player.getInventory().getBoots() != null && player.getInventory().getBoots().getType() == XMaterial.CHAINMAIL_BOOTS.parseMaterial();
         if (!hasItem)
-            player.getInventory().setBoots(new HItemBuilder(XMaterial.CHAINMAIL_BOOTS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            player.getInventory().setBoots(new HItemBuilder(XMaterial.CHAINMAIL_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
     }, armorStand -> {
         armorStand.setBoots(XMaterial.CHAINMAIL_BOOTS.parseItem());
         armorStand.teleport(armorStand.getLocation().clone().add(0, 1.5, 0));
@@ -145,7 +146,7 @@ public enum PowerUPType {
     IRON_BOOTS(LanguageFile.IRON_BOOTS_POWERUP, player -> {
         boolean hasItem = player.getInventory().getBoots() != null && player.getInventory().getBoots().getType() == XMaterial.IRON_BOOTS.parseMaterial();
         if (!hasItem)
-            player.getInventory().setBoots(new HItemBuilder(XMaterial.IRON_BOOTS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            player.getInventory().setBoots(new HItemBuilder(XMaterial.IRON_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
     }, armorStand -> {
         armorStand.setBoots(XMaterial.IRON_BOOTS.parseItem());
         armorStand.teleport(armorStand.getLocation().clone().add(0, 1.5, 0));

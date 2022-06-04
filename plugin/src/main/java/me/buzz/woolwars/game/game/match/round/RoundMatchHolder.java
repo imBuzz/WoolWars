@@ -72,7 +72,7 @@ public class RoundMatchHolder extends AbstractMatchHolder {
                 matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor());
                 matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer), matchStats);
 
-                if (!team.getTeamNPC().isShownFor(onlinePlayer))
+                if (!team.getTeamNPC().getRenderer().canSee(onlinePlayer.getUniqueId()))
                     team.getTeamNPC().addViewer(onlinePlayer);
 
                 onlinePlayer.teleport(team.getSpawnLocation());
@@ -149,7 +149,7 @@ public class RoundMatchHolder extends AbstractMatchHolder {
         for (WoolTeam value : match.getTeams().values()) {
             for (Player onlinePlayer : value.getOnlinePlayers()) {
                 onlinePlayer.closeInventory();
-                if (value.getTeamNPC().isShownFor(onlinePlayer))
+                if (value.getTeamNPC().getRenderer().canSee(onlinePlayer.getUniqueId()))
                     value.getTeamNPC().removeViewer(onlinePlayer);
             }
         }

@@ -11,6 +11,7 @@ import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
+import me.buzz.woolwars.game.utils.structures.itembuilder.PotionAndWoolItemBuilder;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,11 +30,11 @@ public class SwordmanPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new HItemBuilder(XMaterial.STONE_SWORD.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(1, new HItemBuilder(XMaterial.WOODEN_PICKAXE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(2, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(0, new HItemBuilder(XMaterial.STONE_SWORD.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(1, new HItemBuilder(XMaterial.WOODEN_PICKAXE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(2, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
 
-        items.put(3, new HItemBuilder(Material.POTION).potion(PotionType.INSTANT_HEAL, 2, true).build());
+        items.put(3, new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.INSTANT_HEAL, 2, true).build());
         items.put(4, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 64).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.SWORDMAN_KEYSTONE)
@@ -41,8 +42,8 @@ public class SwordmanPlayableClass extends PlayableClass {
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.LEGGINGS, new HItemBuilder(XMaterial.LEATHER_LEGGINGS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.LEATHER_BOOTS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.LEGGINGS, new HItemBuilder(XMaterial.LEATHER_LEGGINGS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.LEATHER_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
     }
 
     public SwordmanPlayableClass(Player player, TeamColor teamColor) {

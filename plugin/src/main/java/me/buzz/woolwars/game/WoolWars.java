@@ -14,7 +14,6 @@ import me.buzz.woolwars.game.hook.ExternalPluginHook;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
 import me.buzz.woolwars.game.player.TabHandler;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
-import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,7 +25,7 @@ import java.util.Map;
 public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
-    private final Map<ImplementedHookType, ExternalPluginHook<?, ?>> hooks = new HashMap<>();
+    private final Map<ImplementedHookType, ExternalPluginHook> hooks = new HashMap<>();
 
     @Getter
     private DataProvider dataProvider;
@@ -58,9 +57,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
         checkForHooks();
 
-        new PlayerAsyncTickTask().runTaskTimerAsynchronously(this, 5L, 5L);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-
         HCore.registerCommands(new WoolCommand());
 
         //new UpdateChecker(this, UpdateCheckSource.SPIGET, String.valueOf(SPIGOT_CODE))
@@ -98,7 +95,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private void checkForHooks() {
         for (ImplementedHookType value : ImplementedHookType.values()) {
             if (value.isEnabled()) {
-                ExternalPluginHook<?, ?> hook = value.getSupplier().get();
+                ExternalPluginHook hook = value.getSupplier().get();
                 hook.init();
                 hooks.put(value, hook);
             }
@@ -107,8 +104,8 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         getLogger().info("Loaded " + hooks.size() + " hooks " + hooks.keySet());
     }
 
-    public ExternalPluginHook<?, ?> getHook(ImplementedHookType hook) {
-        return hooks.get(hook);
+    public <T extends ExternalPluginHook> T getHook(ImplementedHookType hook) {
+        return (T) hooks.get(hook);
     }
 
     public SettingsManager getLanguage() {

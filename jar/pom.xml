@@ -172,10 +172,6 @@
                             <shadedPattern>me.buzz.externals.configme</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>fr.minuskube.netherboard</pattern>
-                            <shadedPattern>me.buzz.externals.netherboard</shadedPattern>
-                        </relocation>
-                        <relocation>
                             <pattern>org.yaml.snakeyaml</pattern>
                             <shadedPattern>me.buzz.externals.snakeyaml</shadedPattern>
                         </relocation>

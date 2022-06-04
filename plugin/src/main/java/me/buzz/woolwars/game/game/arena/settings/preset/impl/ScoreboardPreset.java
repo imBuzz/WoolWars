@@ -9,8 +9,8 @@ import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
 import me.buzz.woolwars.game.game.match.task.tasks.TimeElapsedTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
-import me.buzz.woolwars.game.hook.ExternalPluginHook;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
+import me.buzz.woolwars.game.hook.hooks.placeholderapi.PlaceholderAPIHook;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,7 +39,7 @@ public class ScoreboardPreset implements ApplicablePreset<List<String>, WoolMatc
     @Override
     public List<String> apply(WoolMatch match, Player player, Void v) {
         List<String> strings, tempLines = new ArrayList<>();
-        ExternalPluginHook<String, Player> placeholderHook = (ExternalPluginHook<String, Player>) WoolWars.get().getHook(ImplementedHookType.PLACEHOLDER_API);
+        PlaceholderAPIHook placeholderHook = WoolWars.get().getHook(ImplementedHookType.PLACEHOLDER_API);
 
         strings = lines.getOrDefault(match.getMatchState(), new ArrayList<>());
         switch (match.getMatchState()) {

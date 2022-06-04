@@ -16,7 +16,12 @@ import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GameManager extends AbstractManager implements ApiGameManager {

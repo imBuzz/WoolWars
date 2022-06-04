@@ -1,7 +1,10 @@
 package me.buzz.woolwars.game.player;
 
+import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
+import me.buzz.woolwars.game.hook.ImplementedHookType;
+import me.buzz.woolwars.game.hook.hooks.vault.VaultAPIHook;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
@@ -12,6 +15,8 @@ import java.util.Map;
 public class TabHandler {
 
     private static final String UUID = generateUUID();
+
+    private final VaultAPIHook vaultAPIHook = WoolWars.get().getHook(ImplementedHookType.VAULT);
     private final Map<String, Team> teams = new HashMap<>();
 
     private static String generateUUID() {
@@ -24,7 +29,7 @@ public class TabHandler {
 
     public void update(Player player, WoolMatch match) {
         Team team = teams.get(player.getName());
-        String newTeamName = resize(UUID + player.getName());
+        String newTeamName = getTeamName(player, match);
 
         if (team == null) {
             createTeam(player, newTeamName, match);
@@ -38,6 +43,11 @@ public class TabHandler {
 
         updateDisplayName(player, match);
         updateTab(player, match);
+    }
+
+    private String getTeamName(Player player, WoolMatch match) {
+        int priority = getPriority(player, match) - 1000;
+        return resize(priority + UUID + player.getName());
     }
 
     private void createTeam(Player player, String name, WoolMatch match) {
@@ -70,6 +80,7 @@ public class TabHandler {
     }
 
     private String getPrefix(Player player, WoolMatch match) {
+        if (match == null) return vaultAPIHook != null ? vaultAPIHook.getPrefix(player) : "";
         if (match.getPlayerHolder().isSpectator(player)) return ChatColor.GRAY + "[SPECTATOR] ";
 
         WoolMatchStats stats = match.getPlayerHolder().getMatchStats(player);
@@ -89,6 +100,13 @@ public class TabHandler {
 
     private void updateTab(Player player, WoolMatch match) {
         player.setPlayerListName(getPrefix(player, match) + player.getName() + getSuffix(player, match));
+    }
+
+    private int getPriority(Player player, WoolMatch match) {
+        if (match == null) return 0;
+
+        if (match.getPlayerHolder().isSpectator(player)) return 1000;
+        return match.getPlayerHolder().getMatchStats(player).getTeam().getTeamColor().getPriority();
     }
 
     public boolean isTracked(Player player) {

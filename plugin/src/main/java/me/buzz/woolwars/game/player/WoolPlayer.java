@@ -5,7 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import me.buzz.woolwars.api.game.match.player.player.ApiWoolPlayer;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
-import me.buzz.woolwars.game.game.match.player.classes.classes.*;
+import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.game.match.player.classes.classes.ArcherPlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.AssaultPlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.EngineerPlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.GolemPlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.SwordmanPlayableClass;
+import me.buzz.woolwars.game.game.match.player.classes.classes.TankPlayableClass;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,10 +33,10 @@ public class WoolPlayer implements ApiWoolPlayer {
     }
     public static void trackPlayer(WoolPlayer player) {
         woolPlayersByName.put(player.getName(), player);
-
-        System.out.println("Tracked: " + player.getName());
+        WoolWars.get().getTabHandler().trackPlayer(player.toBukkitPlayer(), null);
     }
     public static WoolPlayer removePlayer(Player player) {
+        WoolWars.get().getTabHandler().stopTrackPlayer(player);
         return woolPlayersByName.remove(player.getName());
     }
 

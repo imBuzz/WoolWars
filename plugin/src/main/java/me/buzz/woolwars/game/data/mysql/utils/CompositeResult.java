@@ -1,7 +1,13 @@
 package me.buzz.woolwars.game.data.mysql.utils;
 
 import java.io.InputStream;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class CompositeResult implements AutoCloseable {
