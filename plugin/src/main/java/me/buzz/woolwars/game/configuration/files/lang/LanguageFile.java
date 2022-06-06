@@ -3,16 +3,19 @@ package me.buzz.woolwars.game.configuration.files.lang;
 import ch.jalu.configme.Comment;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
+import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Lists;
+import com.hakan.core.npc.skin.HNPCSkin;
+import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.entities.powerup.ConfigurablePowerup;
 import me.buzz.woolwars.game.utils.structures.Title;
 import me.buzz.woolwars.game.utils.structures.WoolItem;
-import net.jitse.npclib.api.skin.Skin;
-import org.bukkit.Material;
 
 import java.util.List;
 
-import static ch.jalu.configme.properties.PropertyInitializer.*;
+import static ch.jalu.configme.properties.PropertyInitializer.newBeanProperty;
+import static ch.jalu.configme.properties.PropertyInitializer.newListProperty;
+import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
 public class LanguageFile implements SettingsHolder {
 
@@ -22,10 +25,12 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> NO_MATCH = newProperty("commands.general.no-match-for-player", "§cYou have to be in a match to do that!");
 
     public static final Property<String> YOUR_ARE_IN_A_MATCH = newProperty("commands.join.already-in-match", "§cYou are already in a match");
-    public static final Property<String> NO_MATCH_FOUND = newProperty("commands.join.no-match-found", "§cThere aren't free match to join");
+    public static final Property<String> NO_MATCH_FOUND = newProperty("commands.join.no-match-found", "§cThere isn't a free match to join");
 
-    public static final Property<String> JOINED_MESSAGE = newProperty("match.joined", "§7{player} §ehas joined (§b{current}§e/§b{max}§e)");
-    public static final Property<String> LEAVE_MESSAGE = newProperty("match.quit", "§7{player} §eleft from the game (§b{current}§e/§b{max}§e)");
+    @Comment("Global chat format")
+    public static final Property<String> LOBBY_CHAT = newProperty("global.chat.lobby.format", "{prefix}{player}: {message}");
+
+    public static final Property<String> YOU_LEFT_FROM_THE_GAME = newProperty("match.you-left-from-the-game", "§cYou left from the game");
 
     public static final Property<String> NOT_ENOUGH_PLAYER_TO_PLAY = newProperty("match.not-enough-player-to-play",
             "§cThere are not enough player to keep playing!");
@@ -41,6 +46,12 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ROUND_UNLOCK_CENTER_BAR = newProperty("match.round.protectCenter-bar", "§e§lCENTER UNLOCKS IN {seconds} SECONDS!");
     public static final Property<String> ROUND_CANNOT_BE_CAPTURED = newProperty("match.round.cannot-be-captured", "§cYou cannot capture the center for another {seconds} seconds!");
 
+    public static final Property<String> TEN_SECONDS_REMAINING = newProperty("match.seconds.ten-seconds-remaining", "§c§l10 §fseconds left in the round!");
+
+    //KILL
+    public static final Property<String> DIED = newProperty("match.kills.died", "{victimTeamColor}{victim} §7died");
+    public static final Property<String> KILL_BY_SOMEONE = newProperty("match.kills.killedBySomeone", "{victimTeamColor}{victim} §7was killed by {killerTeamColor}{killer}.");
+
     //ENDED MATCH
 
     public static final Property<String> ENDED_STATUS_LOST = newProperty("match.ended.variables.status.lost", "§cYour team lost!");
@@ -48,6 +59,13 @@ public class LanguageFile implements SettingsHolder {
 
     public static final Property<Title> ENDED_VICTORY_TITLE = newBeanProperty(Title.class, "match.ended.victory.title", new Title("§c§lVICTORY", "§6Your team won!"));
     public static final Property<Title> ENDED_LOST_TITLE = newBeanProperty(Title.class, "match.ended.lost.title", new Title("§c§lDEFEAT", "§6Your team was defeated!"));
+
+    public static final Property<List<String>> MATCH_START_INFORMATION = newListProperty("match.started.resume", Lists.newArrayList(
+            "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
+            "",
+            "§e&lWELCOME TO WOOLWARS",
+            "",
+            "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
 
     public static final Property<Boolean> ENDED_RESUME_CENTERED = newProperty("match.ended.resume.centered", true);
     public static final Property<List<String>> ENDED_RESUME = newListProperty("match.ended.resume.lines", Lists.newArrayList(
@@ -109,68 +127,27 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<List<String>> NPC_NAME = newListProperty("match.npc.hologram", Lists.newArrayList(
             "§6§lClass Selector", "§eClick to open!"));
 
-    public static final Property<Skin> NPC_SKIN = newBeanProperty(Skin.class, "match.npc.skin", new Skin("ewogICJ0aW1lc3RhbXAiIDogMTY1MjczMDU4MjQ2MSwKICAicHJvZmlsZU" +
+    public static final Property<String> SKIN_TEXTURE = newProperty("match.noc.skin.texture", "ewogICJ0aW1lc3RhbXAiIDogMTY1MjczMDU4MjQ2MSwKICAicHJvZmlsZU" +
             "lkIiA6ICI3ZWQ2ZTE1NzE4ZTc0NTA3ODdkNjgwMjA5ZTIxZWM0MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJnNGczcyIsCiAgIn" +
             "NpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3Rle" +
             "HR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yMTQ0ZDY5Mjc5Zjc2YjY0ZmMxNWJmOWZkMmRlZWExNWYyNWYzYTM5OThmMGZiNDcwNT" +
-            "QwYmQyYzE2NjdlYTM1IgogICAgfQogIH0KfQ==", "fhTdzMgh/8IgzaIl46+LN4JpYfuxtXjia5anECpTPcxXvuoFyNteY5pzEI0" +
+            "QwYmQyYzE2NjdlYTM1IgogICAgfQogIH0KfQ==");
+    public static final Property<String> SKIN_SIGNATURE = newProperty("match.npc.skin.signature", "fhTdzMgh/8IgzaIl46+LN4JpYfuxtXjia5anECpTPcxXvuoFyNteY5pzEI0" +
             "v1G0PlrKSYmJcR83HyT+DpRyBFcthVzigZzaPGUjEkkY6nEhaHhnGMvI8moKpdEKf+qg5zYHlQlRNOwlfxlaSZPzNqY1Mw+aiUj/Z" +
             "/SypkdI3jdhIdnxarg1MzZfbN+eo+FgkTJlf1hrUz6P9Cl56dXBDBM1MugXBhUZAEto2zHriV56acOMORQubuGLtMtGYi" +
             "TB1RbDY6SY/F9zgaOdBetyWhwfWrWx9/KuK3D10qzpFMT6X6EnaN7Jv65Y8PDy97zCfXzYp8RcvsRAKQIi+erG+x4cbcU7SDSR4pW0+" +
             "ZENhiOxvi4/lPH45ngCYciz+5S2CTjMK+WCpPQeYg5Dbbe0LGzpE0vLOxxp9Mb64vfa3IFyeqqXyRXKIKLaZG2HHgjaNQTa/oZIdIgtTs1Ez7cXfvfLoVoq7G8yeAFyVhg" +
             "gd09EZewVV+huxRrMfKbgRjpf6uMvoyo6PDBKU/9HX1wOJwovuHPbs+dqvJ5h/NdytAhRGvMKc7EU8iyC1Elv/GsXBf8mTGOZezunjEa+LYNIQsCLdMR3SVPDuF/11/8" +
-            "s1tRqvjJ2tOcR5YbPjDzhvoO0G/5KWX9mRJFOxPLRx4x3HEO8ZvsMdPos8FWL3bumaSgk="));
+            "s1tRqvjJ2tOcR5YbPjDzhvoO0G/5KWX9mRJFOxPLRx4x3HEO8ZvsMdPos8FWL3bumaSgk=");
 
+    public static HNPCSkin getFromFile() {
+        return new HNPCSkin(WoolWars.get().getLanguage().getProperty(SKIN_TEXTURE), WoolWars.get().getLanguage().getProperty(SKIN_SIGNATURE));
+    }
 
     //SCOREBOARDs
 
+    public static final Property<String> SCOREBOARD_TITLE = newProperty("scoreboard.title", "§e§lWOOL WARS");
     public static final Property<List<String>> SCOREBOARD_MATCH_LOBBY = newListProperty("scoreboard.lobby", Lists.newArrayList("", "CIAO", ""));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_WAITING = newListProperty("scoreboard.match.waiting", Lists.newArrayList(
-            "   ", "§fMap: §a{map_name}", "§fPlayers: §a{current_players}/{max_players}", "  ", "§fWaiting...", " ", "§eyour.server.ip"));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_STARTING = newListProperty("scoreboard.match.starting", Lists.newArrayList(
-            "   ", "§fMap: §a{map_name}", "§fPlayers: §a{current_players}/{max_players}", "  ", "§fStarting in §a{remaning_seconds}s", " ", "§eyour.server.ip"));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_PRE_ROUND = newListProperty("scoreboard.match.pre_round", Lists.newArrayList(
-            "    ",
-            "§fRound: §b{round}",
-            "§fState: §e{round_type}",
-            "§fMap: §a{map_name}",
-            "   ",
-            "§c[R] {red_team_progress} §8({red_team_points}/3)",
-            "§9[B] {blue_team_progress} §8({blue_team_points}/3)",
-            "  ",
-            "§fTime Left: §a{time_left}",
-            " ",
-            "§eyour.server.ip"));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_ROUND = newListProperty("scoreboard.match.round", Lists.newArrayList(
-            "     ",
-            "§fRound: §b{round}",
-            "§fState: §e{round_type}",
-            "    ",
-            "§c[R] {red_team_progress} §8({red_team_points}/3)",
-            "§9[B] {blue_team_progress} §8({blue_team_points}/3)",
-            "   ",
-            "§cRed Players: §f{red_team_players} §7{red_team_isYou}",
-            "§9Blue Players: §f{blue_team_players} §7{blue_team_isYou}",
-            "  ",
-            "§fTime Left: §a{time_left}",
-            " ",
-            "§eyour.server.ip"));
-
-    public static final Property<List<String>> SCOREBOARD_MATCH_ROUND_OVER = newListProperty("scoreboard.match.round-over", Lists.newArrayList(
-            "    ",
-            "§fRound: §b{round}",
-            "§fState: §e{round_type}",
-            "   ",
-            "§c[R] {red_team_progress} §8({red_team_points}/3)",
-            "§9[B] {blue_team_progress} §8({blue_team_points}/3)",
-            "  ",
-            "§fTime Left: §a{time_left}",
-            " ",
-            "§eyour.server.ip"));
 
     //VARIABLES (SCOREBOARD)
 
@@ -184,9 +161,14 @@ public class LanguageFile implements SettingsHolder {
 
     //ITEMS
 
+    @Comment("Used when a player use tries to use an ability too soon for example: When an engineer try to use his ability while the middle area is in cooldown")
+    public static final Property<String> YOU_CANNOT_USE_THIS_ABILITY_YET = newProperty("classes.ability.cannot-use-yet", "§cYou can't use this ability yet");
+    public static final Property<String> ABILITY_USED = newProperty("classes.ability.used", "§aAbility Used");
+    public static final Property<String> ABILITY_ALREADY_USED = newProperty("classes.ability.used-message", "§cYou already used this ability for this round");
+
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> TANK_KEYSTONE = newBeanProperty(WoolItem.class, "classes.tank.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lGIGAHEAL",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lGIGAHEAL",
                     Lists.newArrayList(
                             "§7Give yourself a high amount of",
                             "§7regen for 2 seconds.",
@@ -199,7 +181,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ARCHER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.archer.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lSTEP BACK",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lSTEP BACK",
                     Lists.newArrayList(
                             "§7Push yourself back instantly!",
                             "",
@@ -211,7 +193,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> SWORDMAN_KEYSTONE = newBeanProperty(WoolItem.class, "classes.swordman.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lSPRINT",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lSPRINT",
                     Lists.newArrayList(
                             "§7Give yourself a speed boost for",
                             "§73 seconds.",
@@ -224,7 +206,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> GOLEM_KEYSTONE = newBeanProperty(WoolItem.class, "classes.golem.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lGOLDEN SHELL",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lGOLDEN SHELL",
                     Lists.newArrayList(
                             "§7Encase yourself in Golden Armor",
                             "§7for 5 seconds.",
@@ -237,7 +219,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ENGINEER_KEYSTONE = newBeanProperty(WoolItem.class, "classes.engineer.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lHACK",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lHACK",
                     Lists.newArrayList(
                             "§7Disable players from placing or",
                             "§7breaking middle blocks for 3",
@@ -251,7 +233,7 @@ public class LanguageFile implements SettingsHolder {
 
     @Comment("Do not change the material on this section")
     public static final Property<WoolItem> ASSAULT_KEYSTONE = newBeanProperty(WoolItem.class, "classes.assault.keystone",
-            WoolItem.from(Material.BLAZE_POWDER, "§fKeystone Ability: §6§lKNOCKBACK TNT",
+            WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lKNOCKBACK TNT",
                     Lists.newArrayList(
                             "§7Place a TNT that doesn't deal",
                             "§7damage, but deals massive",

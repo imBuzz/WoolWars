@@ -2,9 +2,9 @@ package me.buzz.woolwars.game.configuration.files.gui;
 
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
+import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Lists;
 import me.buzz.woolwars.game.utils.structures.WoolItem;
-import org.bukkit.Material;
 
 import static ch.jalu.configme.properties.PropertyInitializer.newBeanProperty;
 import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
@@ -13,7 +13,7 @@ public class GuiFile implements SettingsHolder {
 
     public static final Property<String> CLASS_SELECTOR_TITLE = newProperty("class-selector.title", "§8Class Selector");
     public static final Property<WoolItem> CLASS_SELECTOR_TANK = newBeanProperty(WoolItem.class, "class-selector.item.tank",
-            WoolItem.from(Material.IRON_BLOCK, "§aTank",
+            WoolItem.from(XMaterial.IRON_BLOCK.name(), "§aTank",
                     Lists.newArrayList(
                             "§7With the highest base defenses",
                             "§7and a powerful shield and",
@@ -25,7 +25,7 @@ public class GuiFile implements SettingsHolder {
 
 
     public static final Property<WoolItem> CLASS_SELECTOR_ASSAULT = newBeanProperty(WoolItem.class, "class-selector.item.assault",
-            WoolItem.from(Material.SHEARS, "§aAssault",
+            WoolItem.from(XMaterial.SHEARS.name(), "§aAssault",
                     Lists.newArrayList(
                             "§7With good tools, potions and a",
                             "§7powerful blast of TNT, secure",
@@ -36,7 +36,7 @@ public class GuiFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> CLASS_SELECTOR_ARCHER = newBeanProperty(WoolItem.class, "class-selector.item.archer",
-            WoolItem.from(Material.BOW, "§aArcher",
+            WoolItem.from(XMaterial.BOW.name(), "§aArcher",
                     Lists.newArrayList(
                             "§7Low in armor and weak in melee,",
                             "§7the archer has to use its",
@@ -48,7 +48,7 @@ public class GuiFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> CLASS_SELECTOR_SWORDMAN = newBeanProperty(WoolItem.class, "class-selector.item.swordman",
-            WoolItem.from(Material.STONE_SWORD, "§aSwordsman",
+            WoolItem.from(XMaterial.STONE_SWORD.name(), "§aSwordsman",
                     Lists.newArrayList(
                             "§7Using their powerful sword and,",
                             "§7swiftness, they can cut through",
@@ -59,7 +59,7 @@ public class GuiFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> CLASS_SELECTOR_GOLEM = newBeanProperty(WoolItem.class, "class-selector.item.golem",
-            WoolItem.from(Material.GOLD_CHESTPLATE, "§aGolem",
+            WoolItem.from(XMaterial.GOLDEN_CHESTPLATE.name(), "§aGolem",
                     Lists.newArrayList(
                             "§7Powered down, the golem lacks",
                             "§7all but a hard hitting offense,",
@@ -71,7 +71,7 @@ public class GuiFile implements SettingsHolder {
                     )));
 
     public static final Property<WoolItem> CLASS_SELECTOR_ENGINEER = newBeanProperty(WoolItem.class, "class-selector.item.engineer",
-            WoolItem.from(Material.REDSTONE_BLOCK, "§aEngineer",
+            WoolItem.from(XMaterial.REDSTONE_BLOCK.name(), "§aEngineer",
                     Lists.newArrayList(
                             "§7A great all purpose class that",
                             "§7can lock middle for several",

@@ -2,21 +2,19 @@ package me.buzz.woolwars.game;
 
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
-import fr.minuskube.inv.InventoryManager;
+import com.hakan.core.HCore;
 import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
-import me.buzz.woolwars.game.commands.WoolCommandHandler;
+import me.buzz.woolwars.game.commands.WoolCommand;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
 import me.buzz.woolwars.game.configuration.files.DatabaseFile;
 import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
+import me.buzz.woolwars.game.hook.ExternalPluginHook;
+import me.buzz.woolwars.game.hook.ImplementedHookType;
+import me.buzz.woolwars.game.player.TabHandler;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
-import me.buzz.woolwars.game.player.task.PlayerAsyncTickTask;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
-import me.buzz.woolwars.nms.INMSHandler;
-import me.buzz.woolwars.nms.ServerProtocols;
-import net.jitse.npclib.NPCLib;
-import net.jitse.npclib.NPCLibOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,19 +25,14 @@ import java.util.Map;
 public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
+    private final Map<ImplementedHookType, ExternalPluginHook> hooks = new HashMap<>();
 
-    private WoolCommandHandler commandHandler;
-
-    @Getter
-    private InventoryManager inventoryManager;
-    @Getter
-    private NPCLib npcLib;
     @Getter
     private DataProvider dataProvider;
     @Getter
     private GameManager gameManager;
     @Getter
-    private INMSHandler nmsHandler;
+    private TabHandler tabHandler;
 
     @Override
     public void onEnable() {
@@ -50,40 +43,37 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
             return;
         }
 
-        nmsHandler = ServerProtocols.getNmsHandler(this);
-        if (nmsHandler == null) {
-            setEnabled(false);
-            return;
-        }
+        HCore.initialize(this);
 
-        npcLib = new NPCLib(this, new NPCLibOptions().setMovementHandling(NPCLibOptions.MovementHandling.repeatingTask(40)));
         dataProvider = getDataSettings().getProperty(DatabaseFile.DATABASE_TYPE).getProviderSupplier().get();
         dataProvider.init();
-
-        inventoryManager = new InventoryManager(this);
-        inventoryManager.init();
 
         WorkloadHandler.run();
 
         gameManager = new GameManager();
         gameManager.init();
 
-        commandHandler = new WoolCommandHandler();
+        tabHandler = new TabHandler();
 
-        new PlayerAsyncTickTask().runTaskTimerAsynchronously(this, 5L, 5L);
+        checkForHooks();
+
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        HCore.registerCommands(new WoolCommand());
 
         //new UpdateChecker(this, UpdateCheckSource.SPIGET, String.valueOf(SPIGOT_CODE))
         //        .checkEveryXHours(12)
-        //        .setNotifyByPermissionOnJoin("petsreloaded.update")
+        //        .setNotifyByPermissionOnJoin("woolwars.update")
         //        .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
-        //        .setDownloadLink("https://www.spigotmc.org/resources/petsreloaded-create-your-own-custom-pets-eula-compliant-1-8-x-1-18-x.98113/")
+        //        .setDownloadLink("")
         //        .checkNow();
     }
 
     @Override
     public void onDisable() {
+        hooks.values().forEach(ExternalPluginHook::stop);
         gameManager.stop();
+
+        hooks.clear();
     }
 
     private boolean setupFiles() {
@@ -100,6 +90,22 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private void checkForHooks() {
+        for (ImplementedHookType value : ImplementedHookType.values()) {
+            if (value.isEnabled()) {
+                ExternalPluginHook hook = value.getSupplier().get();
+                hook.init();
+                hooks.put(value, hook);
+            }
+        }
+
+        getLogger().info("Loaded " + hooks.size() + " hooks " + hooks.keySet());
+    }
+
+    public <T extends ExternalPluginHook> T getHook(ImplementedHookType hook) {
+        return (T) hooks.get(hook);
     }
 
     public SettingsManager getLanguage() {

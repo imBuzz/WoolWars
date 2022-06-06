@@ -2,22 +2,23 @@ package me.buzz.woolwars.game.game.match;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import me.buzz.woolwars.api.game.arena.ApiPlayableArena;
 import me.buzz.woolwars.api.game.match.ApiMatch;
+import me.buzz.woolwars.api.game.match.events.MatchChangeStateEvent;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
 import me.buzz.woolwars.game.game.match.entities.powerup.EntityPowerup;
 import me.buzz.woolwars.game.game.match.entities.powerup.PowerUPType;
 import me.buzz.woolwars.game.game.match.listener.MatchListener;
-import me.buzz.woolwars.game.game.match.player.PlayerHolder;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.game.game.match.player.PlayerMatchHolder;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
-import me.buzz.woolwars.game.game.match.round.RoundHolder;
+import me.buzz.woolwars.game.game.match.round.RoundMatchHolder;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.UUIDUtils;
 import me.buzz.woolwars.game.utils.workload.Workload;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -37,21 +38,22 @@ public abstract class WoolMatch implements ApiMatch {
     @Getter
     protected final Map<TeamColor, WoolTeam> teams = new HashMap<>();
 
-    @Setter
     protected MatchState matchState = MatchState.WAITING;
     @Getter
     protected MatchListener matchListener;
 
     @Getter
-    protected PlayerHolder playerHolder;
+    protected PlayerMatchHolder playerHolder;
     @Getter
-    protected RoundHolder roundHolder;
+    protected RoundMatchHolder roundHolder;
 
     public abstract void init();
 
     public abstract boolean checkJoin(WoolPlayer woolPlayer);
 
-    public abstract void join(WoolPlayer woolPlayer);
+    public abstract void joinAsPlayer(WoolPlayer woolPlayer);
+
+    public abstract void joinAsSpectator(WoolPlayer woolPlayer);
 
     public abstract void quit(WoolPlayer woolPlayer, QuitGameReason reason);
 
@@ -74,7 +76,12 @@ public abstract class WoolMatch implements ApiMatch {
     public abstract int getPointsToWin();
 
     public boolean isPlaying() {
-        return matchState == MatchState.PRE_ROUND || matchState == MatchState.ROUND;
+        return matchState == MatchState.PRE_ROUND || matchState == MatchState.ROUND || matchState == MatchState.ROUND_OVER;
+    }
+
+    public void setMatchState(MatchState matchState) {
+        Bukkit.getPluginManager().callEvent(new MatchChangeStateEvent(this, this.matchState, matchState));
+        this.matchState = matchState;
     }
 
     @Override

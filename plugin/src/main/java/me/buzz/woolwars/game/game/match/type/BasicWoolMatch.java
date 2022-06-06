@@ -1,32 +1,39 @@
 package me.buzz.woolwars.game.game.match.type;
 
 import com.google.common.collect.Lists;
+import com.hakan.core.HCore;
+import com.hakan.core.npc.HNPC;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
-import me.buzz.woolwars.api.game.match.events.PlayerJoinGameEvent;
-import me.buzz.woolwars.api.game.match.events.PlayerQuitGameEvent;
+import me.buzz.woolwars.api.game.match.player.events.PlayerDeathByPlayerEvent;
+import me.buzz.woolwars.api.game.match.player.events.PlayerDeathEvent;
+import me.buzz.woolwars.api.game.match.player.events.PlayerJoinGameEvent;
+import me.buzz.woolwars.api.game.match.player.events.PlayerQuitGameEvent;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.arena.PlayableArena;
+import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
+import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
+import me.buzz.woolwars.game.game.arena.settings.preset.impl.ChatPreset;
 import me.buzz.woolwars.game.game.gui.ClassSelectorGui;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.entities.powerup.EntityPowerup;
 import me.buzz.woolwars.game.game.match.entities.powerup.PowerUPType;
 import me.buzz.woolwars.game.game.match.listener.impl.BasicMatchListener;
-import me.buzz.woolwars.game.game.match.player.PlayerHolder;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
+import me.buzz.woolwars.game.game.match.player.PlayerMatchHolder;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
-import me.buzz.woolwars.game.game.match.round.RoundHolder;
+import me.buzz.woolwars.game.game.match.round.RoundMatchHolder;
 import me.buzz.woolwars.game.game.match.task.tasks.ResetMatchTask;
 import me.buzz.woolwars.game.game.match.task.tasks.StartingMatchTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.TeamUtils;
+import me.buzz.woolwars.game.utils.UUIDUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
-import net.jitse.npclib.api.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -36,6 +43,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class BasicWoolMatch extends WoolMatch {
@@ -48,8 +56,8 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void init() {
-        playerHolder = new PlayerHolder(this);
-        roundHolder = new RoundHolder(this);
+        playerHolder = new PlayerMatchHolder(this);
+        roundHolder = new RoundMatchHolder(this);
         matchListener = new BasicMatchListener(this);
     }
 
@@ -59,25 +67,79 @@ public class BasicWoolMatch extends WoolMatch {
     }
 
     @Override
-    public void join(WoolPlayer woolPlayer) {
+    public void joinAsPlayer(WoolPlayer woolPlayer) {
         Player player = woolPlayer.toBukkitPlayer();
 
         PlayerJoinGameEvent joinGameEvent = new PlayerJoinGameEvent(player);
         Bukkit.getPluginManager().callEvent(joinGameEvent);
         if (joinGameEvent.isCancelled()) return;
 
-        playerHolder.registerPlayer(woolPlayer);
-        player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+        playerHolder.registerPlayer(woolPlayer, true);
 
-        for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
-            matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.JOINED_MESSAGE)
-                    .replace("{player}", player.getName())
-                    .replace("{current}", String.valueOf(playerHolder.getPlayersCount()))
-                    .replace("{max}", String.valueOf(getMaxPlayers())));
+        Set<Player> playerSet = playerHolder.getOnlinePlayers();
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer == player) continue;
+
+            if (playerSet.contains(onlinePlayer)) {
+                if (playerHolder.isSpectator(onlinePlayer)) {
+                    if (playerHolder.isSpectator(player)) {
+                        player.showPlayer(onlinePlayer);
+                        onlinePlayer.showPlayer(player);
+                    } else {
+                        player.hidePlayer(onlinePlayer);
+                    }
+                } else {
+                    player.showPlayer(onlinePlayer);
+                    onlinePlayer.showPlayer(player);
+                }
+            } else {
+                onlinePlayer.hidePlayer(player);
+                player.hidePlayer(onlinePlayer);
+            }
         }
 
+        player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+
+        if (joinGameEvent.isSendMessage()) {
+            String leaveMessage = ((ApplicablePreset<String, WoolMatch, Player, ChatPreset.AskingChatMotivation>) arena.getPreset(PresetType.CHAT))
+                    .apply(this, player, ChatPreset.AskingChatMotivation.JOIN);
+
+            for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
+                matchPlayer.sendMessage(leaveMessage);
+            }
+        }
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
             setMatchState(MatchState.STARTING);
+        }
+    }
+
+    @Override
+    public void joinAsSpectator(WoolPlayer woolPlayer) {
+        Player player = woolPlayer.toBukkitPlayer();
+
+        playerHolder.registerPlayer(woolPlayer, false);
+        playerHolder.setSpectator(player, true);
+
+        Set<Player> playerSet = playerHolder.getOnlinePlayers();
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer == player) continue;
+
+            if (playerSet.contains(onlinePlayer)) {
+                if (playerHolder.isSpectator(onlinePlayer)) {
+                    if (playerHolder.isSpectator(player)) {
+                        player.showPlayer(onlinePlayer);
+                        onlinePlayer.showPlayer(player);
+                    } else {
+                        player.hidePlayer(onlinePlayer);
+                    }
+                } else {
+                    player.showPlayer(onlinePlayer);
+                    onlinePlayer.showPlayer(player);
+                }
+            } else {
+                onlinePlayer.hidePlayer(player);
+                player.hidePlayer(onlinePlayer);
+            }
         }
     }
 
@@ -89,17 +151,22 @@ public class BasicWoolMatch extends WoolMatch {
         PlayerQuitGameEvent quitGameEvent = new PlayerQuitGameEvent(player, reason);
         Bukkit.getPluginManager().callEvent(quitGameEvent);
 
-        MatchStats matchStats = playerHolder.getMatchStats(player);
+        WoolMatchStats matchStats = playerHolder.getMatchStats(player);
 
         if (isPlaying())
             shouldEnd = matchStats.getTeam().getOnlinePlayers().size() - 1 < MIN_PLAYERS_PER_TEAM;
 
         if (quitGameEvent.isSendMessage()) {
+            String leaveMessage = ((ApplicablePreset<String, WoolMatch, Player, ChatPreset.AskingChatMotivation>) arena.getPreset(PresetType.CHAT))
+                    .apply(this, player, ChatPreset.AskingChatMotivation.QUIT);
+
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
-                matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.LEAVE_MESSAGE)
-                        .replace("{player}", player.getName())
-                        .replace("{current}", String.valueOf(playerHolder.getPlayersCount() - 1))
-                        .replace("{max}", String.valueOf(getMaxPlayers())));
+                if (matchPlayer == player) {
+                    matchPlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.YOU_LEFT_FROM_THE_GAME));
+                    continue;
+                }
+
+                matchPlayer.sendMessage(leaveMessage);
             }
         }
 
@@ -107,6 +174,19 @@ public class BasicWoolMatch extends WoolMatch {
 
         woolPlayer.transferFrom(matchStats, false);
         playerHolder.removePlayer(woolPlayer);
+
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (onlinePlayer == player) continue;
+
+            WoolPlayer woolPlayer1 = WoolPlayer.getWoolPlayer(onlinePlayer);
+            if (woolPlayer1.isInMatch()) {
+                player.hidePlayer(onlinePlayer);
+                onlinePlayer.hidePlayer(player);
+            } else {
+                onlinePlayer.showPlayer(player);
+                player.showPlayer(onlinePlayer);
+            }
+        }
 
         if (shouldEnd && !isEnded()) {
             for (Player matchPlayer : playerHolder.getOnlinePlayers())
@@ -130,17 +210,26 @@ public class BasicWoolMatch extends WoolMatch {
             TeamColor teamColor = TeamColor.values()[i];
             WoolTeam team = new WoolTeam(ID, teamColor, arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.SPAWN_RED : ArenaLocationType.SPAWN_BLUE));
 
-            NPC npc = WoolWars.get().getNpcLib().createNPC(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME));
-            npc.setLocation(WoolWars.get().getSettings().getProperty(teamColor == TeamColor.RED ? ConfigFile.NPC_LOCATION_RED :
-                    ConfigFile.NPC_LOCATION_BLUE).toBukkitLocation(arena.getWorld()));
+            HNPC npc = HCore.npcBuilder(UUIDUtils.getNewUUID())
+                    .showEveryone(false)
+                    .location(arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.NPC_RED : ArenaLocationType.NPC_BLUE))
+                    .lines(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME))
 
-            npc.setCallback(player -> ClassSelectorGui.getInventory(this, playerHolder.getMatchStats(player)).open(player));
-            npc.setSkin(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_SKIN));
-            npc.create();
+                    .skin(LanguageFile.getFromFile())
+                    .whenClicked(((player, action) -> new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player)))
+
+                    .build();
+
             team.setTeamNPC(npc);
 
-            for (WoolPlayer woolPlayer : groups.get(i))
+            for (WoolPlayer woolPlayer : groups.get(i)) {
                 team.join(woolPlayer, playerHolder.getMatchStats(woolPlayer.getName()));
+
+                Player player = woolPlayer.toBukkitPlayer();
+                for (String s : WoolWars.get().getLanguage().getProperty(LanguageFile.MATCH_START_INFORMATION)) {
+                    player.sendMessage(s);
+                }
+            }
 
             teams.put(teamColor, team);
         }
@@ -172,10 +261,10 @@ public class BasicWoolMatch extends WoolMatch {
 
         List<String> tempLines = WoolWars.get().getLanguage().getProperty(LanguageFile.ENDED_RESUME);
 
-        for (WoolPlayer woolPlayer : playerHolder.getWoolPlayers()) {
+        playerHolder.forWoolPlayers(woolPlayer -> {
             Player player = woolPlayer.toBukkitPlayer();
 
-            MatchStats stats = playerHolder.getMatchStats(player);
+            WoolMatchStats stats = playerHolder.getMatchStats(player);
 
             boolean isWinnerTeam = winnerTeam != null && stats.getTeam() == winnerTeam;
 
@@ -199,7 +288,7 @@ public class BasicWoolMatch extends WoolMatch {
             }
 
             Title title = WoolWars.get().getLanguage().getProperty(isWinnerTeam ? LanguageFile.ENDED_VICTORY_TITLE : LanguageFile.ENDED_LOST_TITLE);
-            player.sendTitle(title.getTitle(), title.getSubTitle());
+            HCore.sendTitle(player, title.getTitle(), title.getSubTitle());
 
             if (WoolWars.get().getLanguage().getProperty(LanguageFile.ENDED_RESUME_CENTERED)) {
                 for (String line : lines) {
@@ -211,7 +300,7 @@ public class BasicWoolMatch extends WoolMatch {
                     player.sendMessage(line);
                 }
             }
-        }
+        });
 
         roundHolder.getTasks().put(ResetMatchTask.ID, new ResetMatchTask(this,
                 TimeUnit.SECONDS.toMillis(WoolWars.get().getSettings().getProperty(ConfigFile.CLOSE_GAME_COOLDOWN))).start());
@@ -219,11 +308,14 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void reset() {
-        for (WoolTeam value : teams.values()) value.getTeamNPC().destroy();
+        matchState = MatchState.RESETTING;
+
+        for (WoolTeam value : teams.values()) value.getTeamNPC().delete();
         teams.clear();
         roundHolder.reset();
         playerHolder.reset();
-        matchState = MatchState.WAITING;
+
+        Bukkit.getScheduler().runTaskLater(WoolWars.get(), () -> matchState = MatchState.WAITING, 20 * 3L);
     }
 
     @Override
@@ -235,21 +327,52 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause) {
-        MatchStats victimStats = playerHolder.getMatchStats(victim);
-        if (!playerHolder.isSpectator(victim)) {
+        if (!isPlaying() || isEnded()) {
+            victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+            return;
+        }
+
+        boolean wasASpectator = playerHolder.isSpectator(victim);
+        boolean killedByAPlayer = killer != null && !playerHolder.isSpectator(killer);
+        String diedMessage;
+
+        WoolMatchStats victimStats = playerHolder.getMatchStats(victim);
+        if (!wasASpectator) {
             playerHolder.setSpectator(victim);
 
             victimStats.matchDeaths++;
-            if (killer != null) playerHolder.getMatchStats(killer).matchKills++;
-
             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 2, 1));
 
             Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED_TITLE);
-            victim.sendTitle(title.getTitle(), title.getSubTitle());
+            HCore.sendTitle(victim, title.getTitle(), title.getSubTitle());
+        }
+
+        if (killedByAPlayer) {
+            Bukkit.getPluginManager().callEvent(new PlayerDeathByPlayerEvent(killer, victim));
+
+            WoolMatchStats killerStats = playerHolder.getMatchStats(killer);
+            killerStats.matchKills++;
+
+            diedMessage = WoolWars.get().getLanguage().getProperty(LanguageFile.KILL_BY_SOMEONE)
+                    .replace("{victim}", victim.getName())
+                    .replace("{victimTeamColor}", victimStats.getTeam().getTeamColor().getCC().toString())
+                    .replace("{killer}", killer.getName())
+                    .replace("{killerTeamColor}", killerStats.getTeam().getTeamColor().getCC().toString());
+        } else {
+            Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(victim));
+            diedMessage = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED)
+                    .replace("{victim}", victim.getName())
+                    .replace("{victimTeamColor}", victimStats.getTeam().getTeamColor().getCC().toString());
         }
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {
-            victim.teleport(victimStats.getTeam().getSpawnLocation());
+            victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+        }
+
+        if (!wasASpectator) {
+            for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
+                onlinePlayer.sendMessage(diedMessage);
+            }
         }
     }
 
@@ -272,6 +395,6 @@ public class BasicWoolMatch extends WoolMatch {
     }
 
     private boolean isEnded() {
-        return matchState == MatchState.ENDING;
+        return matchState == MatchState.ENDING || matchState == MatchState.RESETTING;
     }
 }

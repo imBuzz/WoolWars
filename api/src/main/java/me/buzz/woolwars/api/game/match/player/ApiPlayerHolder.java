@@ -1,7 +1,7 @@
 package me.buzz.woolwars.api.game.match.player;
 
 import com.google.common.collect.ImmutableSet;
-import me.buzz.woolwars.api.game.match.player.player.ApiMatchStats;
+import me.buzz.woolwars.api.game.match.player.player.ApiWoolMatchStats;
 import org.bukkit.entity.Player;
 
 public interface ApiPlayerHolder {
@@ -12,9 +12,9 @@ public interface ApiPlayerHolder {
 
     void removeSpectator(Player player);
 
-    ApiMatchStats getMatchStats(Player player);
+    ApiWoolMatchStats getMatchStats(Player player);
 
-    ApiMatchStats getMatchStats(String playerName);
+    ApiWoolMatchStats getMatchStats(String playerName);
 
     ImmutableSet<Player> getPlayers();
 

@@ -13,7 +13,7 @@ public class PlayableArena extends ArenaMetadata implements ApiPlayableArena {
     private final World world;
 
     public PlayableArena(ArenaMetadata metadata, World world) {
-        super(metadata.ID, metadata.name, metadata.matchType, metadata.powerups, metadata.getWorldName(), metadata.locations, metadata.regions);
+        super(metadata.ID, metadata.name, metadata.matchType, metadata.powerups, metadata.locations, metadata.regions, metadata.presets, metadata.getWorldName());
         this.world = world;
 
         for (ImplementedRegion value : regions.values()) {

@@ -18,8 +18,16 @@
 
     <repositories>
         <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
             <id>jeff-media-public</id>
             <url>https://hub.jeff-media.com/nexus/repository/jeff-media-public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -33,11 +41,18 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Commons -->
+        <!-- hCore -->
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <groupId>com.github.hakan-krgn.hCore</groupId>
+            <artifactId>bukkit-primary</artifactId>
+            <version>0.4.4</version>
+        </dependency>
+
+        <!-- netherboard -->
+        <dependency>
+            <groupId>fr.minuskube</groupId>
+            <artifactId>netherboard-bukkit</artifactId>
+            <version>1.2.2</version>
         </dependency>
 
         <!-- ConfigME -->
@@ -47,11 +62,18 @@
             <version>1.3.0</version>
         </dependency>
 
-        <!-- Netherboard -->
+        <!-- XSeries -->
         <dependency>
-            <groupId>fr.minuskube</groupId>
-            <artifactId>netherboard-bukkit</artifactId>
-            <version>1.2.2</version>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>8.7.0</version>
+        </dependency>
+
+        <!-- Commons -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
         </dependency>
 
         <!-- Maria -->
@@ -68,6 +90,13 @@
             <version>4.0.3</version>
         </dependency>
 
+        <!-- UpdateChecker -->
+        <dependency>
+            <groupId>com.jeff_media</groupId>
+            <artifactId>SpigotUpdateChecker</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
         <!-- SQLite -->
         <dependency>
             <groupId>org.xerial</groupId>
@@ -76,25 +105,22 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- SmartINVS -->
+        <!-- EXTERNAL HOOKS -->
+
+        <!-- VaultAPI -->
         <dependency>
-            <groupId>fr.minuskube.inv</groupId>
-            <artifactId>smart-invs</artifactId>
-            <version>1.2.7</version>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- NPCLib -->
+        <!-- PlaceholderAPI -->
         <dependency>
-            <groupId>net.jitse</groupId>
-            <artifactId>npclib-plugin</artifactId>
-            <version>2.12.2-SNAPSHOT</version>
-        </dependency>
-
-        <!-- UpdateChecker -->
-        <dependency>
-            <groupId>com.jeff_media</groupId>
-            <artifactId>SpigotUpdateChecker</artifactId>
-            <version>2.3.0</version>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.1</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

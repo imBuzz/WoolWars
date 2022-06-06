@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.task.tasks;
 
+import com.hakan.core.HCore;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
@@ -42,7 +43,7 @@ public class StartRoundTask extends SecondsTask {
 
         Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_START_TITLE);
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
-            onlinePlayer.sendTitle(title.getTitle(), title.getSubTitle().replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber())));
+            HCore.sendTitle(onlinePlayer, title.getTitle(), title.getSubTitle().replace("{number}", String.valueOf(match.getRoundHolder().getRoundNumber())));
         }
 
         match.getRoundHolder().getTasks().remove(getID());

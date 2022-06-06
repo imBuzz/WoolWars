@@ -16,11 +16,17 @@ import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class GameManager extends AbstractManager implements ApiGameManager {
 
-    private final Map<String, String> matchedIDbyWorldName = new HashMap<>();
+    private final Map<String, String> matchesIDbyWorldName = new HashMap<>();
     private final Map<String, WoolMatch> matchesByID = new HashMap<>();
 
     @Override
@@ -28,18 +34,19 @@ public class GameManager extends AbstractManager implements ApiGameManager {
         Bukkit.getPluginManager().registerEvents(new GameListener(), WoolWars.get());
         loadGames();
 
-        Bukkit.getScheduler().runTaskTimer(WoolWars.get(), () -> {
-            WoolMatch.workloadObjects.forEach(WorkloadHandler::addLoad);
-            //WoolMatch.cooldownTask.forEach(task -> {
-            //    if (task.canRun()) WorkloadHandler.addLoad(task::run);
-            //});
-            //WoolMatch.tickEntities.forEach(entity -> WorkloadHandler.addLoad(entity::tick));
-        }, 1L, 1L);
+        Bukkit.getScheduler().runTaskTimer(WoolWars.get(), () -> WoolMatch.workloadObjects.forEach(WorkloadHandler::addLoad), 1L, 1L);
     }
 
     @Override
     public void stop() {
+        for (WoolMatch value : matchesByID.values()) {
+            value.getRoundHolder().reset();
+            //value.getPlayerHolder().forWoolPlayers(woolPlayer -> WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(woolPlayer.toBukkitPlayer())));
+            Bukkit.unloadWorld(value.getPlayableArena().getWorld(), true);
+        }
 
+        matchesByID.clear();
+        matchesIDbyWorldName.clear();
     }
 
     private void loadGames() {
@@ -58,31 +65,33 @@ public class GameManager extends AbstractManager implements ApiGameManager {
             return;
         }
 
-        int matchesCounter = 0;
-
         for (File file : files) {
             ArenaMetadata arenaMetadata = ArenaMetadata.fromFile(file);
-
             WorldCreator worldCreator = new WorldCreator(arenaMetadata.getWorldName());
+
             WoolMatch woolMatch = new BasicWoolMatch(arenaMetadata.toPlayableArena(worldCreator.createWorld()));
             woolMatch.init();
 
             matchesByID.put(woolMatch.getMatchID(), woolMatch);
-            matchedIDbyWorldName.put(arenaMetadata.getWorldName(), woolMatch.getMatchID());
-
-            matchesCounter++;
+            matchesIDbyWorldName.put(arenaMetadata.getWorldName(), woolMatch.getMatchID());
         }
 
-        plugin.getLogger().info("Loaded " + matchesCounter + " matches from files");
+        plugin.getLogger().info("Loaded " + matchesByID.size() + " matches from files");
     }
 
     public boolean sendToFreeGame(WoolPlayer woolPlayer) {
-        for (WoolMatch value : matchesByID.values()) {
+        List<WoolMatch> matches = matchesByID.values().stream().sorted(((o1, o2) -> Integer.compare(o2.getPlayerHolder().getPlayersCount(),
+                o1.getPlayerHolder().getPlayersCount()))).collect(Collectors.toList());
+
+        for (WoolMatch value : matches) {
             if (value.checkJoin(woolPlayer)) {
-                value.join(woolPlayer);
+                value.joinAsPlayer(woolPlayer);
                 return true;
+            } else {
+                System.out.println("Cannot join");
             }
         }
+
         return false;
     }
 
@@ -96,7 +105,7 @@ public class GameManager extends AbstractManager implements ApiGameManager {
     }
 
     public WoolMatch getMatchByWorldName(String worldName) {
-        return getInternalMatch(matchedIDbyWorldName.get(worldName));
+        return getInternalMatch(matchesIDbyWorldName.get(worldName));
     }
 
     @Override
@@ -122,5 +131,6 @@ public class GameManager extends AbstractManager implements ApiGameManager {
             return null;
         }
     }
+
 
 }

@@ -67,6 +67,7 @@ public class EntityPowerup implements Workload, TickedEntity {
             if (picked) break;
             if (nearbyEntity.getType() != EntityType.PLAYER) continue;
             Player player = (Player) nearbyEntity;
+            if (woolMatch.getPlayerHolder().isSpectator(player)) continue;
 
             picked = true;
             type.getAction().accept(player);

@@ -27,6 +27,13 @@
 
         <dependency>
             <groupId>me.buzz.woolwars</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>me.buzz.woolwars</groupId>
             <artifactId>plugin</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>

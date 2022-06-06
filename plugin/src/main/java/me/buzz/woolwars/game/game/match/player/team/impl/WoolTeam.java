@@ -1,13 +1,13 @@
 package me.buzz.woolwars.game.game.match.player.team.impl;
 
+import com.hakan.core.npc.HNPC;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import me.buzz.woolwars.game.game.match.player.stats.MatchStats;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
+import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.game.match.player.team.MatchTeam;
-import me.buzz.woolwars.game.game.match.player.team.color.TeamColor;
 import me.buzz.woolwars.game.player.WoolPlayer;
-import net.jitse.npclib.api.NPC;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -23,12 +23,12 @@ public class WoolTeam implements MatchTeam {
     private final Location spawnLocation;
 
     @Setter
-    private NPC teamNPC;
+    private HNPC teamNPC;
 
     private final List<Player> players = new ArrayList<>(4);
     private int points;
 
-    public void join(WoolPlayer woolPlayer, MatchStats stats) {
+    public void join(WoolPlayer woolPlayer, WoolMatchStats stats) {
         stats.setTeam(this);
         players.add(woolPlayer.toBukkitPlayer());
     }

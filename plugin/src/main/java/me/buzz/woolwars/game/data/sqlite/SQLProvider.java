@@ -38,6 +38,7 @@ public class SQLProvider implements DataProvider {
 
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS wool_players (" +
                     "uuid VARCHAR(36) NOT NULL, " +
+                    "username VARCHAR(16), " +
                     "woolPlaced INTEGER, " +
                     "blocksBroken INTEGER, " +
                     "powerUpsGotten INTEGER, " +
@@ -48,6 +49,7 @@ public class SQLProvider implements DataProvider {
 
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS wool_kits (" +
                     "uuid VARCHAR(36) NOT NULL, " +
+                    "username VARCHAR(16), " +
                     "tank_kit VARCHAR(9), " +
                     "assault_kit VARCHAR(9), " +
                     "archer_kit VARCHAR(9), " +
@@ -87,7 +89,7 @@ public class SQLProvider implements DataProvider {
                         getInt(player, "wins", "wool_players"),
                         getInt(player, "played", "wool_players"),
                         getInt(player, "kills", "wool_players"),
-                        getInt(player, "deaths", "wool_players"));
+                        getInt(player, "deaths", "wool_players"), false);
             } else {
                 woolPlayer = new WoolPlayer(player);
             }
@@ -103,6 +105,7 @@ public class SQLProvider implements DataProvider {
         if (isPlayerPresentOnDB(player, "wool_players")) {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("UPDATE wool_players SET " +
+                        "username='" + woolPlayer.getName() + "', " +
                         "woolPlaced='" + woolPlayer.getWoolPlaced() + "', " +
                         "blocksBroken='" + woolPlayer.getBlocksBroken() + "', " +
                         "powerUpsGotten='" + woolPlayer.getPowerUpsGotten() + "', " +
@@ -112,6 +115,7 @@ public class SQLProvider implements DataProvider {
                         "deaths='" + woolPlayer.getDeaths() + "' WHERE uuid='" + player.getUniqueId().toString() + "'");
 
                 statement.executeUpdate("UPDATE wool_kits SET " +
+                        "username='" + woolPlayer.getName() + "', " +
                         "tank_kit='" + woolPlayer.getKitLayout(PlayableClassType.TANK) + "', " +
                         "assault_kit='" + woolPlayer.getKitLayout(PlayableClassType.ASSAULT) + "', " +
                         "archer_kit='" + woolPlayer.getKitLayout(PlayableClassType.ARCHER) + "', " +
@@ -125,9 +129,11 @@ public class SQLProvider implements DataProvider {
             }
         } else {
             try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate("INSERT INTO wool_players (uuid, woolPlaced, blocksBroken, powerUpsGotten, " +
+                statement.executeUpdate("INSERT INTO wool_players (uuid, username, woolPlaced, blocksBroken, powerUpsGotten, " +
                         "wins, played, kills, deaths) " + "VALUES ('" +
                         player.getUniqueId().toString() +
+                        "', '" +
+                        woolPlayer.getName() +
                         "', '" +
                         woolPlayer.getWoolPlaced() +
                         "', '" +
@@ -144,8 +150,10 @@ public class SQLProvider implements DataProvider {
                         woolPlayer.getDeaths() + "')");
 
 
-                statement.executeUpdate("INSERT INTO wool_kits (uuid, tank_kit, assault_kit, archer_kit, swordman_kit, golem_kit, engineer_kit) " + "VALUES ('" +
+                statement.executeUpdate("INSERT INTO wool_kits (uuid, username, tank_kit, assault_kit, archer_kit, swordman_kit, golem_kit, engineer_kit) " + "VALUES ('" +
                         player.getUniqueId().toString() +
+                        "', '" +
+                        woolPlayer.getName() +
                         "', '" +
                         woolPlayer.getKitLayout(PlayableClassType.TANK) +
                         "', '" +
@@ -203,7 +211,7 @@ public class SQLProvider implements DataProvider {
 
     private String[] getStrings(Player player, String table, String... columns) {
         try (Statement statement = connection.createStatement()) {
-            ResultSet set = statement.executeQuery("SELECT * FROM " + table + " WHERE uuid=" + player.getUniqueId().toString() + " LIMIT 1");
+            ResultSet set = statement.executeQuery("SELECT * FROM " + table + " WHERE uuid='" + player.getUniqueId().toString() + "' LIMIT 1");
             set.next();
 
             List<String> values = new ArrayList<>();
