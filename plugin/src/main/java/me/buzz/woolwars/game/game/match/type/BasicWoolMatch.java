@@ -74,23 +74,30 @@ public class BasicWoolMatch extends WoolMatch {
         Bukkit.getPluginManager().callEvent(joinGameEvent);
         if (joinGameEvent.isCancelled()) return;
 
+        playerHolder.registerPlayer(woolPlayer, true);
+
         Set<Player> playerSet = playerHolder.getOnlinePlayers();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer == player) continue;
+
             if (playerSet.contains(onlinePlayer)) {
-                if (playerHolder.isSpectator(onlinePlayer)) continue;
-
-                if (!player.canSee(onlinePlayer)) player.showPlayer(onlinePlayer);
-                if (!onlinePlayer.canSee(player)) onlinePlayer.showPlayer(player);
-
-                continue;
+                if (playerHolder.isSpectator(onlinePlayer)) {
+                    if (playerHolder.isSpectator(player)) {
+                        player.showPlayer(onlinePlayer);
+                        onlinePlayer.showPlayer(player);
+                    } else {
+                        player.hidePlayer(onlinePlayer);
+                    }
+                } else {
+                    player.showPlayer(onlinePlayer);
+                    onlinePlayer.showPlayer(player);
+                }
+            } else {
+                onlinePlayer.hidePlayer(player);
+                player.hidePlayer(onlinePlayer);
             }
-
-            onlinePlayer.hidePlayer(player);
-            player.hidePlayer(onlinePlayer);
         }
 
-        playerHolder.registerPlayer(woolPlayer, true);
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
         if (joinGameEvent.isSendMessage()) {
@@ -116,16 +123,23 @@ public class BasicWoolMatch extends WoolMatch {
         Set<Player> playerSet = playerHolder.getOnlinePlayers();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer == player) continue;
-            if (playerSet.contains(onlinePlayer)) {
-                if (!playerHolder.isSpectator(onlinePlayer)) {
-                    if (!player.canSee(onlinePlayer)) player.showPlayer(onlinePlayer);
-                    if (!onlinePlayer.canSee(player)) onlinePlayer.showPlayer(player);
-                }
-                continue;
-            }
 
-            onlinePlayer.hidePlayer(player);
-            player.hidePlayer(onlinePlayer);
+            if (playerSet.contains(onlinePlayer)) {
+                if (playerHolder.isSpectator(onlinePlayer)) {
+                    if (playerHolder.isSpectator(player)) {
+                        player.showPlayer(onlinePlayer);
+                        onlinePlayer.showPlayer(player);
+                    } else {
+                        player.hidePlayer(onlinePlayer);
+                    }
+                } else {
+                    player.showPlayer(onlinePlayer);
+                    onlinePlayer.showPlayer(player);
+                }
+            } else {
+                onlinePlayer.hidePlayer(player);
+                player.hidePlayer(onlinePlayer);
+            }
         }
     }
 
@@ -156,6 +170,11 @@ public class BasicWoolMatch extends WoolMatch {
             }
         }
 
+        if (matchStats.getTeam() != null) matchStats.getTeam().remove(player);
+
+        woolPlayer.transferFrom(matchStats, false);
+        playerHolder.removePlayer(woolPlayer);
+
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer == player) continue;
 
@@ -163,16 +182,11 @@ public class BasicWoolMatch extends WoolMatch {
             if (woolPlayer1.isInMatch()) {
                 player.hidePlayer(onlinePlayer);
                 onlinePlayer.hidePlayer(player);
-            } else if (!onlinePlayer.canSee(player)) {
+            } else {
                 onlinePlayer.showPlayer(player);
                 player.showPlayer(onlinePlayer);
             }
         }
-
-        if (matchStats.getTeam() != null) matchStats.getTeam().remove(player);
-
-        woolPlayer.transferFrom(matchStats, false);
-        playerHolder.removePlayer(woolPlayer);
 
         if (shouldEnd && !isEnded()) {
             for (Player matchPlayer : playerHolder.getOnlinePlayers())
@@ -196,7 +210,7 @@ public class BasicWoolMatch extends WoolMatch {
             TeamColor teamColor = TeamColor.values()[i];
             WoolTeam team = new WoolTeam(ID, teamColor, arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.SPAWN_RED : ArenaLocationType.SPAWN_BLUE));
 
-            HNPC npc = HCore.buildNpc(UUIDUtils.getNewUUID())
+            HNPC npc = HCore.npcBuilder(UUIDUtils.getNewUUID())
                     .showEveryone(false)
                     .location(arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.NPC_RED : ArenaLocationType.NPC_BLUE))
                     .lines(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME))

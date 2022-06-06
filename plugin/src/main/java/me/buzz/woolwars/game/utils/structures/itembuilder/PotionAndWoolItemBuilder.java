@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Wool;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 
 public class PotionAndWoolItemBuilder extends HItemBuilder {
 
@@ -39,7 +40,7 @@ public class PotionAndWoolItemBuilder extends HItemBuilder {
     }
 
     @Override
-    public ItemStack build() {
+    public @NotNull ItemStack build() {
         ItemStack stack;
 
         if (potionType != null) {
@@ -49,6 +50,7 @@ public class PotionAndWoolItemBuilder extends HItemBuilder {
             stack = potion.toItemStack(getAmount());
         } else {
             stack = new Wool(color).toItemStack();
+            stack.setAmount(getAmount());
         }
 
         stack = getNbtManager().set(stack, getNbt());

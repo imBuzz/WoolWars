@@ -43,10 +43,6 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void damage(EntityDamageEvent event) {
-        if (match.getMatchState() != MatchState.ROUND) {
-            event.setCancelled(true);
-            return;
-        }
         if (event.getCause() == EntityDamageEvent.DamageCause.CONTACT) return;
         if (event.getEntityType() != EntityType.PLAYER) return;
 
@@ -56,7 +52,7 @@ public class BasicMatchListener implements MatchListener {
         }
 
         Player victim = (Player) event.getEntity();
-        if (match.getPlayerHolder().isSpectator(victim)) {
+        if (match.getMatchState() != MatchState.ROUND || match.getPlayerHolder().isSpectator(victim)) {
             event.setCancelled(true);
             if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 victim.teleport(match.getPlayableArena().getLocation(ArenaLocationType.WAITING_LOBBY));

@@ -106,7 +106,11 @@ public class TabHandler {
         if (match == null) return 0;
 
         if (match.getPlayerHolder().isSpectator(player)) return 1000;
-        return match.getPlayerHolder().getMatchStats(player).getTeam().getTeamColor().getPriority();
+
+        WoolMatchStats matchStats = match.getPlayerHolder().getMatchStats(player);
+        if (matchStats.getTeam() == null) return 0;
+
+        return matchStats.getTeam().getTeamColor().getPriority();
     }
 
     public boolean isTracked(Player player) {

@@ -5,6 +5,8 @@ import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import me.buzz.woolwars.game.hook.ImplementedHookType;
+import me.buzz.woolwars.game.hook.hooks.vault.VaultAPIHook;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -131,6 +133,8 @@ public class GameListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChat(AsyncPlayerChatEvent event) {
+        VaultAPIHook vaultAPIHook = WoolWars.get().getHook(ImplementedHookType.VAULT);
+
         WoolMatch worldMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
         WoolMatch playerMatch = gameManager.getInternalMatchByPlayer(event.getPlayer());
 
@@ -138,7 +142,7 @@ public class GameListener implements Listener {
             event.setCancelled(true);
 
             String message = WoolWars.get().getLanguage().getProperty(LanguageFile.LOBBY_CHAT)
-                    .replace("{prefix}", "prefix")
+                    .replace("{prefix}", vaultAPIHook != null ? vaultAPIHook.getPrefix(event.getPlayer()) : "")
                     .replace("{player}", event.getPlayer().getName())
                     .replace("{message}", event.getMessage());
 

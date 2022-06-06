@@ -29,10 +29,10 @@ public class ArcherPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new HItemBuilder(XMaterial.BOW.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(1, new HItemBuilder(XMaterial.WOODEN_PICKAXE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(2, new HItemBuilder(XMaterial.WOODEN_AXE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(3, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(0, new HItemBuilder(XMaterial.BOW.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(1, new HItemBuilder(XMaterial.WOODEN_PICKAXE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(2, new HItemBuilder(XMaterial.WOODEN_AXE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(3, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
 
         items.put(4, new ItemStack(Material.ARROW, 6));
         items.put(5, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 32).build());
@@ -43,7 +43,7 @@ public class ArcherPlayableClass extends PlayableClass {
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.LEATHER_BOOTS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.LEATHER_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
     }
 
     public ArcherPlayableClass(Player player, TeamColor teamColor) {

@@ -30,12 +30,12 @@ public class EngineerPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new HItemBuilder(XMaterial.WOODEN_SWORD.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(1, new HItemBuilder(XMaterial.BOW.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(0, new HItemBuilder(XMaterial.WOODEN_SWORD.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(1, new HItemBuilder(XMaterial.BOW.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
         items.put(2, new ItemStack(Material.ARROW, 4));
-        items.put(3, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(3, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
 
-        items.put(4, new HItemBuilder(XMaterial.STONE_PICKAXE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(4, new HItemBuilder(XMaterial.STONE_PICKAXE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
         items.put(5, new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.REGEN, 1, true).build());
         items.put(6, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 64).build());
 
@@ -43,7 +43,7 @@ public class EngineerPlayableClass extends PlayableClass {
                 .toItemStack());
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.CHESTPLATE, new HItemBuilder(XMaterial.LEATHER_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.CHESTPLATE, new HItemBuilder(XMaterial.LEATHER_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
         armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.BOOTS, new ItemStack(Material.AIR));
     }

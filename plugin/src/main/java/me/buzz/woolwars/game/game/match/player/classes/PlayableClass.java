@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.player.classes;
 
+import com.cryptomorin.xseries.XMaterial;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
@@ -23,8 +24,9 @@ public abstract class PlayableClass {
     protected boolean used = false;
 
     public static ItemStack adjustItem(TeamColor team, ItemStack itemStack) {
-        switch (itemStack.getType()) {
-            case WOOL: {
+        XMaterial material = XMaterial.matchXMaterial(itemStack);
+        switch (material) {
+            case WHITE_WOOL: {
                 return new PotionAndWoolItemBuilder(itemStack).setColor(team.getDC()).build();
             }
             case LEATHER_HELMET:

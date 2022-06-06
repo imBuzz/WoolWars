@@ -28,18 +28,18 @@ public class TankPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new HItemBuilder(XMaterial.WOODEN_SWORD.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(1, new HItemBuilder(XMaterial.WOODEN_PICKAXE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(2, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(0, new HItemBuilder(XMaterial.WOODEN_SWORD.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(1, new HItemBuilder(XMaterial.WOODEN_PICKAXE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(2, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
         items.put(3, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 64).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.TANK_KEYSTONE)
                 .toItemStack());
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.CHESTPLATE, new HItemBuilder(XMaterial.LEATHER_CHESTPLATE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        armor.put(ArmorSlot.LEGGINGS, new HItemBuilder(XMaterial.LEATHER_LEGGINGS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.LEATHER_BOOTS.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.CHESTPLATE, new HItemBuilder(XMaterial.LEATHER_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        armor.put(ArmorSlot.LEGGINGS, new HItemBuilder(XMaterial.LEATHER_LEGGINGS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.LEATHER_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
     }
 
     public TankPlayableClass(Player player, TeamColor teamColor) {

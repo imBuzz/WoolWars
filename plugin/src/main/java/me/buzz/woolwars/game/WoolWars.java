@@ -62,9 +62,9 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
         //new UpdateChecker(this, UpdateCheckSource.SPIGET, String.valueOf(SPIGOT_CODE))
         //        .checkEveryXHours(12)
-        //        .setNotifyByPermissionOnJoin("petsreloaded.update")
+        //        .setNotifyByPermissionOnJoin("woolwars.update")
         //        .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
-        //        .setDownloadLink("https://www.spigotmc.org/resources/petsreloaded-create-your-own-custom-pets-eula-compliant-1-8-x-1-18-x.98113/")
+        //        .setDownloadLink("")
         //        .checkNow();
     }
 

@@ -97,7 +97,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
         if (isSpectator(bukkitPlayer)) removeSpectator(bukkitPlayer);
 
         players.remove(player.getName());
-        WoolWars.get().getTabHandler().update(bukkitPlayer, match);
+        WoolWars.get().getTabHandler().update(bukkitPlayer, null);
 
         SerializedLocation location = WoolWars.get().getSettings().getProperty(ConfigFile.LOBBY_LOCATION);
 

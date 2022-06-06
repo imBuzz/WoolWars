@@ -41,9 +41,9 @@ public enum PowerUPType {
         }
         if (!hasItem) {
             if (slot != 99) {
-                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
             } else {
-                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
             }
         }
     }, armorStand -> {
@@ -67,9 +67,9 @@ public enum PowerUPType {
         }
         if (!hasItem) {
             if (slot != 99) {
-                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
             } else {
-                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
             }
         }
     }, armorStand -> {
@@ -93,10 +93,10 @@ public enum PowerUPType {
         }
         if (!hasItem) {
             if (slot != 99) {
-                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().setItem(slot, new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
                 player.getInventory().addItem(new ItemStack(Material.ARROW, 2));
             } else {
-                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+                player.getInventory().addItem(new HItemBuilder(material).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
                 player.getInventory().addItem(new ItemStack(Material.ARROW, 2));
             }
         }
@@ -125,12 +125,12 @@ public enum PowerUPType {
     CHAINMAIL_HELMET(LanguageFile.CHAINMAIL_HELMET_POWERUP, player -> {
         boolean hasItem = player.getInventory().getHelmet() != null && player.getInventory().getBoots().getType() == XMaterial.CHAINMAIL_HELMET.parseMaterial();
         if (!hasItem)
-            player.getInventory().setHelmet(new HItemBuilder(XMaterial.CHAINMAIL_HELMET.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            player.getInventory().setHelmet(new HItemBuilder(XMaterial.CHAINMAIL_HELMET.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
     }, armorStand -> armorStand.setHelmet(XMaterial.CHAINMAIL_HELMET.parseItem())),
     CHAINMAIL_CHESTPLATE(LanguageFile.CHAINMAIL_CHESTPLATE_POWERUP, player -> {
         boolean hasItem = player.getInventory().getChestplate() != null && player.getInventory().getBoots().getType() == XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial();
         if (!hasItem)
-            player.getInventory().setChestplate(new HItemBuilder(XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            player.getInventory().setChestplate(new HItemBuilder(XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
     }, armorStand -> {
         armorStand.setChestplate(XMaterial.CHAINMAIL_CHESTPLATE.parseItem());
         armorStand.teleport(armorStand.getLocation().clone().add(0, 0.5, 0));
@@ -138,7 +138,7 @@ public enum PowerUPType {
     CHAINMAIL_BOOTS(LanguageFile.CHAINMAIL_BOOTS_POWERUP, player -> {
         boolean hasItem = player.getInventory().getBoots() != null && player.getInventory().getBoots().getType() == XMaterial.CHAINMAIL_BOOTS.parseMaterial();
         if (!hasItem)
-            player.getInventory().setBoots(new HItemBuilder(XMaterial.CHAINMAIL_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            player.getInventory().setBoots(new HItemBuilder(XMaterial.CHAINMAIL_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
     }, armorStand -> {
         armorStand.setBoots(XMaterial.CHAINMAIL_BOOTS.parseItem());
         armorStand.teleport(armorStand.getLocation().clone().add(0, 1.5, 0));
@@ -146,7 +146,7 @@ public enum PowerUPType {
     IRON_BOOTS(LanguageFile.IRON_BOOTS_POWERUP, player -> {
         boolean hasItem = player.getInventory().getBoots() != null && player.getInventory().getBoots().getType() == XMaterial.IRON_BOOTS.parseMaterial();
         if (!hasItem)
-            player.getInventory().setBoots(new HItemBuilder(XMaterial.IRON_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+            player.getInventory().setBoots(new HItemBuilder(XMaterial.IRON_BOOTS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
     }, armorStand -> {
         armorStand.setBoots(XMaterial.IRON_BOOTS.parseItem());
         armorStand.teleport(armorStand.getLocation().clone().add(0, 1.5, 0));

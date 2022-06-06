@@ -1,6 +1,7 @@
 package me.buzz.woolwars.game.player.listener;
 
-import com.hakan.core.scoreboard.HScoreboard;
+import fr.minuskube.netherboard.Netherboard;
+import fr.minuskube.netherboard.bukkit.BPlayerBoard;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
@@ -18,12 +19,33 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PlayerListener implements Listener {
+
+    private final BukkitRunnable scoreboardUpdateTask;
+
+    public PlayerListener() {
+        scoreboardUpdateTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    BPlayerBoard board = Netherboard.instance().getBoard(onlinePlayer);
+                    if (board == null) return;
+
+                    applyScoreboardLines(getScoreboardLinesByMatchState(onlinePlayer, WoolWars.get().getGameManager().getInternalMatchByPlayer(onlinePlayer)), board);
+                }
+            }
+        };
+
+        scoreboardUpdateTask.runTaskTimerAsynchronously(WoolWars.get(), 50L, 10L);
+    }
 
     @EventHandler
     public void prepareLocation(PlayerSpawnLocationEvent event) {
@@ -35,6 +57,7 @@ public class PlayerListener implements Listener {
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        Netherboard.instance().createBoard(player, WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_TITLE));
         WoolWars.get().getDataProvider().loadPlayer(player).whenComplete((woolPlayer, throwable) -> {
             if (throwable != null) {
                 throwable.printStackTrace();
@@ -42,7 +65,6 @@ public class PlayerListener implements Listener {
 
             WoolPlayer.trackPlayer(woolPlayer);
         });
-        createScoreboard(player);
 
         for (WoolPlayer woolOnlinePlayer : WoolPlayer.getWoolOnlinePlayers()) {
             if (woolOnlinePlayer.toBukkitPlayer() == player) continue;
@@ -64,17 +86,7 @@ public class PlayerListener implements Listener {
         WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(event.getPlayer()));
     }
 
-    public void createScoreboard(Player player) {
-        HScoreboard scoreboard = HScoreboard.create(player);
-
-        scoreboard.setTitle(WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_TITLE));
-        scoreboard.setUpdateInterval(10);
-        scoreboard.show();
-
-        scoreboard.update(hScoreboard -> scoreboard.setLines(getScoreboardLinesByMatchState(player, WoolWars.get().getGameManager().getInternalMatchByPlayer(player))));
-    }
-
-    public List<String> getScoreboardLinesByMatchState(Player player, WoolMatch match) {
+    private List<String> getScoreboardLinesByMatchState(Player player, WoolMatch match) {
         if (match == null) {
             List<String> strings = WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_MATCH_LOBBY), tempLines = new ArrayList<>();
             PlaceholderAPIHook placeholderHook = WoolWars.get().getHook(ImplementedHookType.PLACEHOLDER_API);
@@ -86,6 +98,21 @@ public class PlayerListener implements Listener {
 
         return ((ApplicablePreset<List<String>, WoolMatch, Player, Void>) match.getPlayableArena().getPreset(PresetType.SCOREBOARD))
                 .apply(match, player, null);
+    }
+
+    private void applyScoreboardLines(List<String> lines, BPlayerBoard board) {
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+
+            board.set(line, lines.size() - i);
+        }
+
+        Set<Integer> scores = new HashSet<>(board.getLines().keySet());
+        for (int score : scores) {
+            if (score <= 0 || score > lines.size()) {
+                board.remove(score);
+            }
+        }
     }
 
 }

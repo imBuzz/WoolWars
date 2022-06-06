@@ -33,10 +33,10 @@ public class AssaultPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new HItemBuilder(XMaterial.WOODEN_SWORD.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(1, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).addEnchant(Enchantment.DIG_SPEED, 2).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(2, new HItemBuilder(XMaterial.IRON_PICKAXE.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        items.put(3, new HItemBuilder(XMaterial.STONE_SHOVEL.parseMaterial()).setFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        items.put(0, new HItemBuilder(XMaterial.WOODEN_SWORD.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(1, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).addEnchant(Enchantment.DIG_SPEED, 2).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(2, new HItemBuilder(XMaterial.IRON_PICKAXE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(3, new HItemBuilder(XMaterial.STONE_SHOVEL.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
 
         items.put(4, new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.INSTANT_HEAL, 2, true).build());
         items.put(5, new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.INSTANT_DAMAGE, 1, true).build());
@@ -47,8 +47,8 @@ public class AssaultPlayableClass extends PlayableClass {
                 .toItemStack());
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.CHESTPLATE, new HItemBuilder(XMaterial.LEATHER_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
-        armor.put(ArmorSlot.LEGGINGS, new HItemBuilder(XMaterial.LEATHER_LEGGINGS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).setUnbreakable(true).build());
+        armor.put(ArmorSlot.CHESTPLATE, new HItemBuilder(XMaterial.LEATHER_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        armor.put(ArmorSlot.LEGGINGS, new HItemBuilder(XMaterial.LEATHER_LEGGINGS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
         armor.put(ArmorSlot.BOOTS, new ItemStack(Material.AIR));
     }
 

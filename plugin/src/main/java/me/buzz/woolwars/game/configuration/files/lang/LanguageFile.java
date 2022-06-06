@@ -28,7 +28,7 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> NO_MATCH_FOUND = newProperty("commands.join.no-match-found", "§cThere isn't a free match to join");
 
     @Comment("Global chat format")
-    public static final Property<String> LOBBY_CHAT = newProperty("global.chat.lobby.format", "{prefix} {player}: {message}");
+    public static final Property<String> LOBBY_CHAT = newProperty("global.chat.lobby.format", "{prefix}{player}: {message}");
 
     public static final Property<String> YOU_LEFT_FROM_THE_GAME = newProperty("match.you-left-from-the-game", "§cYou left from the game");
 
@@ -127,12 +127,12 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<List<String>> NPC_NAME = newListProperty("match.npc.hologram", Lists.newArrayList(
             "§6§lClass Selector", "§eClick to open!"));
 
-    private static final Property<String> SKIN_TEXTURE = newProperty("match.noc.skin.texture", "ewogICJ0aW1lc3RhbXAiIDogMTY1MjczMDU4MjQ2MSwKICAicHJvZmlsZU" +
+    public static final Property<String> SKIN_TEXTURE = newProperty("match.noc.skin.texture", "ewogICJ0aW1lc3RhbXAiIDogMTY1MjczMDU4MjQ2MSwKICAicHJvZmlsZU" +
             "lkIiA6ICI3ZWQ2ZTE1NzE4ZTc0NTA3ODdkNjgwMjA5ZTIxZWM0MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJnNGczcyIsCiAgIn" +
             "NpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3Rle" +
             "HR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yMTQ0ZDY5Mjc5Zjc2YjY0ZmMxNWJmOWZkMmRlZWExNWYyNWYzYTM5OThmMGZiNDcwNT" +
             "QwYmQyYzE2NjdlYTM1IgogICAgfQogIH0KfQ==");
-    private static final Property<String> SKIN_SIGNATURE = newProperty("match.npc.skin.signature", "fhTdzMgh/8IgzaIl46+LN4JpYfuxtXjia5anECpTPcxXvuoFyNteY5pzEI0" +
+    public static final Property<String> SKIN_SIGNATURE = newProperty("match.npc.skin.signature", "fhTdzMgh/8IgzaIl46+LN4JpYfuxtXjia5anECpTPcxXvuoFyNteY5pzEI0" +
             "v1G0PlrKSYmJcR83HyT+DpRyBFcthVzigZzaPGUjEkkY6nEhaHhnGMvI8moKpdEKf+qg5zYHlQlRNOwlfxlaSZPzNqY1Mw+aiUj/Z" +
             "/SypkdI3jdhIdnxarg1MzZfbN+eo+FgkTJlf1hrUz6P9Cl56dXBDBM1MugXBhUZAEto2zHriV56acOMORQubuGLtMtGYi" +
             "TB1RbDY6SY/F9zgaOdBetyWhwfWrWx9/KuK3D10qzpFMT6X6EnaN7Jv65Y8PDy97zCfXzYp8RcvsRAKQIi+erG+x4cbcU7SDSR4pW0+" +
