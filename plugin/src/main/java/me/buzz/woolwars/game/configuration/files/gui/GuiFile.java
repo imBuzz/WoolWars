@@ -11,6 +11,30 @@ import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 
 public class GuiFile implements SettingsHolder {
 
+    public static final Property<String> MATCHES_MONITOR = newProperty("matches-monitor.title", "§8Matches Monitor");
+
+    public static final Property<WoolItem> ARROW_BACK = newBeanProperty(WoolItem.class, "matches-monitor.previousPage",
+            WoolItem.from(XMaterial.ARROW.name(), "§7Previous Page", Lists.newArrayList()));
+    public static final Property<WoolItem> CLOSE_PAGE = newBeanProperty(WoolItem.class, "matches-monitor.close",
+            WoolItem.from(XMaterial.BARRIER.name(), "§7Close", Lists.newArrayList()));
+    public static final Property<WoolItem> ARROW_NEXT = newBeanProperty(WoolItem.class, "matches-monitor.nextPage",
+            WoolItem.from(XMaterial.ARROW.name(), "§7Next Page", Lists.newArrayList()));
+
+    public static final Property<WoolItem> CLASSIC_MATCH_ITEM = newBeanProperty(WoolItem.class, "matches-monitor.matchItem",
+            WoolItem.from(XMaterial.IRON_BLOCK.name(), "§aID: {ID}",
+                    Lists.newArrayList(
+                            "§7State: {state}",
+                            "",
+                            "§7Players: {players-counter}",
+                            "§7Spectators: {spectators-counter}",
+                            "",
+                            "§7Arena: {arena}",
+                            "",
+                            "§7Blue Score: {blue_score}",
+                            "§7Red Score: {red_score}"
+                    )));
+
+
     public static final Property<String> CLASS_SELECTOR_TITLE = newProperty("class-selector.title", "§8Class Selector");
     public static final Property<WoolItem> CLASS_SELECTOR_TANK = newBeanProperty(WoolItem.class, "class-selector.item.tank",
             WoolItem.from(XMaterial.IRON_BLOCK.name(), "§aTank",

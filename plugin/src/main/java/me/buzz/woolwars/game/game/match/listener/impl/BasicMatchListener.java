@@ -201,7 +201,9 @@ public class BasicMatchListener implements MatchListener {
 
         if (match.getPlayerHolder().isSpectator(event.getPlayer()))
             match.getPlayerHolder().getOnlineSpectators().forEach(player -> player.sendMessage(message));
-        else match.getPlayerHolder().getOnlinePlayers().forEach(player -> player.sendMessage(message));
+        else {
+            match.getPlayerHolder().getOnlinePlayers().forEach(player -> player.sendMessage(message));
+        }
     }
 
     @Override

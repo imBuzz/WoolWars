@@ -7,6 +7,7 @@ import com.hakan.core.HCore;
 import lombok.Getter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
+import me.buzz.woolwars.api.game.match.round.ApiRoundHolder;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class RoundMatchHolder extends AbstractMatchHolder {
+public class RoundMatchHolder extends AbstractMatchHolder implements ApiRoundHolder {
 
     private final static RandomSelector<XMaterial> centerMats = RandomSelector.uniform(ImmutableList.of(XMaterial.SNOW_BLOCK, XMaterial.WHITE_WOOL, XMaterial.QUARTZ_BLOCK));
     private final static RandomSelector<PowerUPType> powerUPS = RandomSelector.uniform(Lists.newArrayList(PowerUPType.values()));
@@ -180,4 +181,13 @@ public class RoundMatchHolder extends AbstractMatchHolder {
         entities.clear();
     }
 
+    @Override
+    public boolean canBreakCenter() {
+        return canBreakCenter;
+    }
+
+    @Override
+    public int getPointsByTeamColor(TeamColor teamColor) {
+        return match.getTeams().containsKey(teamColor) ? match.getTeams().get(teamColor).getPoints() : 0;
+    }
 }

@@ -60,6 +60,14 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
                 .collect(Collectors.toSet());
     }
 
+    public Set<Player> getGamePlayers() {
+        return players.values().stream()
+                .map(WoolPlayer::toBukkitPlayer)
+                .filter(Objects::nonNull)
+                .filter(player -> !isSpectator(player))
+                .collect(Collectors.toSet());
+    }
+
     public Set<Player> getOnlineSpectators() {
         return players.values().stream()
                 .map(WoolPlayer::toBukkitPlayer)
@@ -128,6 +136,8 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
     }
 
     public void setSpectator(Player player, boolean internal) {
+        if (isSpectator(player)) return;
+
         player.setHealth(20);
         player.setFoodLevel(20);
 
@@ -175,8 +185,11 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
 
     @Override
     public ImmutableSet<Player> getPlayers() {
-        return ImmutableSet.copyOf(getOnlinePlayers());
+        return ImmutableSet.copyOf(getGamePlayers());
     }
 
-
+    @Override
+    public ImmutableSet<Player> getSpectators() {
+        return ImmutableSet.copyOf(getOnlineSpectators());
+    }
 }

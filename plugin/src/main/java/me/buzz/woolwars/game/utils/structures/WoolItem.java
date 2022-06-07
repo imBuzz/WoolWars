@@ -26,7 +26,7 @@ public class WoolItem {
     }
 
     public ItemStack toItemStack() {
-        return new HItemBuilder(material).name(name).lores(lines).build();
+        return new HItemBuilder(material).name(name).lores(false, lines).build();
     }
 
 }

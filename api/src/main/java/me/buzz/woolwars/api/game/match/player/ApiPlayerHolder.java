@@ -18,5 +18,6 @@ public interface ApiPlayerHolder {
 
     ImmutableSet<Player> getPlayers();
 
+    ImmutableSet<Player> getSpectators();
 
 }
