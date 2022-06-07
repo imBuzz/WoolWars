@@ -41,6 +41,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- bStats -->
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
         <!-- hCore -->
         <dependency>
             <groupId>com.github.hakan-krgn.hCore</groupId>

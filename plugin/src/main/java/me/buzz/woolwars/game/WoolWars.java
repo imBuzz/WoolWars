@@ -3,6 +3,9 @@ package me.buzz.woolwars.game;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
 import com.hakan.core.HCore;
+import com.jeff_media.updatechecker.UpdateCheckSource;
+import com.jeff_media.updatechecker.UpdateChecker;
+import com.jeff_media.updatechecker.UserAgentBuilder;
 import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
 import me.buzz.woolwars.game.commands.WoolCommand;
@@ -15,6 +18,7 @@ import me.buzz.woolwars.game.hook.ImplementedHookType;
 import me.buzz.woolwars.game.player.TabHandler;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,6 +31,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
     private final Map<ImplementedHookType, ExternalPluginHook> hooks = new HashMap<>();
 
+    private Metrics metrics;
     @Getter
     private DataProvider dataProvider;
     @Getter
@@ -60,12 +65,13 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         HCore.registerCommands(new WoolCommand());
 
-        //new UpdateChecker(this, UpdateCheckSource.SPIGET, String.valueOf(SPIGOT_CODE))
-        //        .checkEveryXHours(12)
-        //        .setNotifyByPermissionOnJoin("woolwars.update")
-        //        .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
-        //        .setDownloadLink("")
-        //        .checkNow();
+        metrics = new Metrics(this, 15400);
+        new UpdateChecker(this, UpdateCheckSource.SPIGET, "102486")
+                .checkEveryXHours(12)
+                .setNotifyByPermissionOnJoin("woolwars.update")
+                .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
+                .setDownloadLink("")
+                .checkNow();
     }
 
     @Override
