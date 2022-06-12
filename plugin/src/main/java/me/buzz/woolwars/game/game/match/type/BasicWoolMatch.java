@@ -47,7 +47,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class BasicWoolMatch extends WoolMatch {
-    private final static int MAX_PLAYERS = 8;
     private final static int MIN_PLAYERS_PER_TEAM = 1;
 
     public BasicWoolMatch(PlayableArena arena) {
@@ -378,7 +377,7 @@ public class BasicWoolMatch extends WoolMatch {
 
     @Override
     public int getMaxPlayers() {
-        return MAX_PLAYERS;
+        return arena.getMaxPlayers();
     }
 
     @Override

@@ -43,8 +43,6 @@ public class GameMonitorGui extends HInventory {
         List<ClickableItem> items = new ArrayList<>();
 
         for (ApiMatch match : WoolWars.get().getGameManager().getMatches()) {
-            System.out.println("MATCH");
-
             HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASSIC_MATCH_ITEM).toItemStack());
             itemBuilder.name(itemBuilder.getName().replace("{ID}", match.getMatchID()));
 

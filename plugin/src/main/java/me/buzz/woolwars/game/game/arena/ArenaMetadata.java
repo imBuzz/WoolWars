@@ -33,6 +33,8 @@ public class ArenaMetadata {
     @Getter
     protected final MatchType matchType;
     @Getter
+    protected final int maxPlayers;
+    @Getter
     protected final List<SerializedLocation> powerups;
 
     protected final Map<ArenaLocationType, SerializedLocation> locations;
@@ -48,6 +50,7 @@ public class ArenaMetadata {
         String name = data.getString("name");
         MatchType matchType = MatchType.valueOf(data.getString("type"));
         String worldName = data.getString("worldName");
+        int maxPlayers = data.getInt("maxPlayers");
 
         Map<ArenaLocationType, SerializedLocation> locations = new HashMap<>();
         locations.put(ArenaLocationType.WAITING_LOBBY, SerializedLocation.fromString(data.getString("locations.spawns.waitingLobby")));
@@ -69,7 +72,7 @@ public class ArenaMetadata {
         presets.put(PresetType.SCOREBOARD, new ScoreboardPreset(data));
         presets.put(PresetType.CHAT, new ChatPreset(data));
 
-        return new ArenaMetadata(ID, name, matchType, powerups, locations, regions, presets, worldName);
+        return new ArenaMetadata(ID, name, matchType, maxPlayers, powerups, locations, regions, presets, worldName);
     }
 
     public SerializedLocation getArenaLocation(ArenaLocationType type) {
