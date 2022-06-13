@@ -1,6 +1,6 @@
 package me.buzz.woolwars.game.game.listener;
 
-import me.buzz.woolwars.api.game.match.state.MatchState;
+import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.GameManager;
@@ -8,6 +8,7 @@ import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
 import me.buzz.woolwars.game.hook.hooks.vault.VaultAPIHook;
 import me.buzz.woolwars.game.player.WoolPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -32,14 +33,21 @@ public class GameListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void teleport(PlayerTeleportEvent event) {
         if (event.getCause() == PlayerTeleportEvent.TeleportCause.PLUGIN) return;
+        if (event.getFrom().getWorld() == event.getTo().getWorld()) return;
+
+        Player player = event.getPlayer();
+        WoolPlayer woolPlayer = WoolPlayer.getWoolPlayer(player);
 
         WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getTo().getWorld().getName());
         if (woolMatch == null) return;
 
-        if (woolMatch.getMatchState() != MatchState.WAITING) {
-            woolMatch.joinAsSpectator(WoolPlayer.getWoolPlayer(event.getPlayer()));
+        WoolMatch playerMatch = gameManager.getInternalMatchByPlayer(player);
+        if (playerMatch != null) playerMatch.quit(woolPlayer, QuitGameReason.OTHER);
+
+        if (woolMatch.checkJoin(woolPlayer)) {
+            woolMatch.joinAsPlayer(woolPlayer);
         } else {
-            woolMatch.joinAsPlayer(WoolPlayer.getWoolPlayer(event.getPlayer()));
+            woolMatch.joinAsSpectator(woolPlayer);
         }
     }
 
