@@ -43,6 +43,8 @@ public class LanguageFile implements SettingsHolder {
 
     public static final Property<String> STARTING_COOLDOWN = newProperty("match.starting-cooldown", "§eThe game starts in §c{seconds} §eseconds!");
 
+    public static final Property<String> STARTING_FAILED = newProperty("match.starting-failed", "§cStarting cancelled for not enough players!");
+
     public static final Property<Title> PRE_ROUND_TITLE = newBeanProperty(Title.class, "match.pre-round.title", new Title("§e§lPRE ROUND", "§bSelect your class!"));
     public static final Property<Title> ROUND_START_TITLE = newBeanProperty(Title.class, "match.round.start.title", new Title("§a§lROUND START", "§bRound {number}"));
     public static final Property<Title> DIED_TITLE = newBeanProperty(Title.class, "match.round.died.title", new Title("§c§lYOU DIED", "§fYou will respawn at the start of the next round!"));

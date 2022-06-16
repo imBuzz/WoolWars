@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.task.tasks;
 
+import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
@@ -20,11 +21,20 @@ public class StartingMatchTask extends SecondsTask {
     public void run() {
         super.run();
 
-        if (shouldEnd()) {
+        if (match.getPlayerHolder().getPlayersCount() < match.getMaxPlayers()) {
+            for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
+                onlinePlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.STARTING_FAILED));
+            }
 
+            match.setMatchState(MatchState.WAITING);
+            stop();
+            return;
+        }
+
+
+        if (shouldEnd()) {
             stop();
             end();
-
             return;
         }
 
