@@ -35,6 +35,7 @@ import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.TeamUtils;
 import me.buzz.woolwars.game.utils.UUIDUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
+import me.buzz.woolwars.game.utils.structures.WoolItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -98,6 +99,9 @@ public class BasicWoolMatch extends WoolMatch {
             }
         }
 
+
+        WoolItem lobbyItem = WoolWars.get().getLanguage().getProperty(LanguageFile.RETURN_TO_LOBBY);
+        player.getInventory().setItem(lobbyItem.getSlot(), lobbyItem.toItemStack());
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
 
         if (joinGameEvent.isSendMessage()) {
@@ -119,6 +123,9 @@ public class BasicWoolMatch extends WoolMatch {
 
         playerHolder.registerPlayer(woolPlayer, false);
         playerHolder.setSpectator(player, true);
+
+        WoolItem lobbyItem = WoolWars.get().getLanguage().getProperty(LanguageFile.RETURN_TO_LOBBY);
+        player.getInventory().setItem(lobbyItem.getSlot(), lobbyItem.toItemStack());
 
         Set<Player> playerSet = playerHolder.getOnlinePlayers();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {

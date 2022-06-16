@@ -6,6 +6,7 @@ import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.arena.region.Region;
 import me.buzz.woolwars.api.game.match.state.MatchState;
+import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
@@ -17,6 +18,7 @@ import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.classes.classes.ArcherPlayableClass;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
+import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -99,8 +101,14 @@ public class BasicMatchListener implements MatchListener {
     public void interact(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (player.getItemInHand() != null) {
-            switch (player.getItemInHand().getType()) {
+            switch (XMaterial.matchXMaterial(player.getItemInHand())) {
+                case BLACK_BED: {
+                    event.setCancelled(true);
+                    match.quit(WoolPlayer.getWoolPlayer(player), QuitGameReason.OTHER);
+                    break;
+                }
                 case BLAZE_POWDER: {
+                    event.setCancelled(true);
                     WoolMatchStats stats = match.getPlayerHolder().getMatchStats(player);
                     if (stats != null) {
                         if (match.getMatchState() != MatchState.ROUND) {
@@ -119,10 +127,15 @@ public class BasicMatchListener implements MatchListener {
                 }
             }
         }
+
+        if (!match.isPlaying() && player.getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
     }
 
     @Override
     public void itemPickup(PlayerPickupItemEvent event) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         event.setCancelled(true);
     }
 
@@ -189,6 +202,26 @@ public class BasicMatchListener implements MatchListener {
     public void dropItem(PlayerDropItemEvent event) {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         event.setCancelled(true);
+
+        Player player = event.getPlayer();
+
+        if (match.isPlaying() && !match.getPlayerHolder().isSpectator(event.getPlayer())) {
+            WoolMatchStats stats = match.getPlayerHolder().getMatchStats(player);
+            if (stats != null) {
+                if (match.getMatchState() != MatchState.ROUND) {
+                    player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.YOU_CANNOT_USE_THIS_ABILITY_YET));
+                    return;
+                }
+
+                PlayableClass playableClass = stats.getPlayableClass();
+                if (playableClass.isUsed()) {
+                    player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_ALREADY_USED));
+                } else {
+                    playableClass.useAbility(match, player);
+                }
+            }
+        }
+
     }
 
     @Override

@@ -177,6 +177,13 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ABILITY_ALREADY_USED = newProperty("classes.ability.used-message", "§cYou already used this ability for this round");
 
     @Comment("Do not change the material on this section")
+    public static final Property<WoolItem> RETURN_TO_LOBBY = newBeanProperty(WoolItem.class, "items.lobby",
+            WoolItem.from(XMaterial.RED_BED.name(), "§c§lReturn To Lobby §7(Right Click)",
+                    Lists.newArrayList(
+                            "§7Right-click to leave to the lobby!"
+                    ), 8));
+
+    @Comment("Do not change the material on this section")
     public static final Property<WoolItem> TANK_KEYSTONE = newBeanProperty(WoolItem.class, "classes.tank.keystone",
             WoolItem.from(XMaterial.BLAZE_POWDER.name(), "§fKeystone Ability: §6§lGIGAHEAL",
                     Lists.newArrayList(
