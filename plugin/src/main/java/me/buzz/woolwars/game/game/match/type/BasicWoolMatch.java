@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.game.match.type;
 
+import ch.jalu.configme.properties.Property;
 import com.google.common.collect.Lists;
 import com.hakan.core.HCore;
 import com.hakan.core.npc.HNPC;
@@ -359,7 +360,23 @@ public class BasicWoolMatch extends WoolMatch {
                     .replace("{killerTeamColor}", killerStats.getTeam().getTeamColor().getCC().toString());
         } else {
             Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(victim));
-            diedMessage = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED)
+            Property<String> property;
+
+            switch (cause) {
+                case LAVA: {
+                    property = LanguageFile.DIED_FROM_LAVA;
+                    break;
+                }
+                case VOID: {
+                    property = LanguageFile.DIED_FROM_VOID;
+                    break;
+                }
+                default: {
+                    property = LanguageFile.DIED;
+                }
+            }
+
+            diedMessage = WoolWars.get().getLanguage().getProperty(property)
                     .replace("{victim}", victim.getName())
                     .replace("{victimTeamColor}", victimStats.getTeam().getTeamColor().getCC().toString());
         }

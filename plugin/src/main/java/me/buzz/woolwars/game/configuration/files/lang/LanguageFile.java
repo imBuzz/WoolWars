@@ -58,6 +58,8 @@ public class LanguageFile implements SettingsHolder {
 
     //KILL
     public static final Property<String> DIED = newProperty("match.kills.died", "{victimTeamColor}{victim} §7died");
+    public static final Property<String> DIED_FROM_LAVA = newProperty("match.kills.died_source.lava", "{victimTeamColor}{victim} §7died from Lava");
+    public static final Property<String> DIED_FROM_VOID = newProperty("match.kills.died_source.void", "{victimTeamColor}{victim} §7died from The Void");
     public static final Property<String> KILL_BY_SOMEONE = newProperty("match.kills.killedBySomeone", "{victimTeamColor}{victim} §7was killed by {killerTeamColor}{killer}.");
 
     //ENDED MATCH
