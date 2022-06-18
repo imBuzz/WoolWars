@@ -181,21 +181,24 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void blockBreak(BlockBreakEvent event) {
-        Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
         event.setCancelled(true);
+        if (match.isPlaying()) {
+            Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
+            if (match.getPlayerHolder().isSpectator(event.getPlayer())) return;
+            if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
 
-        if (match.getPlayerHolder().isSpectator(event.getPlayer())) return;
-        if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
+            if (!match.getRoundHolder().canBreakCenter) {
+                event.getPlayer().sendMessage(WoolWars.get().getLanguage()
+                        .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
+                                .getTasks().get("centerProtect").formatSecondsAndMillis()));
+                return;
+            }
 
-        if (!match.getRoundHolder().canBreakCenter) {
-            event.getPlayer().sendMessage(WoolWars.get().getLanguage()
-                    .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
-                            .getTasks().get("centerProtect").formatSecondsAndMillis()));
-            return;
+            WoolMatchStats stats = match.getPlayerHolder().getMatchStats(event.getPlayer());
+            if (stats != null) stats.matchBlocksBroken++;
+
+            event.getBlock().setType(Material.AIR);
         }
-
-        match.getPlayerHolder().getMatchStats(event.getPlayer()).matchBlocksBroken++;
-        event.getBlock().setType(Material.AIR);
     }
 
     @Override

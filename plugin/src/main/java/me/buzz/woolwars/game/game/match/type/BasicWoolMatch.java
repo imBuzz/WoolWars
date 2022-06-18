@@ -223,7 +223,11 @@ public class BasicWoolMatch extends WoolMatch {
                     .lines(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME))
 
                     .skin(LanguageFile.getFromFile())
-                    .whenClicked(((player, action) -> new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player)))
+                    .whenClicked(((player, action) -> {
+                        //if (playerHolder.getMatchStats(player) != null){
+                        new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player);
+                        //}
+                    }))
 
                     .build();
 
