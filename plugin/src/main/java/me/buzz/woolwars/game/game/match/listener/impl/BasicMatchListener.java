@@ -8,6 +8,7 @@ import me.buzz.woolwars.api.game.arena.region.Region;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
 import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
@@ -23,6 +24,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -36,12 +38,27 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 @RequiredArgsConstructor
 public class BasicMatchListener implements MatchListener {
 
     private final WoolMatch match;
+
+    @Override
+    public void move(PlayerMoveEvent event) {
+        if (event.getTo().getBlockX() == event.getFrom().getBlockX()
+                && event.getTo().getBlockY() == event.getFrom().getBlockY()
+                && event.getTo().getBlockZ() == event.getFrom().getBlockZ()) return;
+
+        Block block = event.getTo().getBlock().getRelative(BlockFace.DOWN);
+        if (block.getType() == WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_MATERIAL).parseMaterial()) {
+            event.getPlayer().setVelocity(event.getPlayer().getLocation().
+                    getDirection().normalize().multiply(WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_HORIZONTAL_POWER))
+                    .setY(WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_VERTICAL_POWER)));
+        }
+    }
 
     @Override
     public void damage(EntityDamageEvent event) {

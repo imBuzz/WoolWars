@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -49,6 +50,14 @@ public class GameListener implements Listener {
         } else {
             woolMatch.joinAsSpectator(woolPlayer);
         }
+    }
+
+    @EventHandler
+    public void move(PlayerMoveEvent event) {
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().move(event);
     }
 
     @EventHandler

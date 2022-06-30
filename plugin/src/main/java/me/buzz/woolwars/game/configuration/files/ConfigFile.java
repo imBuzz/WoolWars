@@ -2,6 +2,7 @@ package me.buzz.woolwars.game.configuration.files;
 
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
+import com.cryptomorin.xseries.XMaterial;
 import me.buzz.woolwars.game.game.arena.location.SerializedLocation;
 
 import static ch.jalu.configme.properties.PropertyInitializer.newBeanProperty;
@@ -18,5 +19,9 @@ public class ConfigFile implements SettingsHolder {
     public static final Property<Integer> CENTER_UNLOCKS_COOLDOWN = newProperty("match.center-unlocks-seconds", 10);
     public static final Property<Integer> WAIT_FOR_NEW_ROUND_TIMER = newProperty("match.wait-for-new-round", 5);
     public static final Property<Integer> CLOSE_GAME_COOLDOWN = newProperty("match.close-game-cooldown", 5);
+
+    public static final Property<XMaterial> JUMP_MATERIAL = newBeanProperty(XMaterial.class, "jump-pads.material", XMaterial.SLIME_BLOCK);
+    public static final Property<Double> JUMP_HORIZONTAL_POWER = newProperty("jump-pads.power.horizontal", 0.5);
+    public static final Property<Double> JUMP_VERTICAL_POWER = newProperty("jump-pads.power.vertical", 1.0);
 
 }
