@@ -10,7 +10,7 @@ import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
 import me.buzz.woolwars.game.commands.WoolCommand;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
-import me.buzz.woolwars.game.configuration.files.DatabaseFile;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.hook.ExternalPluginHook;
@@ -50,7 +50,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
         HCore.initialize(this);
 
-        dataProvider = getDataSettings().getProperty(DatabaseFile.DATABASE_TYPE).getProviderSupplier().get();
+        dataProvider = getSettings().getProperty(ConfigFile.DATABASE_TYPE).getProviderSupplier().get();
         dataProvider.init();
 
         WorkloadHandler.run();
@@ -120,10 +120,6 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     public SettingsManager getSettings() {
         return files.get(ConfigurationType.CONFIG);
-    }
-
-    public SettingsManager getDataSettings() {
-        return files.get(ConfigurationType.DATABASE);
     }
 
     public SettingsManager getGUISettings() {

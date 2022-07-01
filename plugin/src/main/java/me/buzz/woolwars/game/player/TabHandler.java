@@ -5,8 +5,10 @@ import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
 import me.buzz.woolwars.game.hook.hooks.vault.VaultAPIHook;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
@@ -43,20 +45,37 @@ public class TabHandler {
 
         updateDisplayName(player, match);
         updateTab(player, match);
+        updatePrefixAndSuffix(player, match, newTeamName);
     }
 
     private String getTeamName(Player player, WoolMatch match) {
-        int priority = getPriority(player, match) - 1000;
-        return resize(priority + UUID + player.getName());
+        int priority = getPriority(player, match);
+
+        String priorityPrefix;
+
+        if (priority < 0) {
+            priorityPrefix = "Z";
+        } else {
+            char letter = (char) ((priority / 5) + 65);
+            int repeat = priority % 5 + 1;
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < repeat; i++) {
+                builder.append(letter);
+            }
+            priorityPrefix = builder.toString();
+        }
+
+        return resize(UUID + priorityPrefix + player.getName());
     }
 
     private void createTeam(Player player, String name, WoolMatch match) {
         removePlayer(player);
 
-        Team team = player.getScoreboard().getTeam(name);
+        Scoreboard scoreboard = player.getScoreboard();
+        Team team = scoreboard.getTeam(name);
 
         if (team == null) {
-            team = player.getScoreboard().registerNewTeam(name);
+            team = scoreboard.registerNewTeam(name);
             team.setAllowFriendlyFire(true);
         }
 
@@ -95,11 +114,27 @@ public class TabHandler {
     }
 
     private void updateDisplayName(Player player, WoolMatch match) {
-        player.setDisplayName(getPrefix(player, match) + player.getName());
+        player.setDisplayName(getPrefix(player, match) + player.getName() + getSuffix(player, match));
     }
 
     private void updateTab(Player player, WoolMatch match) {
         player.setPlayerListName(getPrefix(player, match) + player.getName() + getSuffix(player, match));
+    }
+
+    private void updatePrefixAndSuffix(Player player, WoolMatch match, String teamName) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            Scoreboard scoreboard = onlinePlayer.getScoreboard();
+
+            Team scoreboardTeam = scoreboard.getTeam(teamName);
+            if (scoreboardTeam == null) {
+                scoreboardTeam = scoreboard.registerNewTeam(teamName);
+            }
+
+            scoreboardTeam.setPrefix(resize(getPrefix(player, match)));
+            scoreboardTeam.setSuffix(resize(getSuffix(player, match)));
+
+            scoreboardTeam.addEntry(player.getName());
+        }
     }
 
     private int getPriority(Player player, WoolMatch match) {
@@ -131,5 +166,6 @@ public class TabHandler {
     public String resize(String string) {
         return string.length() > 16 ? string.substring(0, 16) : string;
     }
+
 
 }

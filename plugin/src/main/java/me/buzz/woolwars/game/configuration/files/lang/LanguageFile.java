@@ -21,13 +21,11 @@ public class LanguageFile implements SettingsHolder {
 
     public static final Property<String> COMMANDS_NO_PERMISSION = newProperty("commands.general.no-permission", "§cYou don't have the permission to do that!");
     public static final Property<String> INVALID_ARGS = newProperty("commands.general.invalid-args", "§cInvalid Args!");
-
     public static final Property<String> TARGET_NOT_FOUND = newProperty("commands.general.target-not-found", "§cTarget not found!");
     public static final Property<String> NO_GAME_FOUND_ON_COMMAND = newProperty("commands.general.no-game-found-on-command", "§cNo game found!");
-
+    public static final Property<String> COMMAND_NOT_ENABLED = newProperty("commands.general.command-not-enabled", "§cThis command is not enabled!");
 
     public static final Property<String> CANNOT_EXECUTE_BY_THAT_ENTITY = newProperty("commands.general.wrong-entity", "§cThis entity cannot perform that command!");
-
     public static final Property<String> NO_MATCH = newProperty("commands.general.no-match-for-player", "§cYou have to be in a match to do that!");
 
     public static final Property<String> YOUR_ARE_IN_A_MATCH = newProperty("commands.join.already-in-match", "§cYou are already in a match");

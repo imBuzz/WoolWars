@@ -36,15 +36,37 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 public class BasicMatchListener implements MatchListener {
 
+    private final WoolWars woolWars = WoolWars.get();
     private final WoolMatch match;
+
+    @Override
+    public void processCommand(PlayerCommandPreprocessEvent event) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE || event.getPlayer().getGameMode() == GameMode.SPECTATOR)
+            return;
+
+        List<String> commands = woolWars.getSettings().getProperty(ConfigFile.BLOCKED_COMMANDS_LIST);
+        boolean whitelist = woolWars.getSettings().getProperty(ConfigFile.AS_WHITELIST_BLOCKED_COMMANDS);
+
+        String command = event.getMessage().split(" ")[0];
+        if (commands.contains(command)) {
+            if (whitelist) return;
+            event.setCancelled(true);
+
+            event.getPlayer().sendMessage(woolWars.getLanguage().getProperty(LanguageFile.COMMAND_NOT_ENABLED));
+        }
+    }
 
     @Override
     public void move(PlayerMoveEvent event) {
@@ -53,10 +75,14 @@ public class BasicMatchListener implements MatchListener {
                 && event.getTo().getBlockZ() == event.getFrom().getBlockZ()) return;
 
         Block block = event.getTo().getBlock().getRelative(BlockFace.DOWN);
+        Player player = event.getPlayer();
+
         if (block.getType() == WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_MATERIAL).parseMaterial()) {
-            event.getPlayer().setVelocity(event.getPlayer().getLocation().
+            player.setVelocity(player.getLocation().
                     getDirection().normalize().multiply(WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_HORIZONTAL_POWER))
                     .setY(WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_VERTICAL_POWER)));
+
+            woolWars.getSettings().getProperty(ConfigFile.SOUNDS_JUMP_PAD).play(player, 1, 1);
         }
     }
 
@@ -70,11 +96,17 @@ public class BasicMatchListener implements MatchListener {
             return;
         }
 
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL && !woolWars.getSettings().getProperty(ConfigFile.ENABLE_FALL_DAMAGE)) {
+            event.setCancelled(true);
+            return;
+        }
+
         Player victim = (Player) event.getEntity();
         if (match.getMatchState() != MatchState.ROUND || match.getPlayerHolder().isSpectator(victim)) {
             event.setCancelled(true);
             if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 victim.teleport(match.getPlayableArena().getLocation(ArenaLocationType.WAITING_LOBBY));
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(victim, 1, 1);
             }
             return;
         }
@@ -117,6 +149,23 @@ public class BasicMatchListener implements MatchListener {
     @Override
     public void interact(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
+
+        if (block != null && block.getType() != Material.AIR) {
+            List<Material> materials = new ArrayList<>();
+            for (String xMaterial : woolWars.getSettings().getProperty(ConfigFile.DISABLED_INTERACTION_BLOCKS)) {
+                try {
+                    materials.add(XMaterial.valueOf(xMaterial).parseMaterial());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (materials.contains(block.getType())) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
         if (player.getItemInHand() != null) {
             switch (XMaterial.matchXMaterial(player.getItemInHand())) {
                 case BLACK_BED: {

@@ -5,6 +5,7 @@ import com.hakan.core.command.executors.base.BaseCommand;
 import com.hakan.core.command.executors.sub.SubCommand;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.gui.GameMonitorGui;
 import me.buzz.woolwars.game.game.match.WoolMatch;
@@ -108,6 +109,12 @@ public class WoolCommand implements HCommandAdapter {
             if (match == null) {
                 player.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.NO_MATCH));
             } else {
+                if (!woolWars.getSettings().getProperty(ConfigFile.ENABLE_LEAVE_COMMAND)) {
+                    sender.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.COMMAND_NOT_ENABLED));
+                    return;
+                }
+
+
                 match.quit(WoolPlayer.getWoolPlayer(player), QuitGameReason.OTHER);
             }
         } else {

@@ -118,6 +118,7 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
         bukkitPlayer.getInventory().setArmorContents(null);
 
         bukkitPlayer.teleport(location.toBukkitLocation(Bukkit.getWorld(location.getWorldName())));
+        WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(bukkitPlayer, 1, 1);
     }
 
     public void reset() {

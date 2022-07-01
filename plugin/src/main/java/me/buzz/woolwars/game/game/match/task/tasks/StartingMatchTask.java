@@ -2,6 +2,7 @@ package me.buzz.woolwars.game.game.match.task.tasks;
 
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.task.impl.SecondsTask;
@@ -41,6 +42,8 @@ public class StartingMatchTask extends SecondsTask {
         for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
             onlinePlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.STARTING_COOLDOWN)
                     .replace("{seconds}", String.valueOf(getRemainingSeconds())));
+
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_COOLDOWN).play(onlinePlayer, 1, 1);
         }
     }
 

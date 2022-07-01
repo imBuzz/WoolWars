@@ -21,6 +21,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -30,6 +31,14 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 public class GameListener implements Listener {
 
     private final GameManager gameManager = WoolWars.get().getGameManager();
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void processCommand(PlayerCommandPreprocessEvent event) {
+        WoolMatch woolMatch = gameManager.getMatchByWorldName(event.getPlayer().getWorld().getName());
+        if (woolMatch == null) return;
+
+        woolMatch.getMatchListener().processCommand(event);
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void teleport(PlayerTeleportEvent event) {

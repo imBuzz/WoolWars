@@ -73,15 +73,16 @@ public class RoundMatchHolder extends AbstractMatchHolder implements ApiRoundHol
                 matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor());
                 matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer), matchStats);
 
-                //if (!team.getTeamNPC().getRenderer().canSee(onlinePlayer.getUniqueId()))
                 team.getTeamNPC().addViewer(onlinePlayer);
 
                 onlinePlayer.teleport(team.getSpawnLocation());
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(onlinePlayer, 1, 1);
 
                 WoolWars.get().getTabHandler().update(onlinePlayer, match);
 
                 Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.PRE_ROUND_TITLE);
                 HCore.sendTitle(onlinePlayer, title.getTitle(), title.getSubTitle());
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_ROUND_START).play(onlinePlayer, 1, 1);
             }
         }
 
@@ -113,6 +114,16 @@ public class RoundMatchHolder extends AbstractMatchHolder implements ApiRoundHol
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints())),
                     title.getSubTitle().replace("{blue_team_points}", String.valueOf(match.getTeams().get(TeamColor.BLUE).getPoints())
                             .replace("{red_team_points}", String.valueOf(match.getTeams().get(TeamColor.RED).getPoints()))));
+
+            WoolMatchStats stats = playerHolder.getMatchStats(onlinePlayer);
+            if (stats != null) {
+                if (stats.getTeam() == woolTeam) {
+                    WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_ROUND_WON).play(onlinePlayer, 1, 1);
+                } else {
+                    WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_ROUND_LOST).play(onlinePlayer, 1, 1);
+                }
+            }
+
         }
 
         tasks.put(WaitForNewRoundTask.ID, new WaitForNewRoundTask(match,

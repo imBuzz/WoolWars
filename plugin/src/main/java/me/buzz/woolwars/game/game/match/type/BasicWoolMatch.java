@@ -99,10 +99,10 @@ public class BasicWoolMatch extends WoolMatch {
             }
         }
 
-
         WoolItem lobbyItem = WoolWars.get().getLanguage().getProperty(LanguageFile.RETURN_TO_LOBBY);
         player.getInventory().setItem(lobbyItem.getSlot(), lobbyItem.toItemStack());
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+        WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(player, 1, 1);
 
         if (joinGameEvent.isSendMessage()) {
             String leaveMessage = ((ApplicablePreset<String, WoolMatch, Player, ChatPreset.AskingChatMotivation>) arena.getPreset(PresetType.CHAT))
@@ -110,6 +110,7 @@ public class BasicWoolMatch extends WoolMatch {
 
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
                 matchPlayer.sendMessage(leaveMessage);
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_PLAYER_JOINED).play(matchPlayer, 1, 1);
             }
         }
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
@@ -174,6 +175,7 @@ public class BasicWoolMatch extends WoolMatch {
                 }
 
                 matchPlayer.sendMessage(leaveMessage);
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_PLAYER_LEFT).play(matchPlayer, 1, 1);
             }
         }
 
@@ -311,6 +313,13 @@ public class BasicWoolMatch extends WoolMatch {
                     player.sendMessage(line);
                 }
             }
+
+            if (isWinnerTeam) {
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_GAME_WON).play(player, 1, 1);
+            } else {
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_GAME_LOST).play(player, 1, 1);
+            }
+
         });
 
         roundHolder.getTasks().put(ResetMatchTask.ID, new ResetMatchTask(this,
@@ -334,12 +343,15 @@ public class BasicWoolMatch extends WoolMatch {
         playerHolder.getMatchStats(player).matchPowerUpsGotten++;
         player.sendMessage(WoolWars.get().getLanguage().getProperty(type.getProperty()).getPickupMessage());
         roundHolder.getEntities().remove(entity);
+
+        WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_POWERUP_COLLECTED).play(player, 1, 1);
     }
 
     @Override
     public void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause) {
         if (!isPlaying() || isEnded()) {
             victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(victim, 1, 1);
             return;
         }
 
@@ -364,6 +376,7 @@ public class BasicWoolMatch extends WoolMatch {
             WoolMatchStats killerStats = playerHolder.getMatchStats(killer);
             killerStats.matchKills++;
 
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_PLAYER_KILL).play(killer, 1, 1);
             diedMessage = WoolWars.get().getLanguage().getProperty(LanguageFile.KILL_BY_SOMEONE)
                     .replace("{victim}", victim.getName())
                     .replace("{victimTeamColor}", victimStats.getTeam().getTeamColor().getCC().toString())
@@ -394,9 +407,11 @@ public class BasicWoolMatch extends WoolMatch {
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {
             victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(victim, 1, 1);
         }
 
         if (!wasASpectator) {
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_PLAYER_DEATH).play(victim, 1, 1);
             for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
                 onlinePlayer.sendMessage(diedMessage);
             }
