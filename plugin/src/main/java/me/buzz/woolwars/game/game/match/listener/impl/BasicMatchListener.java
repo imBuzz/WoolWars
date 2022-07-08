@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.arena.region.Region;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.state.MatchState;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
@@ -313,8 +314,13 @@ public class BasicMatchListener implements MatchListener {
         if (event.getEntityType() != EntityType.PRIMED_TNT) return;
 
         if (event.getEntity().hasMetadata("assault-tnt")) {
+            TeamColor color = event.getEntity().hasMetadata(TeamColor.RED.getEntityTag()) ? TeamColor.RED : TeamColor.BLUE;
             event.setCancelled(true);
             for (Entity nearbyEntity : event.getLocation().getWorld().getNearbyEntities(event.getLocation(), 3, 1, 3)) {
+                if (nearbyEntity.getType() != EntityType.PLAYER) continue;
+                if (match.getPlayerHolder().getMatchStats((Player) nearbyEntity).getTeam().getTeamColor() == color)
+                    continue;
+
                 nearbyEntity.setVelocity(ArcherPlayableClass.fixVelocity(nearbyEntity.getVelocity().add(nearbyEntity.getLocation()
                         .getDirection().setY(0).normalize().multiply(-5))));
             }
