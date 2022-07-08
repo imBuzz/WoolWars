@@ -1,10 +1,12 @@
 package me.buzz.woolwars.game.utils;
 
 import me.buzz.woolwars.game.game.match.WoolMatch;
+import org.bukkit.DyeColor;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,15 @@ public final class TeamUtils {
     public static int getHalfApprox(int size) {
         if (size % 2 == 1) return (size / 2) + 1;
         else return size / 2;
+    }
+
+    public static List<DyeColor> getTopTeamPlacedByWoolColor(Map<DyeColor, Integer> map) {
+        return map.entrySet()
+                .stream()
+                .parallel()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 
     public static Map<String, Integer> getTopKillers(WoolMatch match) {

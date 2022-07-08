@@ -17,4 +17,11 @@ public enum TeamColor {
     private final int priority;
     private final String tag;
 
+    public static TeamColor fromDyeColor(DyeColor dyeColor) {
+        for (TeamColor value : values()) {
+            if (value.getDC() == dyeColor) return value;
+        }
+        return null;
+    }
+
 }

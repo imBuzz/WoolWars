@@ -234,7 +234,7 @@ public class BasicMatchListener implements MatchListener {
         int totalBlocks = 0, sameTypeBlocks = 0;
         for (Block block : centerRegion.getBlocks()) {
             totalBlocks++;
-            if (block.getType() != XMaterial.WHITE_WOOL.parseMaterial()) continue;
+            if (block.getType().toString().contains("WOOL")) continue;
 
             DyeColor dyeColor = DyeColor.getByWoolData(block.getData());
             if (dyeColor == woolTeam.getTeamColor().getDC()) sameTypeBlocks++;

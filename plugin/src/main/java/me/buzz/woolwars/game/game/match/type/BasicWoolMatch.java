@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.hakan.core.HCore;
 import com.hakan.core.npc.HNPC;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
+import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
+import me.buzz.woolwars.api.game.arena.region.Region;
 import me.buzz.woolwars.api.game.match.player.events.PlayerDeathByPlayerEvent;
 import me.buzz.woolwars.api.game.match.player.events.PlayerDeathEvent;
 import me.buzz.woolwars.api.game.match.player.events.PlayerJoinGameEvent;
@@ -37,12 +39,15 @@ import me.buzz.woolwars.game.utils.UUIDUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
 import me.buzz.woolwars.game.utils.structures.WoolItem;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -415,6 +420,24 @@ public class BasicWoolMatch extends WoolMatch {
             for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
                 onlinePlayer.sendMessage(diedMessage);
             }
+        }
+
+
+        Set<Player> alivePlayers = playerHolder.getGamePlayers();
+        if (alivePlayers.isEmpty()) {
+            Region centerRegion = arena.getRegion(ArenaRegionType.CENTER);
+
+            Map<DyeColor, Integer> blockPlacedPerTeamColor = new HashMap<>();
+            for (Block block : centerRegion.getBlocks()) {
+                if (!block.getType().toString().contains("WOOL")) continue;
+
+                DyeColor dyeColor = DyeColor.getByWoolData(block.getData());
+                blockPlacedPerTeamColor.putIfAbsent(dyeColor, 0);
+                blockPlacedPerTeamColor.put(dyeColor, blockPlacedPerTeamColor.get(dyeColor) + 1);
+            }
+
+            if (blockPlacedPerTeamColor.isEmpty()) return;
+            roundHolder.endRound(teams.get(TeamColor.fromDyeColor(TeamUtils.getTopTeamPlacedByWoolColor(blockPlacedPerTeamColor).get(0))));
         }
     }
 
