@@ -53,7 +53,7 @@ public class GolemPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+    public void onEquip(WoolPlayer woolPlayer, WoolMatchStats stats) {
         for (PotionEffect activePotionEffect : player.getActivePotionEffects())
             player.removePotionEffect(activePotionEffect.getType());
 
@@ -100,10 +100,4 @@ public class GolemPlayableClass extends PlayableClass {
             }
         }, 20 * 5L);
     }
-
-    @Override
-    public void reset() {
-        used = false;
-    }
-
 }

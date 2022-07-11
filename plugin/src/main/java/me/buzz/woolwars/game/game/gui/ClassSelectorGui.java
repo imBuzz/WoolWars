@@ -42,8 +42,7 @@ public class ClassSelectorGui extends HInventory {
         if (stats.getClassType() == PlayableClassType.TANK) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
         super.setItem(11, WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_TANK).toItemStack(), event -> {
-            stats.pickClass(player, stats.getTeam().getTeamColor(), PlayableClassType.TANK);
-            stats.getPlayableClass().equip(match.getPlayerHolder().getWoolPlayer(player), stats);
+            stats.pickClass(match.getPlayerHolder().getWoolPlayer(player), stats, PlayableClassType.TANK);
             createTankClass(player);
         });
     }
@@ -54,8 +53,7 @@ public class ClassSelectorGui extends HInventory {
         if (stats.getClassType() == PlayableClassType.ASSAULT) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
         super.setItem(13, WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ASSAULT).toItemStack(), event -> {
-            stats.pickClass(player, stats.getTeam().getTeamColor(), PlayableClassType.ASSAULT);
-            stats.getPlayableClass().equip(match.getPlayerHolder().getWoolPlayer(player), stats);
+            stats.pickClass(match.getPlayerHolder().getWoolPlayer(player), stats, PlayableClassType.ASSAULT);
             createAssaultClass(player);
         });
     }
@@ -66,8 +64,7 @@ public class ClassSelectorGui extends HInventory {
         if (stats.getClassType() == PlayableClassType.ARCHER) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
         super.setItem(15, WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ARCHER).toItemStack(), event -> {
-            stats.pickClass(player, stats.getTeam().getTeamColor(), PlayableClassType.ARCHER);
-            stats.getPlayableClass().equip(match.getPlayerHolder().getWoolPlayer(player), stats);
+            stats.pickClass(match.getPlayerHolder().getWoolPlayer(player), stats, PlayableClassType.ARCHER);
             createArcherClass(player);
         });
     }
@@ -78,8 +75,7 @@ public class ClassSelectorGui extends HInventory {
         if (stats.getClassType() == PlayableClassType.SWORDMAN) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
         super.setItem(29, WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_SWORDMAN).toItemStack(), event -> {
-            stats.pickClass(player, stats.getTeam().getTeamColor(), PlayableClassType.SWORDMAN);
-            stats.getPlayableClass().equip(match.getPlayerHolder().getWoolPlayer(player), stats);
+            stats.pickClass(match.getPlayerHolder().getWoolPlayer(player), stats, PlayableClassType.SWORDMAN);
             createSwordsmanClass(player);
         });
     }
@@ -90,8 +86,7 @@ public class ClassSelectorGui extends HInventory {
         if (stats.getClassType() == PlayableClassType.GOLEM) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
         super.setItem(31, WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_GOLEM).toItemStack(), event -> {
-            stats.pickClass(player, stats.getTeam().getTeamColor(), PlayableClassType.GOLEM);
-            stats.getPlayableClass().equip(match.getPlayerHolder().getWoolPlayer(player), stats);
+            stats.pickClass(match.getPlayerHolder().getWoolPlayer(player), stats, PlayableClassType.GOLEM);
             createGolemClass(player);
         });
     }
@@ -102,8 +97,7 @@ public class ClassSelectorGui extends HInventory {
         if (stats.getClassType() == PlayableClassType.ENGINEER) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
         super.setItem(33, WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ENGINEER).toItemStack(), event -> {
-            stats.pickClass(player, stats.getTeam().getTeamColor(), PlayableClassType.ENGINEER);
-            stats.getPlayableClass().equip(match.getPlayerHolder().getWoolPlayer(player), stats);
+            stats.pickClass(match.getPlayerHolder().getWoolPlayer(player), stats, PlayableClassType.ENGINEER);
             createEngineerClass(player);
         });
     }

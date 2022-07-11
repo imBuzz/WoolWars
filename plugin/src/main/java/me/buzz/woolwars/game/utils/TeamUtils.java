@@ -1,7 +1,10 @@
 package me.buzz.woolwars.game.utils;
 
+import com.hakan.core.HCore;
+import com.hakan.core.utils.ProtocolVersion;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import org.bukkit.DyeColor;
+import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,6 +60,36 @@ public final class TeamUtils {
                 .parallel()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
+    }
+
+    public static void setAbsorptionHearts(Player player, float absorptionHearts) {
+        try {
+            if (HCore.getProtocolVersion().isOlderOrEqual(ProtocolVersion.v1_13_R2)) {
+                Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + HCore.getVersionString() + ".entity.CraftPlayer");
+                Class<?> entityPlayerClass = Class.forName("net.minecraft.server." + HCore.getVersionString() + ".EntityLiving");
+
+                Object craftPlayer = craftPlayerClass.cast(player);
+                Object entityPlayer = craftPlayerClass.getMethod("getHandle").invoke(craftPlayer);
+
+                float currentHearts = (float) entityPlayerClass.getMethod("getAbsorptionHearts").invoke(entityPlayer);
+                if (currentHearts > 0) {
+                    player.damage(currentHearts);
+                }
+                if (absorptionHearts > 0) {
+                    entityPlayerClass.getMethod("setAbsorptionHearts", float.class).invoke(entityPlayer, absorptionHearts);
+                }
+            } else {
+                float currentHearts = (float) player.getClass().getMethod("getAbsorptionAmount").invoke(player);
+                if (currentHearts > 0) {
+                    player.damage(currentHearts);
+                }
+                if (absorptionHearts > 0) {
+                    player.getClass().getMethod("setAbsorptionAmount", float.class).invoke(player, absorptionHearts);
+                }
+            }
+        } catch (Exception ignored) {
+
+        }
     }
 
 }

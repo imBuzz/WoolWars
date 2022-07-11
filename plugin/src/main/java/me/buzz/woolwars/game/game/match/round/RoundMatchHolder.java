@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.hakan.core.HCore;
 import lombok.Getter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
+import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.round.ApiRoundHolder;
 import me.buzz.woolwars.api.game.match.state.MatchState;
@@ -70,9 +71,8 @@ public class RoundMatchHolder extends AbstractMatchHolder implements ApiRoundHol
 
                 WoolMatchStats matchStats = playerHolder.getMatchStats(onlinePlayer);
 
-                matchStats.pickClass(onlinePlayer, matchStats.getTeam().getTeamColor());
-                matchStats.getPlayableClass().equip(playerHolder.getWoolPlayer(onlinePlayer), matchStats);
-
+                matchStats.pickClass(playerHolder.getWoolPlayer(onlinePlayer), matchStats,
+                        matchStats.getPlayableClass() == null ? PlayableClassType.TANK : matchStats.getClassType());
                 team.getTeamNPC().addViewer(onlinePlayer);
 
                 onlinePlayer.teleport(team.getSpawnLocation());

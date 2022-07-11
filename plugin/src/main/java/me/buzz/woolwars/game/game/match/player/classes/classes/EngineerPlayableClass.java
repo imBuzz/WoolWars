@@ -57,7 +57,7 @@ public class EngineerPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+    public void onEquip(WoolPlayer woolPlayer, WoolMatchStats stats) {
         for (PotionEffect activePotionEffect : player.getActivePotionEffects())
             player.removePotionEffect(activePotionEffect.getType());
 
@@ -88,11 +88,6 @@ public class EngineerPlayableClass extends PlayableClass {
         match.getRoundHolder().canBreakCenter = false;
         Bukkit.getScheduler().runTaskLater(WoolWars.get(), () -> match.getRoundHolder().canBreakCenter = true, 20 * 5L);
         player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
-    }
-
-    @Override
-    public void reset() {
-        used = false;
     }
 
 }

@@ -11,6 +11,7 @@ import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.player.WoolPlayer;
+import me.buzz.woolwars.game.utils.TeamUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,13 +52,15 @@ public class TankPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+    public void onEquip(WoolPlayer woolPlayer, WoolMatchStats stats) {
         for (PotionEffect activePotionEffect : player.getActivePotionEffects())
             player.removePotionEffect(activePotionEffect.getType());
 
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().setArmorContents(null);
         player.getInventory().clear();
+
+        TeamUtils.setAbsorptionHearts(player, 4);
 
         TeamColor teamColor = stats.getTeam().getTeamColor();
         armor.forEach((slot, item) -> slot.getAction().accept(player, PlayableClass.adjustItem(teamColor, item.clone())));
@@ -79,8 +82,8 @@ public class TankPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void reset() {
-        used = false;
+    public void onDequip() {
+        TeamUtils.setAbsorptionHearts(player, 0);
     }
 
 }

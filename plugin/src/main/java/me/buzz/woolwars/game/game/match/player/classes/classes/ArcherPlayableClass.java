@@ -63,7 +63,7 @@ public class ArcherPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+    public void onEquip(WoolPlayer woolPlayer, WoolMatchStats stats) {
         for (PotionEffect activePotionEffect : player.getActivePotionEffects())
             player.removePotionEffect(activePotionEffect.getType());
 
@@ -82,11 +82,6 @@ public class ArcherPlayableClass extends PlayableClass {
         }
 
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1));
-    }
-
-    @Override
-    public void reset() {
-        used = false;
     }
 
     @Override
