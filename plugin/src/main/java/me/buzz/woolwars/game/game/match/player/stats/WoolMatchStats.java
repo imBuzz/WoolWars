@@ -38,12 +38,8 @@ public class WoolMatchStats implements ApiWoolMatchStats {
         Player player = woolPlayer.toBukkitPlayer();
         TeamColor teamColor = matchStats.getTeam().getTeamColor();
 
-        if (playableClass != null) {
-            if (playableClass.getType() != type) {
-                playableClass.onDequip();
-            } else {
-                return;
-            }
+        if (playableClass != null && playableClass.getType() != type) {
+            playableClass.onDequip();
         }
 
         switch (type) {
