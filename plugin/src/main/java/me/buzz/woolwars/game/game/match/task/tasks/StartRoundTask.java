@@ -25,6 +25,40 @@ public class StartRoundTask extends SecondsTask {
     @Override
     public void run() {
         super.run();
+        switch (getRemainingSeconds()) {
+            case 3: {
+                Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_3_COOLDOWN_TITLE);
+                for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
+                    onlinePlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_3_COOLDOWN_CHAT));
+                    HCore.sendTitle(onlinePlayer, title.getTitle(), title.getSubTitle());
+                }
+                break;
+            }
+            case 2: {
+                Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_2_COOLDOWN_TITLE);
+                for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
+                    onlinePlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_2_COOLDOWN_CHAT));
+                    HCore.sendTitle(onlinePlayer, title.getTitle(), title.getSubTitle());
+                }
+                break;
+            }
+            case 1: {
+                Title title = WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_1_COOLDOWN_TITLE);
+                for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
+                    onlinePlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_1_COOLDOWN_CHAT));
+                    HCore.sendTitle(onlinePlayer, title.getTitle(), title.getSubTitle());
+                }
+                break;
+            }
+            case 0: {
+                for (Player onlinePlayer : match.getPlayerHolder().getOnlinePlayers()) {
+                    onlinePlayer.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ROUND_STARTED_CHAT));
+                }
+                break;
+            }
+            default:
+                break;
+        }
 
         if (shouldEnd()) {
             stop();

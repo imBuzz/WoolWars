@@ -57,21 +57,19 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
         return players.values().stream()
                 .map(WoolPlayer::toBukkitPlayer)
                 .filter(Objects::nonNull)
+                .filter(player -> player.hasMetadata("wl-playing-game") &&
+                        Objects.equals(player.getMetadata("wl-playing-game").get(0).asString(), match.getMatchID()))
                 .collect(Collectors.toSet());
     }
 
     public Set<Player> getGamePlayers() {
-        return players.values().stream()
-                .map(WoolPlayer::toBukkitPlayer)
-                .filter(Objects::nonNull)
+        return getOnlinePlayers().stream()
                 .filter(player -> !isSpectator(player))
                 .collect(Collectors.toSet());
     }
 
     public Set<Player> getOnlineSpectators() {
-        return players.values().stream()
-                .map(WoolPlayer::toBukkitPlayer)
-                .filter(Objects::nonNull)
+        return getOnlinePlayers().stream()
                 .filter(player -> player.hasMetadata("spectator") || player.hasMetadata("default-spectator"))
                 .collect(Collectors.toSet());
     }
