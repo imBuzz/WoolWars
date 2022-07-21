@@ -62,6 +62,42 @@ public final class TeamUtils {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new));
     }
 
+    public static float getAbsorptionHearts(Player player) {
+        try {
+            if (HCore.getProtocolVersion().isOlderOrEqual(ProtocolVersion.v1_13_R2)) {
+                Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + HCore.getVersionString() + ".entity.CraftPlayer");
+                Class<?> entityPlayerClass = Class.forName("net.minecraft.server." + HCore.getVersionString() + ".EntityLiving");
+
+                Object craftPlayer = craftPlayerClass.cast(player);
+                Object entityPlayer = craftPlayerClass.getMethod("getHandle").invoke(craftPlayer);
+
+                return (float) entityPlayerClass.getMethod("getAbsorptionHearts").invoke(entityPlayer);
+            } else {
+                return (float) player.getClass().getMethod("getAbsorptionAmount").invoke(player);
+            }
+        } catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    public static boolean hasAbsorptionHearts(Player player) {
+        try {
+            if (HCore.getProtocolVersion().isOlderOrEqual(ProtocolVersion.v1_13_R2)) {
+                Class<?> craftPlayerClass = Class.forName("org.bukkit.craftbukkit." + HCore.getVersionString() + ".entity.CraftPlayer");
+                Class<?> entityPlayerClass = Class.forName("net.minecraft.server." + HCore.getVersionString() + ".EntityLiving");
+
+                Object craftPlayer = craftPlayerClass.cast(player);
+                Object entityPlayer = craftPlayerClass.getMethod("getHandle").invoke(craftPlayer);
+
+                return (float) entityPlayerClass.getMethod("getAbsorptionHearts").invoke(entityPlayer) > 0;
+            } else {
+                return (float) player.getClass().getMethod("getAbsorptionAmount").invoke(player) > 0;
+            }
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
     public static void setAbsorptionHearts(Player player, float absorptionHearts) {
         try {
             if (HCore.getProtocolVersion().isOlderOrEqual(ProtocolVersion.v1_13_R2)) {

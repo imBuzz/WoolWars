@@ -1,6 +1,7 @@
 package me.buzz.woolwars.game.game.match.listener.impl;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.hakan.core.HCore;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
@@ -21,6 +22,9 @@ import me.buzz.woolwars.game.game.match.player.classes.classes.ArcherPlayableCla
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
 import me.buzz.woolwars.game.player.WoolPlayer;
+import me.buzz.woolwars.game.utils.StringsUtils;
+import me.buzz.woolwars.game.utils.TeamUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -142,8 +146,19 @@ public class BasicMatchListener implements MatchListener {
         }
 
         if (victim.getHealth() - event.getFinalDamage() <= 0) {
+            HCore.sendActionBar(damager, "");
             event.setCancelled(true);
             match.handleDeath(victim, damager, event.getCause());
+        } else {
+            HCore.sendActionBar(damager, woolWars.getLanguage().getProperty(LanguageFile.ACTIONBAR_ON_ATTACK)
+                    .replace("{victimTeamColor}", match.getPlayerHolder()
+                            .getMatchStats(victim).getTeam().getTeamColor().getCC().toString())
+                    .replace("{victim}", victim.getName())
+                    .replace("{healthBar}", StringsUtils.getProgressBar((int) victim.getHealth(),
+                            (int) victim.getMaxHealth(), 10, '❤', ChatColor.DARK_RED, ChatColor.RED) +
+                            (TeamUtils.hasAbsorptionHearts(victim) ?
+                                    StringsUtils.getProgressBar((int) TeamUtils.getAbsorptionHearts(victim),
+                                            4, 2, '❤', ChatColor.GOLD, ChatColor.YELLOW) : "")));
         }
     }
 

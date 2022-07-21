@@ -35,25 +35,21 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> LOBBY_CHAT = newProperty("global.chat.lobby.format", "{prefix}{player}: {message}");
 
     public static final Property<String> YOU_LEFT_FROM_THE_GAME = newProperty("match.you-left-from-the-game", "§cYou left from the game");
-
-    public static final Property<String> NOT_ENOUGH_PLAYER_TO_PLAY = newProperty("match.not-enough-player-to-play",
-            "§cThere are not enough player to keep playing!");
-
+    public static final Property<String> NOT_ENOUGH_PLAYER_TO_PLAY = newProperty("match.not-enough-player-to-play", "§cThere are not enough player to keep playing!");
     public static final Property<String> STARTING_COOLDOWN = newProperty("match.starting-cooldown", "§eThe game starts in §c{seconds} §eseconds!");
+    public static final Property<String> STARTING_FAILED = newProperty("match.starting-failed", "§cStarting cancelled for not enough players!");
 
-    public static final Property<String> ROUND_3_COOLDOWN_CHAT = newProperty("match.starting-round-3-cooldown.chat", "§e3");
-    public static final Property<String> ROUND_2_COOLDOWN_CHAT = newProperty("match.starting-round-2-cooldown.chat", "§e2");
-    public static final Property<String> ROUND_1_COOLDOWN_CHAT = newProperty("match.starting-round-1-cooldown.chat", "§e1");
+    public static final Property<String> ROUND_3_COOLDOWN_CHAT = newProperty("match.started-round.cooldown.3.chat", "§e3");
+    public static final Property<String> ROUND_2_COOLDOWN_CHAT = newProperty("match.started-round.cooldown.2.chat", "§e2");
+    public static final Property<String> ROUND_1_COOLDOWN_CHAT = newProperty("match.started-round.cooldown.1.chat", "§e1");
     public static final Property<String> ROUND_STARTED_CHAT = newProperty("match.started-round.chat", "§eRound Started!");
 
-    public static final Property<Title> ROUND_3_COOLDOWN_TITLE = newBeanProperty(Title.class, "match.starting-round-3-cooldown.title",
+    public static final Property<Title> ROUND_3_COOLDOWN_TITLE = newBeanProperty(Title.class, "match.started-round.cooldown.3.title",
             new Title("§e3", ""));
-    public static final Property<Title> ROUND_2_COOLDOWN_TITLE = newBeanProperty(Title.class, "match.starting-round-2-cooldown.title",
+    public static final Property<Title> ROUND_2_COOLDOWN_TITLE = newBeanProperty(Title.class, "match.started-round.cooldown.2.title",
             new Title("§e2", ""));
-    public static final Property<Title> ROUND_1_COOLDOWN_TITLE = newBeanProperty(Title.class, "match.starting-round-1-cooldown.title",
+    public static final Property<Title> ROUND_1_COOLDOWN_TITLE = newBeanProperty(Title.class, "match.started-round.cooldown.1.title",
             new Title("§e1", ""));
-
-    public static final Property<String> STARTING_FAILED = newProperty("match.starting-failed", "§cStarting cancelled for not enough players!");
 
     public static final Property<Title> PRE_ROUND_TITLE = newBeanProperty(Title.class, "match.pre-round.title", new Title("§e§lPRE ROUND", "§bSelect your class!"));
     public static final Property<Title> ROUND_START_TITLE = newBeanProperty(Title.class, "match.round.start.title", new Title("§a§lROUND START", "§bRound {number}"));
@@ -64,9 +60,13 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<String> ROUND_UNLOCK_CENTER_BAR = newProperty("match.round.protectCenter-bar", "§e§lCENTER UNLOCKS IN {seconds} SECONDS!");
     public static final Property<String> ROUND_CANNOT_BE_CAPTURED = newProperty("match.round.cannot-be-captured", "§cYou cannot capture the center for another {seconds} seconds!");
 
-    public static final Property<String> TEN_SECONDS_REMAINING = newProperty("match.seconds.ten-seconds-remaining", "§c§l10 §fseconds left in the round!");
+    public static final Property<String> TEN_SECONDS_REMAINING = newProperty("match.round.ten-seconds-remaining",
+            "§c§l10 §fseconds left in the round!");
 
     //KILL
+    public static final Property<String> ACTIONBAR_ON_ATTACK = newProperty("match.kills.actionbar-on-hit",
+            "{victimTeamColor}{victim} §r{healthBar}");
+
     public static final Property<String> DIED = newProperty("match.kills.died", "{victimTeamColor}{victim} §7died");
     public static final Property<String> DIED_FROM_LAVA = newProperty("match.kills.died_source.lava", "{victimTeamColor}{victim} §7died from Lava");
     public static final Property<String> DIED_FROM_VOID = newProperty("match.kills.died_source.void", "{victimTeamColor}{victim} §7died from The Void");
@@ -83,7 +83,7 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<List<String>> MATCH_START_INFORMATION = newListProperty("match.started.resume", Lists.newArrayList(
             "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬",
             "",
-            "§e&lWELCOME TO WOOLWARS",
+            "§e§lWELCOME TO WOOLWARS",
             "",
             "§a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"));
 
@@ -147,7 +147,7 @@ public class LanguageFile implements SettingsHolder {
     public static final Property<List<String>> NPC_NAME = newListProperty("match.npc.hologram", Lists.newArrayList(
             "§6§lClass Selector", "§eClick to open!"));
 
-    public static final Property<String> SKIN_TEXTURE = newProperty("match.noc.skin.texture", "ewogICJ0aW1lc3RhbXAiIDogMTY1MjczMDU4MjQ2MSwKICAicHJvZmlsZU" +
+    public static final Property<String> SKIN_TEXTURE = newProperty("match.npc.skin.texture", "ewogICJ0aW1lc3RhbXAiIDogMTY1MjczMDU4MjQ2MSwKICAicHJvZmlsZU" +
             "lkIiA6ICI3ZWQ2ZTE1NzE4ZTc0NTA3ODdkNjgwMjA5ZTIxZWM0MSIsCiAgInByb2ZpbGVOYW1lIiA6ICJnNGczcyIsCiAgIn" +
             "NpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3Rle" +
             "HR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yMTQ0ZDY5Mjc5Zjc2YjY0ZmMxNWJmOWZkMmRlZWExNWYyNWYzYTM5OThmMGZiNDcwNT" +
@@ -167,7 +167,13 @@ public class LanguageFile implements SettingsHolder {
     //SCOREBOARDs
 
     public static final Property<String> SCOREBOARD_TITLE = newProperty("scoreboard.title", "§e§lWOOL WARS");
-    public static final Property<List<String>> SCOREBOARD_MATCH_LOBBY = newListProperty("scoreboard.lobby", Lists.newArrayList("", "CIAO", ""));
+    public static final Property<List<String>> SCOREBOARD_MATCH_LOBBY = newListProperty("scoreboard.lobby",
+            Lists.newArrayList(
+                    "First Line",
+                    "Second Line",
+                    "Third Line",
+                    "Fourth Line",
+                    " "));
 
     //VARIABLES (SCOREBOARD)
 
