@@ -29,6 +29,8 @@ public class ConfigFile implements SettingsHolder {
     public static final Property<Integer> CLOSE_GAME_COOLDOWN = newProperty("match.close-game-cooldown", 5);
 
     public static final Property<Boolean> ENABLE_LEAVE_COMMAND = newProperty("match.options.enable-leave-command", true);
+    public static final Property<Boolean> ENABLE_NATIVE_TABLIST = newProperty("match.options.enable-native-tablist", true);
+    public static final Property<Boolean> ENABLE_NATIVE_SCOREBOARD = newProperty("match.options.enable-native-scoreboard", true);
     public static final Property<Boolean> ENABLE_FALL_DAMAGE = newProperty("match.options.enable-fall-damage", false);
     public static final Property<List<String>> DISABLED_INTERACTION_BLOCKS = newListProperty("match.options.disabled-interaction-blocks",
             "CRAFTING_TABLE", "FURNACE");

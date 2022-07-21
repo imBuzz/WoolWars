@@ -15,8 +15,10 @@ import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.hook.ExternalPluginHook;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
-import me.buzz.woolwars.game.player.TabHandler;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
+import me.buzz.woolwars.game.player.tablist.ITabHandler;
+import me.buzz.woolwars.game.player.tablist.impl.EmptyTabHandler;
+import me.buzz.woolwars.game.player.tablist.impl.NativeTabHandler;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -37,7 +39,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     @Getter
     private GameManager gameManager;
     @Getter
-    private TabHandler tabHandler;
+    private ITabHandler tabHandler;
 
     @Override
     public void onEnable() {
@@ -58,7 +60,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         gameManager = new GameManager();
         gameManager.init();
 
-        tabHandler = new TabHandler();
+        tabHandler = getSettings().getProperty(ConfigFile.ENABLE_NATIVE_TABLIST) ? new NativeTabHandler() : new EmptyTabHandler();
 
         checkForHooks();
 
