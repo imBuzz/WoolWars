@@ -74,6 +74,8 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
                 .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
                 .setDownloadLink("")
                 .checkNow();
+
+        printInformation();
     }
 
     @Override
@@ -126,6 +128,19 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
     public SettingsManager getGUISettings() {
         return files.get(ConfigurationType.GUI);
+    }
+
+    private void printInformation() {
+        getLogger().info("▄▄▌ ▐ ▄▌            ▄▄▌  ▄▄▌ ▐ ▄▌ ▄▄▄· ▄▄▄  .▄▄ ·");
+        getLogger().info("██· █▌▐█ ▄█▀▄  ▄█▀▄ ██•  ██· █▌▐█▐█ ▀█ ▀▄ █·▐█ ▀.");
+        getLogger().info("██▪▐█▐▐▌▐█▌.▐▌▐█▌.▐▌██▪  ██▪▐█▐▐▌▄█▀▀█ ▐▀▀▄ ▄▀▀▀█▄");
+        getLogger().info("▐█▌██▐█▌▐█▌.▐▌▐█▌.▐▌▐█▌▐▌▐█▌██▐█▌▐█ ▪▐▌▐█•█▌▐█▄▪▐█");
+        getLogger().info("▀▀▀▀ ▀▪ ▀█▄▀▪ ▀█▄▀▪.▀▀▀  ▀▀▀▀ ▀▪ ▀  ▀ .▀  ▀ ▀▀▀▀ ");
+        getLogger().info("");
+        getLogger().info("Author: ImBuzz");
+        getLogger().info("Version: " + getDescription().getVersion());
+        getLogger().info("Running on: " + getServer().getVersion());
+        getLogger().info("Java Version: " + System.getProperty("java.version"));
     }
 
     private static WoolWars instance;

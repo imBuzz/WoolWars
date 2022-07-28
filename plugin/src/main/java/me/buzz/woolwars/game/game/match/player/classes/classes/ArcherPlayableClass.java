@@ -5,6 +5,7 @@ import com.hakan.core.item.HItemBuilder;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
@@ -89,7 +90,8 @@ public class ArcherPlayableClass extends PlayableClass {
         if (used) return;
         used = true;
 
-        player.setVelocity(fixVelocity(player.getVelocity().add(player.getLocation().getDirection().setY(0).normalize().multiply(-4))));
+        player.setVelocity(fixVelocity(player.getVelocity().add(player.getLocation().getDirection().setY(0).normalize()
+                .multiply(WoolWars.get().getSettings().getProperty(ConfigFile.CLASSES_ARCHER_POWER)))));
         player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
     }
 

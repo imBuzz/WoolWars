@@ -39,6 +39,9 @@ public class ConfigFile implements SettingsHolder {
     public static final Property<Double> JUMP_HORIZONTAL_POWER = newProperty("match.jump-pads.power.horizontal", 0.5);
     public static final Property<Double> JUMP_VERTICAL_POWER = newProperty("match.jump-pads.power.vertical", 1.0);
 
+    public static final Property<Double> CLASSES_ARCHER_POWER = newProperty("match.classes.archer.ability.stepbackPower", -4.0);
+    public static final Property<Double> CLASSES_ASSAULT_POWER = newProperty("match.classes.assault.ability.tntPower", -5.0);
+
     @Comment("Set this to true to make the list as whitelist.")
     public static final Property<Boolean> AS_WHITELIST_BLOCKED_COMMANDS = newProperty("blocked-commands.whitelist", false);
     @Comment("All players with the permission woolwars.ignore-commands-block will ignore this feature")

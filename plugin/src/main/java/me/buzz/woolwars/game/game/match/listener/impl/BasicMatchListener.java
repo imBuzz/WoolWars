@@ -337,7 +337,7 @@ public class BasicMatchListener implements MatchListener {
                     continue;
 
                 nearbyEntity.setVelocity(ArcherPlayableClass.fixVelocity(nearbyEntity.getVelocity().add(nearbyEntity.getLocation()
-                        .getDirection().setY(0).normalize().multiply(-5))));
+                        .getDirection().setY(0).normalize().multiply(WoolWars.get().getSettings().getProperty(ConfigFile.CLASSES_ASSAULT_POWER)))));
             }
         }
     }

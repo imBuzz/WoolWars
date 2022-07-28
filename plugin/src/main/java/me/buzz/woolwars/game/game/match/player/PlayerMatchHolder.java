@@ -149,11 +149,12 @@ public class PlayerMatchHolder extends AbstractMatchHolder implements ApiPlayerH
 
         //TODO: ADD SPECTATORS ITEM
 
-        WoolWars.get().getTabHandler().update(player, match);
         for (Player onlinePlayer : getOnlinePlayers()) {
             if (onlinePlayer == player) continue;
             onlinePlayer.hidePlayer(player);
         }
+
+        WoolWars.get().getTabHandler().update(player, match);
     }
 
     @Override
