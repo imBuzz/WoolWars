@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.hakan.core.HCore;
 import lombok.Getter;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
+import me.buzz.woolwars.api.game.arena.region.Region;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.round.ApiRoundHolder;
@@ -24,9 +25,11 @@ import me.buzz.woolwars.game.game.match.task.CooldownTask;
 import me.buzz.woolwars.game.game.match.task.tasks.StartRoundTask;
 import me.buzz.woolwars.game.game.match.task.tasks.WaitForNewRoundTask;
 import me.buzz.woolwars.game.manager.AbstractMatchHolder;
+import me.buzz.woolwars.game.utils.TeamUtils;
 import me.buzz.woolwars.game.utils.random.RandomSelector;
 import me.buzz.woolwars.game.utils.structures.Title;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -95,6 +98,23 @@ public class RoundMatchHolder extends AbstractMatchHolder implements ApiRoundHol
         tasks.clear();
 
         despawnGenerators();
+
+        if (woolTeam == null) {
+            Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
+            Map<DyeColor, Integer> blockPlacedPerTeamColor = new HashMap<>();
+            for (Block block : centerRegion.getBlocks()) {
+                if (!block.getType().toString().contains("WOOL")) continue;
+
+                DyeColor dyeColor = DyeColor.getByWoolData(block.getData());
+                blockPlacedPerTeamColor.putIfAbsent(dyeColor, 0);
+                blockPlacedPerTeamColor.put(dyeColor, blockPlacedPerTeamColor.get(dyeColor) + 1);
+            }
+
+            List<DyeColor> colors = TeamUtils.getTopTeamPlacedByWoolColor(blockPlacedPerTeamColor);
+            if (!blockPlacedPerTeamColor.isEmpty() || !TeamUtils.testBlocksColorTruth(colors, blockPlacedPerTeamColor)) {
+                woolTeam = match.getTeams().get(TeamColor.fromDyeColor(colors.get(0)));
+            }
+        }
 
         if (woolTeam != null) {
             woolTeam.increasePoints(1);

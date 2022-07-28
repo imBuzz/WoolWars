@@ -436,8 +436,10 @@ public class BasicWoolMatch extends WoolMatch {
                 blockPlacedPerTeamColor.put(dyeColor, blockPlacedPerTeamColor.get(dyeColor) + 1);
             }
 
-            if (blockPlacedPerTeamColor.isEmpty()) return;
-            roundHolder.endRound(teams.get(TeamColor.fromDyeColor(TeamUtils.getTopTeamPlacedByWoolColor(blockPlacedPerTeamColor).get(0))));
+            List<DyeColor> colors = TeamUtils.getTopTeamPlacedByWoolColor(blockPlacedPerTeamColor);
+            if (blockPlacedPerTeamColor.isEmpty() || TeamUtils.testBlocksColorTruth(colors, blockPlacedPerTeamColor))
+                return;
+            roundHolder.endRound(teams.get(TeamColor.fromDyeColor(colors.get(0))));
         }
     }
 

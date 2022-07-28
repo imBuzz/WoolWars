@@ -20,6 +20,15 @@ public final class TeamUtils {
         else return size / 2;
     }
 
+
+    public static boolean testBlocksColorTruth(List<DyeColor> colors, Map<DyeColor, Integer> map) {
+        boolean isFirstSameOfSecond = false;
+        if (colors.size() >= 2) {
+            isFirstSameOfSecond = map.get(colors.get(0)) == map.get(colors.get(1));
+        }
+        return isFirstSameOfSecond;
+    }
+
     public static List<DyeColor> getTopTeamPlacedByWoolColor(Map<DyeColor, Integer> map) {
         return map.entrySet()
                 .stream()
