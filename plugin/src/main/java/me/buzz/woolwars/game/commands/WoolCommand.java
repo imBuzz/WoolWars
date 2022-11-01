@@ -1,6 +1,5 @@
 package me.buzz.woolwars.game.commands;
 
-import com.hakan.core.command.HCommandAdapter;
 import com.hakan.core.command.executors.base.BaseCommand;
 import com.hakan.core.command.executors.sub.SubCommand;
 import me.buzz.woolwars.api.player.QuitGameReason;
@@ -15,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @BaseCommand(name = "woolwars", description = "Woolwars base command", usage = "/woolwars", aliases = {"ww"})
-public class WoolCommand implements HCommandAdapter {
+public class WoolCommand {
 
     private final WoolWars woolWars = WoolWars.get();
 

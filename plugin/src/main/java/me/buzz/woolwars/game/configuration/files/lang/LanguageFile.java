@@ -5,8 +5,6 @@ import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.collect.Lists;
-import com.hakan.core.npc.skin.HNPCSkin;
-import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.entities.powerup.ConfigurablePowerup;
 import me.buzz.woolwars.game.utils.structures.Title;
 import me.buzz.woolwars.game.utils.structures.WoolItem;
@@ -159,10 +157,6 @@ public class LanguageFile implements SettingsHolder {
             "ZENhiOxvi4/lPH45ngCYciz+5S2CTjMK+WCpPQeYg5Dbbe0LGzpE0vLOxxp9Mb64vfa3IFyeqqXyRXKIKLaZG2HHgjaNQTa/oZIdIgtTs1Ez7cXfvfLoVoq7G8yeAFyVhg" +
             "gd09EZewVV+huxRrMfKbgRjpf6uMvoyo6PDBKU/9HX1wOJwovuHPbs+dqvJ5h/NdytAhRGvMKc7EU8iyC1Elv/GsXBf8mTGOZezunjEa+LYNIQsCLdMR3SVPDuF/11/8" +
             "s1tRqvjJ2tOcR5YbPjDzhvoO0G/5KWX9mRJFOxPLRx4x3HEO8ZvsMdPos8FWL3bumaSgk=");
-
-    public static HNPCSkin getFromFile() {
-        return new HNPCSkin(WoolWars.get().getLanguage().getProperty(SKIN_TEXTURE), WoolWars.get().getLanguage().getProperty(SKIN_SIGNATURE));
-    }
 
     //SCOREBOARDs
 
