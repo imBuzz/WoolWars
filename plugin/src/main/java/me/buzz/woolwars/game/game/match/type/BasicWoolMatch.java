@@ -1,9 +1,13 @@
 package me.buzz.woolwars.game.game.match.type;
 
+import ch.jalu.configme.properties.Property;
 import com.google.common.collect.Lists;
 import com.hakan.core.HCore;
 import com.hakan.core.npc.HNPC;
+import com.hakan.core.skin.Skin;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
+import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
+import me.buzz.woolwars.api.game.arena.region.Region;
 import me.buzz.woolwars.api.game.match.player.events.PlayerDeathByPlayerEvent;
 import me.buzz.woolwars.api.game.match.player.events.PlayerDeathEvent;
 import me.buzz.woolwars.api.game.match.player.events.PlayerJoinGameEvent;
@@ -34,20 +38,23 @@ import me.buzz.woolwars.game.utils.StringsUtils;
 import me.buzz.woolwars.game.utils.TeamUtils;
 import me.buzz.woolwars.game.utils.UUIDUtils;
 import me.buzz.woolwars.game.utils.structures.Title;
+import me.buzz.woolwars.game.utils.structures.WoolItem;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class BasicWoolMatch extends WoolMatch {
-    private final static int MAX_PLAYERS = 8;
     private final static int MIN_PLAYERS_PER_TEAM = 1;
 
     public BasicWoolMatch(PlayableArena arena) {
@@ -98,7 +105,10 @@ public class BasicWoolMatch extends WoolMatch {
             }
         }
 
+        WoolItem lobbyItem = WoolWars.get().getLanguage().getProperty(LanguageFile.RETURN_TO_LOBBY);
+        player.getInventory().setItem(lobbyItem.getSlot(), lobbyItem.toItemStack());
         player.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+        WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(player, 1, 1);
 
         if (joinGameEvent.isSendMessage()) {
             String leaveMessage = ((ApplicablePreset<String, WoolMatch, Player, ChatPreset.AskingChatMotivation>) arena.getPreset(PresetType.CHAT))
@@ -106,6 +116,7 @@ public class BasicWoolMatch extends WoolMatch {
 
             for (Player matchPlayer : playerHolder.getOnlinePlayers()) {
                 matchPlayer.sendMessage(leaveMessage);
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_PLAYER_JOINED).play(matchPlayer, 1, 1);
             }
         }
         if (playerHolder.getPlayersCount() >= getMaxPlayers()) {
@@ -119,6 +130,9 @@ public class BasicWoolMatch extends WoolMatch {
 
         playerHolder.registerPlayer(woolPlayer, false);
         playerHolder.setSpectator(player, true);
+
+        WoolItem lobbyItem = WoolWars.get().getLanguage().getProperty(LanguageFile.RETURN_TO_LOBBY);
+        player.getInventory().setItem(lobbyItem.getSlot(), lobbyItem.toItemStack());
 
         Set<Player> playerSet = playerHolder.getOnlinePlayers();
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -167,6 +181,7 @@ public class BasicWoolMatch extends WoolMatch {
                 }
 
                 matchPlayer.sendMessage(leaveMessage);
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_PLAYER_LEFT).play(matchPlayer, 1, 1);
             }
         }
 
@@ -214,10 +229,12 @@ public class BasicWoolMatch extends WoolMatch {
                     .showEveryone(false)
                     .location(arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.NPC_RED : ArenaLocationType.NPC_BLUE))
                     .lines(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME))
-
-                    .skin(LanguageFile.getFromFile())
-                    .whenClicked(((player, action) -> new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player)))
-
+                    .skin(new Skin(WoolWars.get().getLanguage().getProperty(LanguageFile.SKIN_TEXTURE), WoolWars.get().getLanguage().getProperty(LanguageFile.SKIN_SIGNATURE)))
+                    .whenClicked(((player, action) -> {
+                        if (playerHolder.getMatchStats(player) != null) {
+                            new ClassSelectorGui(this, playerHolder.getMatchStats(player)).open(player);
+                        }
+                    }))
                     .build();
 
             team.setTeamNPC(npc);
@@ -300,6 +317,13 @@ public class BasicWoolMatch extends WoolMatch {
                     player.sendMessage(line);
                 }
             }
+
+            if (isWinnerTeam) {
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_GAME_WON).play(player, 1, 1);
+            } else {
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_GAME_LOST).play(player, 1, 1);
+            }
+
         });
 
         roundHolder.getTasks().put(ResetMatchTask.ID, new ResetMatchTask(this,
@@ -323,12 +347,15 @@ public class BasicWoolMatch extends WoolMatch {
         playerHolder.getMatchStats(player).matchPowerUpsGotten++;
         player.sendMessage(WoolWars.get().getLanguage().getProperty(type.getProperty()).getPickupMessage());
         roundHolder.getEntities().remove(entity);
+
+        WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_POWERUP_COLLECTED).play(player, 1, 1);
     }
 
     @Override
     public void handleDeath(Player victim, Player killer, EntityDamageEvent.DamageCause cause) {
         if (!isPlaying() || isEnded()) {
             victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(victim, 1, 1);
             return;
         }
 
@@ -353,6 +380,7 @@ public class BasicWoolMatch extends WoolMatch {
             WoolMatchStats killerStats = playerHolder.getMatchStats(killer);
             killerStats.matchKills++;
 
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_PLAYER_KILL).play(killer, 1, 1);
             diedMessage = WoolWars.get().getLanguage().getProperty(LanguageFile.KILL_BY_SOMEONE)
                     .replace("{victim}", victim.getName())
                     .replace("{victimTeamColor}", victimStats.getTeam().getTeamColor().getCC().toString())
@@ -360,25 +388,63 @@ public class BasicWoolMatch extends WoolMatch {
                     .replace("{killerTeamColor}", killerStats.getTeam().getTeamColor().getCC().toString());
         } else {
             Bukkit.getPluginManager().callEvent(new PlayerDeathEvent(victim));
-            diedMessage = WoolWars.get().getLanguage().getProperty(LanguageFile.DIED)
+            Property<String> property;
+
+            switch (cause) {
+                case LAVA: {
+                    property = LanguageFile.DIED_FROM_LAVA;
+                    break;
+                }
+                case VOID: {
+                    property = LanguageFile.DIED_FROM_VOID;
+                    break;
+                }
+                default: {
+                    property = LanguageFile.DIED;
+                }
+            }
+
+            diedMessage = WoolWars.get().getLanguage().getProperty(property)
                     .replace("{victim}", victim.getName())
                     .replace("{victimTeamColor}", victimStats.getTeam().getTeamColor().getCC().toString());
         }
 
         if (cause == EntityDamageEvent.DamageCause.VOID) {
             victim.teleport(arena.getLocation(ArenaLocationType.WAITING_LOBBY));
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(victim, 1, 1);
         }
 
         if (!wasASpectator) {
+            WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_PLAYER_DEATH).play(victim, 1, 1);
             for (Player onlinePlayer : playerHolder.getOnlinePlayers()) {
                 onlinePlayer.sendMessage(diedMessage);
             }
+        }
+
+
+        Set<Player> alivePlayers = playerHolder.getGamePlayers();
+        if (alivePlayers.isEmpty()) {
+            Region centerRegion = arena.getRegion(ArenaRegionType.CENTER);
+
+            Map<DyeColor, Integer> blockPlacedPerTeamColor = new HashMap<>();
+            for (Block block : centerRegion.getBlocks()) {
+                if (!block.getType().toString().contains("WOOL")) continue;
+
+                DyeColor dyeColor = DyeColor.getByWoolData(block.getData());
+                blockPlacedPerTeamColor.putIfAbsent(dyeColor, 0);
+                blockPlacedPerTeamColor.put(dyeColor, blockPlacedPerTeamColor.get(dyeColor) + 1);
+            }
+
+            List<DyeColor> colors = TeamUtils.getTopTeamPlacedByWoolColor(blockPlacedPerTeamColor);
+            if (blockPlacedPerTeamColor.isEmpty() || TeamUtils.testBlocksColorTruth(colors, blockPlacedPerTeamColor))
+                return;
+            roundHolder.endRound(teams.get(TeamColor.fromDyeColor(colors.get(0))));
         }
     }
 
     @Override
     public int getMaxPlayers() {
-        return MAX_PLAYERS;
+        return arena.getMaxPlayers();
     }
 
     @Override

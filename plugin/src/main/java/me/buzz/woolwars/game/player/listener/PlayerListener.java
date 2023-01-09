@@ -57,7 +57,10 @@ public class PlayerListener implements Listener {
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        Netherboard.instance().createBoard(player, WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_TITLE));
+        if (WoolWars.get().getSettings().getProperty(ConfigFile.ENABLE_NATIVE_SCOREBOARD)) {
+            Netherboard.instance().createBoard(player, WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_TITLE));
+        }
+
         WoolWars.get().getDataProvider().loadPlayer(player).whenComplete((woolPlayer, throwable) -> {
             if (throwable != null) {
                 throwable.printStackTrace();

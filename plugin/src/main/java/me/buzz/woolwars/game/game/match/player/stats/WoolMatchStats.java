@@ -15,6 +15,7 @@ import me.buzz.woolwars.game.game.match.player.classes.classes.GolemPlayableClas
 import me.buzz.woolwars.game.game.match.player.classes.classes.SwordmanPlayableClass;
 import me.buzz.woolwars.game.game.match.player.classes.classes.TankPlayableClass;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
+import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -33,7 +34,13 @@ public class WoolMatchStats implements ApiWoolMatchStats {
     public int matchWoolPlaced, matchBlocksBroken, matchPowerUpsGotten;
     public int matchKills, matchDeaths;
 
-    public void pickClass(Player player, TeamColor teamColor, PlayableClassType type) {
+    public void pickClass(WoolPlayer woolPlayer, WoolMatchStats matchStats, PlayableClassType type) {
+        Player player = woolPlayer.toBukkitPlayer();
+        TeamColor teamColor = matchStats.getTeam().getTeamColor();
+
+        if (playableClass != null && playableClass.getType() != type) {
+            playableClass.onDequip();
+        }
 
         switch (type) {
             case TANK: {
@@ -61,19 +68,12 @@ public class WoolMatchStats implements ApiWoolMatchStats {
                 break;
             }
         }
-        playableClass.reset();
+
+        playableClass.init();
+        playableClass.onEquip(woolPlayer, matchStats);
 
         Bukkit.getPluginManager().callEvent(new PlayerSelectClassEvent(player, type));
     }
-
-    public void pickClass(Player player, TeamColor teamColor) {
-        if (playableClass == null) {
-            pickClass(player, teamColor, PlayableClassType.TANK);
-        } else {
-            playableClass.reset();
-        }
-    }
-
 
     @Override
     public PlayableClassType getClassType() {

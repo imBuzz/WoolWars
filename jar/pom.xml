@@ -9,6 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+
+    <version>1.7</version>
+
     <artifactId>jar</artifactId>
 
     <properties>
@@ -21,13 +24,13 @@
         <dependency>
             <groupId>me.buzz.woolwars</groupId>
             <artifactId>api</artifactId>
-            <version>${project.version}</version>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
             <groupId>me.buzz.woolwars</groupId>
             <artifactId>plugin</artifactId>
-            <version>${project.version}</version>
+            <version>1.0</version>
         </dependency>
 
         <!--
@@ -176,6 +179,10 @@
                             <shadedPattern>me.buzz.externals.snakeyaml</shadedPattern>
                         </relocation>
                         <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>me.buzz.externals.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
                             <pattern>org.apache.commons.io</pattern>
                             <shadedPattern>me.buzz.externals.commons.io</shadedPattern>
                         </relocation>
@@ -198,6 +205,10 @@
                         <relocation>
                             <pattern>com.jeff_media.updatechecker</pattern>
                             <shadedPattern>me.buzz.externals.updatechecker</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>fr.minuskube.netherboard</pattern>
+                            <shadedPattern>me.buzz.externals.netherboard</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.hakan.core</pattern>

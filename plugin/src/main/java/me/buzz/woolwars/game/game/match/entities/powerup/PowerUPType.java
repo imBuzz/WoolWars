@@ -123,12 +123,12 @@ public enum PowerUPType {
     }),
 
     CHAINMAIL_HELMET(LanguageFile.CHAINMAIL_HELMET_POWERUP, player -> {
-        boolean hasItem = player.getInventory().getHelmet() != null && player.getInventory().getBoots().getType() == XMaterial.CHAINMAIL_HELMET.parseMaterial();
+        boolean hasItem = player.getInventory().getHelmet() != null && player.getInventory().getHelmet().getType() == XMaterial.CHAINMAIL_HELMET.parseMaterial();
         if (!hasItem)
             player.getInventory().setHelmet(new HItemBuilder(XMaterial.CHAINMAIL_HELMET.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
     }, armorStand -> armorStand.setHelmet(XMaterial.CHAINMAIL_HELMET.parseItem())),
     CHAINMAIL_CHESTPLATE(LanguageFile.CHAINMAIL_CHESTPLATE_POWERUP, player -> {
-        boolean hasItem = player.getInventory().getChestplate() != null && player.getInventory().getBoots().getType() == XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial();
+        boolean hasItem = player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType() == XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial();
         if (!hasItem)
             player.getInventory().setChestplate(new HItemBuilder(XMaterial.CHAINMAIL_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
     }, armorStand -> {

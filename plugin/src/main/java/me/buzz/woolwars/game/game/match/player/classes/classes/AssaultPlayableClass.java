@@ -61,7 +61,7 @@ public class AssaultPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+    public void onEquip(WoolPlayer woolPlayer, WoolMatchStats stats) {
         for (PotionEffect activePotionEffect : player.getActivePotionEffects())
             player.removePotionEffect(activePotionEffect.getType());
 
@@ -90,11 +90,6 @@ public class AssaultPlayableClass extends PlayableClass {
         tnt.setMetadata("assault-tnt", new FixedMetadataValue(WoolWars.get(), true));
 
         player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
-    }
-
-    @Override
-    public void reset() {
-        used = false;
     }
 
 }

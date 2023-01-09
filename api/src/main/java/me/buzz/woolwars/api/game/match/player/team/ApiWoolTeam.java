@@ -8,4 +8,6 @@ public interface ApiWoolTeam {
 
     Location getSpawnLocation();
 
+    int getPoints();
+
 }

@@ -1,18 +1,21 @@
-package me.buzz.woolwars.game.player;
+package me.buzz.woolwars.game.player.tablist.impl;
 
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
 import me.buzz.woolwars.game.hook.hooks.vault.VaultAPIHook;
+import me.buzz.woolwars.game.player.tablist.ITabHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TabHandler {
+public class NativeTabHandler implements ITabHandler {
 
     private static final String UUID = generateUUID();
 
@@ -27,6 +30,7 @@ public class TabHandler {
         return builder.toString();
     }
 
+    @Override
     public void update(Player player, WoolMatch match) {
         Team team = teams.get(player.getName());
         String newTeamName = getTeamName(player, match);
@@ -43,20 +47,39 @@ public class TabHandler {
 
         updateDisplayName(player, match);
         updateTab(player, match);
+        updatePrefixAndSuffix(player, match, newTeamName);
     }
 
-    private String getTeamName(Player player, WoolMatch match) {
-        int priority = getPriority(player, match) - 1000;
-        return resize(priority + UUID + player.getName());
+    @Override
+    public String getTeamName(Player player, WoolMatch match) {
+        int priority = getPriority(player, match);
+
+        String priorityPrefix;
+
+        if (priority < 0) {
+            priorityPrefix = "Z";
+        } else {
+            char letter = (char) ((priority / 5) + 65);
+            int repeat = priority % 5 + 1;
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < repeat; i++) {
+                builder.append(letter);
+            }
+            priorityPrefix = builder.toString();
+        }
+
+        return resize(UUID + priorityPrefix + player.getName());
     }
 
-    private void createTeam(Player player, String name, WoolMatch match) {
+    @Override
+    public void createTeam(Player player, String name, WoolMatch match) {
         removePlayer(player);
 
-        Team team = player.getScoreboard().getTeam(name);
+        Scoreboard scoreboard = player.getScoreboard();
+        Team team = scoreboard.getTeam(name);
 
         if (team == null) {
-            team = player.getScoreboard().registerNewTeam(name);
+            team = scoreboard.registerNewTeam(name);
             team.setAllowFriendlyFire(true);
         }
 
@@ -65,12 +88,14 @@ public class TabHandler {
         teams.put(player.getName(), team);
     }
 
-    private void updateTeam(Player player, Team team, WoolMatch match) {
+    @Override
+    public void updateTeam(Player player, Team team, WoolMatch match) {
         team.setPrefix(resize(getPrefix(player, match)));
         team.setSuffix(resize(getSuffix(player, match)));
     }
 
-    private void removePlayer(Player player) {
+    @Override
+    public void removePlayer(Player player) {
         Team team = teams.get(player.getName());
         if (team != null) {
             team.removeEntry(player.getName());
@@ -79,7 +104,8 @@ public class TabHandler {
         }
     }
 
-    private String getPrefix(Player player, WoolMatch match) {
+    @Override
+    public String getPrefix(Player player, WoolMatch match) {
         if (match == null) return vaultAPIHook != null ? vaultAPIHook.getPrefix(player) : "";
         if (match.getPlayerHolder().isSpectator(player)) return ChatColor.GRAY + "[SPECTATOR] ";
 
@@ -90,19 +116,40 @@ public class TabHandler {
                 + stats.getTeam().getTeamColor().getTag() + stats.getTeam().getTeamColor().getCC() + " ";
     }
 
-    private String getSuffix(Player player, WoolMatch match) {
+    @Override
+    public String getSuffix(Player player, WoolMatch match) {
         return "";
     }
 
-    private void updateDisplayName(Player player, WoolMatch match) {
-        player.setDisplayName(getPrefix(player, match) + player.getName());
+    @Override
+    public void updateDisplayName(Player player, WoolMatch match) {
+        player.setDisplayName(getPrefix(player, match) + player.getName() + getSuffix(player, match));
     }
 
-    private void updateTab(Player player, WoolMatch match) {
+    @Override
+    public void updateTab(Player player, WoolMatch match) {
         player.setPlayerListName(getPrefix(player, match) + player.getName() + getSuffix(player, match));
     }
 
-    private int getPriority(Player player, WoolMatch match) {
+    @Override
+    public void updatePrefixAndSuffix(Player player, WoolMatch match, String teamName) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            Scoreboard scoreboard = onlinePlayer.getScoreboard();
+
+            Team scoreboardTeam = scoreboard.getTeam(teamName);
+            if (scoreboardTeam == null) {
+                scoreboardTeam = scoreboard.registerNewTeam(teamName);
+            }
+
+            scoreboardTeam.setPrefix(resize(getPrefix(player, match)));
+            scoreboardTeam.setSuffix(resize(getSuffix(player, match)));
+
+            scoreboardTeam.addEntry(player.getName());
+        }
+    }
+
+    @Override
+    public int getPriority(Player player, WoolMatch match) {
         if (match == null) return 0;
 
         if (match.getPlayerHolder().isSpectator(player)) return 1000;
@@ -113,14 +160,17 @@ public class TabHandler {
         return matchStats.getTeam().getTeamColor().getPriority();
     }
 
+    @Override
     public boolean isTracked(Player player) {
         return teams.containsKey(player.getName());
     }
 
+    @Override
     public void trackPlayer(Player player, WoolMatch match) {
         update(player, match);
     }
 
+    @Override
     public void stopTrackPlayer(Player player) {
         removePlayer(player);
 
@@ -128,8 +178,10 @@ public class TabHandler {
         player.setPlayerListName(player.getName());
     }
 
+    @Override
     public String resize(String string) {
         return string.length() > 16 ? string.substring(0, 16) : string;
     }
+
 
 }

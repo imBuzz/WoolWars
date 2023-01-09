@@ -3,18 +3,24 @@ package me.buzz.woolwars.game;
 import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
 import com.hakan.core.HCore;
+import com.jeff_media.updatechecker.UpdateCheckSource;
+import com.jeff_media.updatechecker.UpdateChecker;
+import com.jeff_media.updatechecker.UserAgentBuilder;
 import lombok.Getter;
 import me.buzz.woolwars.api.ApiWoolWars;
 import me.buzz.woolwars.game.commands.WoolCommand;
 import me.buzz.woolwars.game.configuration.ConfigurationType;
-import me.buzz.woolwars.game.configuration.files.DatabaseFile;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.game.GameManager;
 import me.buzz.woolwars.game.hook.ExternalPluginHook;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
-import me.buzz.woolwars.game.player.TabHandler;
 import me.buzz.woolwars.game.player.listener.PlayerListener;
+import me.buzz.woolwars.game.player.tablist.ITabHandler;
+import me.buzz.woolwars.game.player.tablist.impl.EmptyTabHandler;
+import me.buzz.woolwars.game.player.tablist.impl.NativeTabHandler;
 import me.buzz.woolwars.game.utils.workload.WorkloadHandler;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,12 +33,13 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
     private final Map<ImplementedHookType, ExternalPluginHook> hooks = new HashMap<>();
 
+    private Metrics metrics;
     @Getter
     private DataProvider dataProvider;
     @Getter
     private GameManager gameManager;
     @Getter
-    private TabHandler tabHandler;
+    private ITabHandler tabHandler;
 
     @Override
     public void onEnable() {
@@ -45,7 +52,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
 
         HCore.initialize(this);
 
-        dataProvider = getDataSettings().getProperty(DatabaseFile.DATABASE_TYPE).getProviderSupplier().get();
+        dataProvider = getSettings().getProperty(ConfigFile.DATABASE_TYPE).getProviderSupplier().get();
         dataProvider.init();
 
         WorkloadHandler.run();
@@ -53,19 +60,22 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         gameManager = new GameManager();
         gameManager.init();
 
-        tabHandler = new TabHandler();
+        tabHandler = getSettings().getProperty(ConfigFile.ENABLE_NATIVE_TABLIST) ? new NativeTabHandler() : new EmptyTabHandler();
 
         checkForHooks();
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         HCore.registerCommands(new WoolCommand());
 
-        //new UpdateChecker(this, UpdateCheckSource.SPIGET, String.valueOf(SPIGOT_CODE))
-        //        .checkEveryXHours(12)
-        //        .setNotifyByPermissionOnJoin("woolwars.update")
-        //        .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
-        //        .setDownloadLink("")
-        //        .checkNow();
+        metrics = new Metrics(this, 15400);
+        new UpdateChecker(this, UpdateCheckSource.SPIGET, "102486")
+                .checkEveryXHours(12)
+                .setNotifyByPermissionOnJoin("woolwars.update")
+                .setUserAgent(new UserAgentBuilder().addPluginNameAndVersion())
+                .setDownloadLink("")
+                .checkNow();
+
+        printInformation();
     }
 
     @Override
@@ -116,12 +126,21 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         return files.get(ConfigurationType.CONFIG);
     }
 
-    public SettingsManager getDataSettings() {
-        return files.get(ConfigurationType.DATABASE);
-    }
-
     public SettingsManager getGUISettings() {
         return files.get(ConfigurationType.GUI);
+    }
+
+    private void printInformation() {
+        getLogger().info("▄▄▌ ▐ ▄▌            ▄▄▌  ▄▄▌ ▐ ▄▌ ▄▄▄· ▄▄▄  .▄▄ ·");
+        getLogger().info("██· █▌▐█ ▄█▀▄  ▄█▀▄ ██•  ██· █▌▐█▐█ ▀█ ▀▄ █·▐█ ▀.");
+        getLogger().info("██▪▐█▐▐▌▐█▌.▐▌▐█▌.▐▌██▪  ██▪▐█▐▐▌▄█▀▀█ ▐▀▀▄ ▄▀▀▀█▄");
+        getLogger().info("▐█▌██▐█▌▐█▌.▐▌▐█▌.▐▌▐█▌▐▌▐█▌██▐█▌▐█ ▪▐▌▐█•█▌▐█▄▪▐█");
+        getLogger().info("▀▀▀▀ ▀▪ ▀█▄▀▪ ▀█▄▀▪.▀▀▀  ▀▀▀▀ ▀▪ ▀  ▀ .▀  ▀ ▀▀▀▀ ");
+        getLogger().info("");
+        getLogger().info("Author: ImBuzz");
+        getLogger().info("Version: " + getDescription().getVersion());
+        getLogger().info("Running on: " + getServer().getVersion());
+        getLogger().info("Java Version: " + System.getProperty("java.version"));
     }
 
     private static WoolWars instance;

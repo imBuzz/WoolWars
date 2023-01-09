@@ -10,9 +10,9 @@ import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.equipment.ArmorSlot;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
+import me.buzz.woolwars.game.game.match.task.tasks.ProtectCenterTask;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import me.buzz.woolwars.game.utils.structures.itembuilder.PotionAndWoolItemBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,6 +23,7 @@ import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class EngineerPlayableClass extends PlayableClass {
 
@@ -57,7 +58,7 @@ public class EngineerPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+    public void onEquip(WoolPlayer woolPlayer, WoolMatchStats stats) {
         for (PotionEffect activePotionEffect : player.getActivePotionEffects())
             player.removePotionEffect(activePotionEffect.getType());
 
@@ -86,13 +87,11 @@ public class EngineerPlayableClass extends PlayableClass {
 
         used = true;
         match.getRoundHolder().canBreakCenter = false;
-        Bukkit.getScheduler().runTaskLater(WoolWars.get(), () -> match.getRoundHolder().canBreakCenter = true, 20 * 5L);
-        player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
-    }
 
-    @Override
-    public void reset() {
-        used = false;
+        match.getRoundHolder().getTasks().put(ProtectCenterTask.ID,
+                new ProtectCenterTask(match, TimeUnit.SECONDS.toMillis(5)).start());
+
+        player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
     }
 
 }

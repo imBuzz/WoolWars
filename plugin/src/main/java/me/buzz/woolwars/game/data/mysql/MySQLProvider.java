@@ -2,7 +2,7 @@ package me.buzz.woolwars.game.data.mysql;
 
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.WoolWars;
-import me.buzz.woolwars.game.configuration.files.DatabaseFile;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.data.DataProvider;
 import me.buzz.woolwars.game.data.DataProviderType;
 import me.buzz.woolwars.game.data.credentials.DatabaseCredentials;
@@ -29,7 +29,7 @@ public class MySQLProvider implements DataProvider {
 
     @Override
     public void init() {
-        DatabaseCredentials credentials = woolWars.getDataSettings().getProperty(DatabaseFile.DATABASE_CREDENTIALS);
+        DatabaseCredentials credentials = woolWars.getSettings().getProperty(ConfigFile.DATABASE_CREDENTIALS);
         mySQl = new MySQL(credentials.getAddress(), credentials.getHost(), credentials.getDatabase(), credentials.getUsername(), credentials.getPassword());
         try {
             mySQl.createTable(new String[]{

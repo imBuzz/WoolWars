@@ -14,8 +14,18 @@ import java.util.List;
 public class WoolItem {
 
     private Material material;
+    private int slot;
     private String name;
     private List<String> lines;
+
+    public static WoolItem from(String material, String name, List<String> lines, int slot) {
+        WoolItem item = new WoolItem();
+        item.setMaterial(XMaterial.valueOf(material.toUpperCase()).parseMaterial());
+        item.setName(name);
+        item.setLines(lines);
+        item.setSlot(slot);
+        return item;
+    }
 
     public static WoolItem from(String material, String name, List<String> lines) {
         WoolItem item = new WoolItem();
@@ -26,7 +36,7 @@ public class WoolItem {
     }
 
     public ItemStack toItemStack() {
-        return new HItemBuilder(material).name(name).lores(lines).build();
+        return new HItemBuilder(material).name(name).lores(false, lines).build();
     }
 
 }

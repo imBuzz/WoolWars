@@ -1,12 +1,16 @@
 package me.buzz.woolwars.game.game.match.listener.impl;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.hakan.core.HCore;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
 import me.buzz.woolwars.api.game.arena.region.Region;
+import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.api.game.match.state.MatchState;
+import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
+import me.buzz.woolwars.game.configuration.files.ConfigFile;
 import me.buzz.woolwars.game.configuration.files.lang.LanguageFile;
 import me.buzz.woolwars.game.game.arena.settings.preset.ApplicablePreset;
 import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
@@ -17,10 +21,15 @@ import me.buzz.woolwars.game.game.match.player.classes.PlayableClass;
 import me.buzz.woolwars.game.game.match.player.classes.classes.ArcherPlayableClass;
 import me.buzz.woolwars.game.game.match.player.stats.WoolMatchStats;
 import me.buzz.woolwars.game.game.match.player.team.impl.WoolTeam;
+import me.buzz.woolwars.game.player.WoolPlayer;
+import me.buzz.woolwars.game.utils.StringsUtils;
+import me.buzz.woolwars.game.utils.TeamUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -32,14 +41,55 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class BasicMatchListener implements MatchListener {
 
+    private final WoolWars woolWars = WoolWars.get();
     private final WoolMatch match;
+
+    @Override
+    public void processCommand(PlayerCommandPreprocessEvent event) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE || event.getPlayer().getGameMode() == GameMode.SPECTATOR)
+            return;
+
+        List<String> commands = woolWars.getSettings().getProperty(ConfigFile.BLOCKED_COMMANDS_LIST);
+        boolean whitelist = woolWars.getSettings().getProperty(ConfigFile.AS_WHITELIST_BLOCKED_COMMANDS);
+
+        String command = event.getMessage().split(" ")[0];
+        if (commands.contains(command)) {
+            if (whitelist) return;
+            event.setCancelled(true);
+
+            event.getPlayer().sendMessage(woolWars.getLanguage().getProperty(LanguageFile.COMMAND_NOT_ENABLED));
+        }
+    }
+
+    @Override
+    public void move(PlayerMoveEvent event) {
+        if (event.getTo().getBlockX() == event.getFrom().getBlockX()
+                && event.getTo().getBlockY() == event.getFrom().getBlockY()
+                && event.getTo().getBlockZ() == event.getFrom().getBlockZ()) return;
+
+        Block block = event.getTo().getBlock().getRelative(BlockFace.DOWN);
+        Player player = event.getPlayer();
+
+        if (block.getType() == WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_MATERIAL).parseMaterial()) {
+            player.setVelocity(player.getLocation().
+                    getDirection().normalize().multiply(WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_HORIZONTAL_POWER))
+                    .setY(WoolWars.get().getSettings().getProperty(ConfigFile.JUMP_VERTICAL_POWER)));
+
+            woolWars.getSettings().getProperty(ConfigFile.SOUNDS_JUMP_PAD).play(player, 1, 1);
+        }
+    }
 
     @Override
     public void damage(EntityDamageEvent event) {
@@ -51,11 +101,17 @@ public class BasicMatchListener implements MatchListener {
             return;
         }
 
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL && !woolWars.getSettings().getProperty(ConfigFile.ENABLE_FALL_DAMAGE)) {
+            event.setCancelled(true);
+            return;
+        }
+
         Player victim = (Player) event.getEntity();
         if (match.getMatchState() != MatchState.ROUND || match.getPlayerHolder().isSpectator(victim)) {
             event.setCancelled(true);
             if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 victim.teleport(match.getPlayableArena().getLocation(ArenaLocationType.WAITING_LOBBY));
+                WoolWars.get().getSettings().getProperty(ConfigFile.SOUNDS_TELEPORT).play(victim, 1, 1);
             }
             return;
         }
@@ -90,17 +146,51 @@ public class BasicMatchListener implements MatchListener {
         }
 
         if (victim.getHealth() - event.getFinalDamage() <= 0) {
+            HCore.sendActionBar(damager, "");
             event.setCancelled(true);
             match.handleDeath(victim, damager, event.getCause());
+        } else {
+            HCore.sendActionBar(damager, woolWars.getLanguage().getProperty(LanguageFile.ACTIONBAR_ON_ATTACK)
+                    .replace("{victimTeamColor}", match.getPlayerHolder()
+                            .getMatchStats(victim).getTeam().getTeamColor().getCC().toString())
+                    .replace("{victim}", victim.getName())
+                    .replace("{healthBar}", StringsUtils.getProgressBar((int) victim.getHealth(),
+                            (int) victim.getMaxHealth(), 10, '❤', ChatColor.DARK_RED, ChatColor.RED) +
+                            (TeamUtils.hasAbsorptionHearts(victim) ?
+                                    StringsUtils.getProgressBar((int) TeamUtils.getAbsorptionHearts(victim),
+                                            4, 2, '❤', ChatColor.GOLD, ChatColor.YELLOW) : "")));
         }
     }
 
     @Override
     public void interact(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
+
+        if (block != null && block.getType() != Material.AIR) {
+            List<Material> materials = new ArrayList<>();
+            for (String xMaterial : woolWars.getSettings().getProperty(ConfigFile.DISABLED_INTERACTION_BLOCKS)) {
+                try {
+                    materials.add(XMaterial.valueOf(xMaterial).parseMaterial());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (materials.contains(block.getType())) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
         if (player.getItemInHand() != null) {
-            switch (player.getItemInHand().getType()) {
+            switch (XMaterial.matchXMaterial(player.getItemInHand())) {
+                case BLACK_BED: {
+                    event.setCancelled(true);
+                    match.quit(WoolPlayer.getWoolPlayer(player), QuitGameReason.OTHER);
+                    break;
+                }
                 case BLAZE_POWDER: {
+                    event.setCancelled(true);
                     WoolMatchStats stats = match.getPlayerHolder().getMatchStats(player);
                     if (stats != null) {
                         if (match.getMatchState() != MatchState.ROUND) {
@@ -119,10 +209,15 @@ public class BasicMatchListener implements MatchListener {
                 }
             }
         }
+
+        if (!match.isPlaying() && player.getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+        }
     }
 
     @Override
     public void itemPickup(PlayerPickupItemEvent event) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         event.setCancelled(true);
     }
 
@@ -155,7 +250,7 @@ public class BasicMatchListener implements MatchListener {
         int totalBlocks = 0, sameTypeBlocks = 0;
         for (Block block : centerRegion.getBlocks()) {
             totalBlocks++;
-            if (block.getType() != XMaterial.WHITE_WOOL.parseMaterial()) continue;
+            if (!block.getType().toString().contains("WOOL")) continue;
 
             DyeColor dyeColor = DyeColor.getByWoolData(block.getData());
             if (dyeColor == woolTeam.getTeamColor().getDC()) sameTypeBlocks++;
@@ -168,27 +263,50 @@ public class BasicMatchListener implements MatchListener {
 
     @Override
     public void blockBreak(BlockBreakEvent event) {
-        Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
         event.setCancelled(true);
+        if (match.isPlaying()) {
+            Region centerRegion = match.getArena().getRegion(ArenaRegionType.CENTER);
+            if (match.getPlayerHolder().isSpectator(event.getPlayer())) return;
+            if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
 
-        if (match.getPlayerHolder().isSpectator(event.getPlayer())) return;
-        if (!centerRegion.isInRegion(event.getBlock().getLocation())) return;
+            if (!match.getRoundHolder().canBreakCenter) {
+                event.getPlayer().sendMessage(WoolWars.get().getLanguage()
+                        .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
+                                .getTasks().get("centerProtect").formatSecondsAndMillis()));
+                return;
+            }
 
-        if (!match.getRoundHolder().canBreakCenter) {
-            event.getPlayer().sendMessage(WoolWars.get().getLanguage()
-                    .getProperty(LanguageFile.ROUND_CANNOT_BE_CAPTURED).replace("{seconds}", match.getRoundHolder()
-                            .getTasks().get("centerProtect").formatSecondsAndMillis()));
-            return;
+            WoolMatchStats stats = match.getPlayerHolder().getMatchStats(event.getPlayer());
+            if (stats != null) stats.matchBlocksBroken++;
+
+            event.getBlock().setType(Material.AIR);
         }
-
-        match.getPlayerHolder().getMatchStats(event.getPlayer()).matchBlocksBroken++;
-        event.getBlock().setType(Material.AIR);
     }
 
     @Override
     public void dropItem(PlayerDropItemEvent event) {
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
         event.setCancelled(true);
+
+        Player player = event.getPlayer();
+
+        if (match.isPlaying() && !match.getPlayerHolder().isSpectator(event.getPlayer())) {
+            WoolMatchStats stats = match.getPlayerHolder().getMatchStats(player);
+            if (stats != null) {
+                if (match.getMatchState() != MatchState.ROUND) {
+                    player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.YOU_CANNOT_USE_THIS_ABILITY_YET));
+                    return;
+                }
+
+                PlayableClass playableClass = stats.getPlayableClass();
+                if (playableClass.isUsed()) {
+                    player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_ALREADY_USED));
+                } else {
+                    playableClass.useAbility(match, player);
+                }
+            }
+        }
+
     }
 
     @Override
@@ -201,7 +319,9 @@ public class BasicMatchListener implements MatchListener {
 
         if (match.getPlayerHolder().isSpectator(event.getPlayer()))
             match.getPlayerHolder().getOnlineSpectators().forEach(player -> player.sendMessage(message));
-        else match.getPlayerHolder().getOnlinePlayers().forEach(player -> player.sendMessage(message));
+        else {
+            match.getPlayerHolder().getOnlinePlayers().forEach(player -> player.sendMessage(message));
+        }
     }
 
     @Override
@@ -209,10 +329,15 @@ public class BasicMatchListener implements MatchListener {
         if (event.getEntityType() != EntityType.PRIMED_TNT) return;
 
         if (event.getEntity().hasMetadata("assault-tnt")) {
+            TeamColor color = event.getEntity().hasMetadata(TeamColor.RED.getEntityTag()) ? TeamColor.RED : TeamColor.BLUE;
             event.setCancelled(true);
             for (Entity nearbyEntity : event.getLocation().getWorld().getNearbyEntities(event.getLocation(), 3, 1, 3)) {
+                if (nearbyEntity.getType() != EntityType.PLAYER) continue;
+                if (match.getPlayerHolder().getMatchStats((Player) nearbyEntity).getTeam().getTeamColor() == color)
+                    continue;
+
                 nearbyEntity.setVelocity(ArcherPlayableClass.fixVelocity(nearbyEntity.getVelocity().add(nearbyEntity.getLocation()
-                        .getDirection().setY(0).normalize().multiply(-5))));
+                        .getDirection().setY(0).normalize().multiply(WoolWars.get().getSettings().getProperty(ConfigFile.CLASSES_ASSAULT_POWER)))));
             }
         }
     }

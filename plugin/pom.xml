@@ -41,11 +41,18 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- bStats -->
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
         <!-- hCore -->
         <dependency>
             <groupId>com.github.hakan-krgn.hCore</groupId>
             <artifactId>bukkit-primary</artifactId>
-            <version>0.4.4</version>
+            <version>0.6.2</version>
         </dependency>
 
         <!-- netherboard -->
@@ -66,7 +73,7 @@
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>8.7.0</version>
+            <version>8.8.0</version>
         </dependency>
 
         <!-- Commons -->

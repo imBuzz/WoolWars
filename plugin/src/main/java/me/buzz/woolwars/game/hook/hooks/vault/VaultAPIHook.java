@@ -26,6 +26,7 @@ public class VaultAPIHook implements ExternalPluginHook {
     }
 
     public String getPrefix(Player player) {
+        if (chat == null) return "";
         return ChatColor.translateAlternateColorCodes('&', chat.getPlayerPrefix(player));
     }
 

@@ -55,7 +55,7 @@ public class SwordmanPlayableClass extends PlayableClass {
     }
 
     @Override
-    public void equip(WoolPlayer woolPlayer, WoolMatchStats stats) {
+    public void onEquip(WoolPlayer woolPlayer, WoolMatchStats stats) {
         for (PotionEffect activePotionEffect : player.getActivePotionEffects())
             player.removePotionEffect(activePotionEffect.getType());
 
@@ -80,11 +80,6 @@ public class SwordmanPlayableClass extends PlayableClass {
         used = true;
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 3, 4));
         player.sendMessage(WoolWars.get().getLanguage().getProperty(LanguageFile.ABILITY_USED));
-    }
-
-    @Override
-    public void reset() {
-        used = false;
     }
 
 }

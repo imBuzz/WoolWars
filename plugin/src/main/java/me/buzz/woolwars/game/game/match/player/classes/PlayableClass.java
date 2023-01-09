@@ -42,8 +42,14 @@ public abstract class PlayableClass {
 
     public abstract void useAbility(WoolMatch match, Player player);
 
-    public abstract void equip(WoolPlayer woolPlayer, WoolMatchStats stats);
+    public void init() {
+        used = false;
+    }
 
-    public abstract void reset();
+    public abstract void onEquip(WoolPlayer woolPlayer, WoolMatchStats stats);
+
+    public void onDequip() {
+
+    }
 
 }
