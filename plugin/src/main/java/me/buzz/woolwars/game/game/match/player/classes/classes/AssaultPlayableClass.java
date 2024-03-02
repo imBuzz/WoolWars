@@ -1,7 +1,7 @@
 package me.buzz.woolwars.game.game.match.player.classes.classes;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.hakan.core.item.HItemBuilder;
+import com.hakan.core.item.ItemBuilder;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
@@ -33,22 +33,22 @@ public class AssaultPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new HItemBuilder(XMaterial.WOODEN_SWORD.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
-        items.put(1, new HItemBuilder(XMaterial.SHEARS.parseMaterial()).addEnchant(Enchantment.DIG_SPEED, 2).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
-        items.put(2, new HItemBuilder(XMaterial.IRON_PICKAXE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
-        items.put(3, new HItemBuilder(XMaterial.STONE_SHOVEL.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(0, new ItemBuilder(XMaterial.WOODEN_SWORD.parseItem()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(1, new ItemBuilder(XMaterial.SHEARS.parseItem()).addEnchant(Enchantment.DIG_SPEED, 2).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(2, new ItemBuilder(XMaterial.IRON_PICKAXE.parseItem()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(3, new ItemBuilder(XMaterial.STONE_SHOVEL.parseItem()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
 
         items.put(4, new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.INSTANT_HEAL, 2, true).build());
         items.put(5, new PotionAndWoolItemBuilder(Material.POTION).potion(PotionType.INSTANT_DAMAGE, 1, true).build());
 
-        items.put(6, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 64).build());
+        items.put(6, new ItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 64).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.ASSAULT_KEYSTONE)
                 .toItemStack());
 
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.CHESTPLATE, new HItemBuilder(XMaterial.LEATHER_CHESTPLATE.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
-        armor.put(ArmorSlot.LEGGINGS, new HItemBuilder(XMaterial.LEATHER_LEGGINGS.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        armor.put(ArmorSlot.CHESTPLATE, new ItemBuilder(XMaterial.LEATHER_CHESTPLATE.parseItem()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        armor.put(ArmorSlot.LEGGINGS, new ItemBuilder(XMaterial.LEATHER_LEGGINGS.parseItem()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
         armor.put(ArmorSlot.BOOTS, new ItemStack(Material.AIR));
     }
 

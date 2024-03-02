@@ -1,7 +1,7 @@
 package me.buzz.woolwars.game.game.gui;
 
-import com.hakan.core.item.HItemBuilder;
-import com.hakan.core.ui.inventory.HInventory;
+import com.hakan.core.item.ItemBuilder;
+import com.hakan.core.ui.inventory.InventoryGui;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.gui.GuiFile;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemFlag;
 
-public class ClassSelectorGui extends HInventory {
+public class ClassSelectorGui extends InventoryGui {
 
     private final WoolMatch match;
     private final WoolMatchStats stats;
@@ -27,17 +27,19 @@ public class ClassSelectorGui extends HInventory {
     }
 
     @Override
-    protected void onOpen(Player player) {
+    public void onOpen(Player player) {
         createTankClass(player);
         createAssaultClass(player);
         createArcherClass(player);
         createSwordsmanClass(player);
         createEngineerClass(player);
         createGolemClass(player);
+
+        super.onOpen(player);
     }
 
     private void createTankClass(Player player) {
-        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_TANK).toItemStack());
+        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_TANK).toItemStack());
         itemBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
         if (stats.getClassType() == PlayableClassType.TANK) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
@@ -48,7 +50,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createAssaultClass(Player player) {
-        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ASSAULT).toItemStack());
+        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ASSAULT).toItemStack());
         itemBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
         if (stats.getClassType() == PlayableClassType.ASSAULT) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
@@ -59,7 +61,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createArcherClass(Player player) {
-        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ARCHER).toItemStack());
+        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ARCHER).toItemStack());
         itemBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
         if (stats.getClassType() == PlayableClassType.ARCHER) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
@@ -70,7 +72,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createSwordsmanClass(Player player) {
-        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_SWORDMAN).toItemStack());
+        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_SWORDMAN).toItemStack());
         itemBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
         if (stats.getClassType() == PlayableClassType.SWORDMAN) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
@@ -81,7 +83,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createGolemClass(Player player) {
-        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_GOLEM).toItemStack());
+        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_GOLEM).toItemStack());
         itemBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
         if (stats.getClassType() == PlayableClassType.GOLEM) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 
@@ -92,7 +94,7 @@ public class ClassSelectorGui extends HInventory {
     }
 
     private void createEngineerClass(Player player) {
-        HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ENGINEER).toItemStack());
+        ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASS_SELECTOR_ENGINEER).toItemStack());
         itemBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
         if (stats.getClassType() == PlayableClassType.ENGINEER) itemBuilder.addEnchant(Enchantment.DURABILITY, 1);
 

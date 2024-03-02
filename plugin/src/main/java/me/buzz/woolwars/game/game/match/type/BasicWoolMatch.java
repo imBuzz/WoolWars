@@ -3,7 +3,7 @@ package me.buzz.woolwars.game.game.match.type;
 import ch.jalu.configme.properties.Property;
 import com.google.common.collect.Lists;
 import com.hakan.core.HCore;
-import com.hakan.core.npc.HNPC;
+import com.hakan.core.npc.Npc;
 import com.hakan.core.skin.Skin;
 import me.buzz.woolwars.api.game.arena.ArenaLocationType;
 import me.buzz.woolwars.api.game.arena.region.ArenaRegionType;
@@ -225,7 +225,7 @@ public class BasicWoolMatch extends WoolMatch {
             TeamColor teamColor = TeamColor.values()[i];
             WoolTeam team = new WoolTeam(ID, teamColor, arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.SPAWN_RED : ArenaLocationType.SPAWN_BLUE));
 
-            HNPC npc = HCore.npcBuilder(UUIDUtils.getNewUUID())
+            Npc npc = HCore.npcBuilder(UUIDUtils.getNewUUID())
                     .showEveryone(false)
                     .location(arena.getLocation(teamColor == TeamColor.RED ? ArenaLocationType.NPC_RED : ArenaLocationType.NPC_BLUE))
                     .lines(WoolWars.get().getLanguage().getProperty(LanguageFile.NPC_NAME))

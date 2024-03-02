@@ -1,7 +1,7 @@
 package me.buzz.woolwars.game.utils.structures;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.hakan.core.item.HItemBuilder;
+import com.hakan.core.item.ItemBuilder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.Material;
@@ -36,7 +36,7 @@ public class WoolItem {
     }
 
     public ItemStack toItemStack() {
-        return new HItemBuilder(material).name(name).lores(false, lines).build();
+        return new ItemBuilder(material).name(name).lores(false, lines).build();
     }
 
 }

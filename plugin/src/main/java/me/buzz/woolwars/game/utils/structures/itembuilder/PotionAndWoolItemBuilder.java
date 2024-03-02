@@ -1,6 +1,6 @@
 package me.buzz.woolwars.game.utils.structures.itembuilder;
 
-import com.hakan.core.item.HItemBuilder;
+import com.hakan.core.item.ItemBuilder;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +10,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 
-public class PotionAndWoolItemBuilder extends HItemBuilder {
+public class PotionAndWoolItemBuilder extends ItemBuilder {
 
     private DyeColor color;
 
@@ -26,12 +26,12 @@ public class PotionAndWoolItemBuilder extends HItemBuilder {
         super(itemStack);
     }
 
-    public HItemBuilder setColor(DyeColor color) {
+    public ItemBuilder setColor(DyeColor color) {
         this.color = color;
         return this;
     }
 
-    public HItemBuilder potion(PotionType potionType, int level, boolean splash) {
+    public ItemBuilder potion(PotionType potionType, int level, boolean splash) {
         this.potionType = potionType;
         this.level = level;
         this.splash = splash;

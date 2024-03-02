@@ -6,11 +6,11 @@
 
     <groupId>me.buzz.woolwars</groupId>
     <artifactId>WoolWars</artifactId>
-    <version>1.0</version>
+    <version>1.8</version>
+
     <modules>
         <module>api</module>
         <module>plugin</module>
-        <!-- <module>nms</module> -->
         <module>jar</module>
     </modules>
     <packaging>pom</packaging>

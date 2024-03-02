@@ -1,7 +1,7 @@
 package me.buzz.woolwars.game.game.gui;
 
-import com.hakan.core.item.HItemBuilder;
-import com.hakan.core.ui.inventory.HInventory;
+import com.hakan.core.item.ItemBuilder;
+import com.hakan.core.ui.inventory.InventoryGui;
 import com.hakan.core.ui.inventory.item.ClickableItem;
 import com.hakan.core.ui.inventory.pagination.Pagination;
 import me.buzz.woolwars.api.game.match.ApiMatch;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class GameMonitorGui extends HInventory {
+public class GameMonitorGui extends InventoryGui {
 
     public GameMonitorGui() {
         super(UUID.randomUUID().toString().substring(0, 10),
@@ -24,9 +24,7 @@ public class GameMonitorGui extends HInventory {
     }
 
     @Override
-    protected void onOpen(Player player) {
-        super.onOpen(player);
-
+    public void onOpen(Player player) {
         Pagination pagination = getPagination();
 
         pagination.setSlots(10, 43);
@@ -37,13 +35,15 @@ public class GameMonitorGui extends HInventory {
         super.setItem(48, WoolWars.get().getGUISettings().getProperty(GuiFile.ARROW_BACK).toItemStack(), event -> pagination.setCurrentPage(getPreviousPage()));
 
         pagination.setCurrentPage(0);
+
+        super.onOpen(player);
     }
 
     private List<ClickableItem> getMatchItems() {
         List<ClickableItem> items = new ArrayList<>();
 
         for (ApiMatch match : WoolWars.get().getGameManager().getMatches()) {
-            HItemBuilder itemBuilder = new HItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASSIC_MATCH_ITEM).toItemStack());
+            ItemBuilder itemBuilder = new ItemBuilder(WoolWars.get().getGUISettings().getProperty(GuiFile.CLASSIC_MATCH_ITEM).toItemStack());
             itemBuilder.name(itemBuilder.getName().replace("{ID}", match.getMatchID()));
 
             List<String> newLore = new ArrayList<>();

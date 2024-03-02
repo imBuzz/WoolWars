@@ -1,7 +1,7 @@
 package me.buzz.woolwars.game.utils;
 
 import com.hakan.core.HCore;
-import com.hakan.core.utils.ProtocolVersion;
+import com.hakan.core.protocol.ProtocolVersion;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;

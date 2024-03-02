@@ -1,12 +1,12 @@
 package me.buzz.woolwars.game.utils.structures.itembuilder;
 
-import com.hakan.core.item.HItemBuilder;
+import com.hakan.core.item.ItemBuilder;
 import lombok.Setter;
 import org.bukkit.Color;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-public class LeatherItemBuilder extends HItemBuilder {
+public class LeatherItemBuilder extends ItemBuilder {
 
     @Setter
     Color color;
@@ -15,7 +15,7 @@ public class LeatherItemBuilder extends HItemBuilder {
         super(type);
     }
 
-    public HItemBuilder setLeatherColor(Color color) {
+    public ItemBuilder setLeatherColor(Color color) {
         this.color = color;
         return this;
     }

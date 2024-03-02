@@ -1,7 +1,7 @@
 package me.buzz.woolwars.game.commands;
 
-import com.hakan.core.command.executors.base.BaseCommand;
-import com.hakan.core.command.executors.sub.SubCommand;
+import com.hakan.core.command.executors.basecommand.BaseCommand;
+import com.hakan.core.command.executors.subcommand.SubCommand;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;

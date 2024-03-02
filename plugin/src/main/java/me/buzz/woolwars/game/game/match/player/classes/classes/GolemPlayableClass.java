@@ -1,7 +1,7 @@
 package me.buzz.woolwars.game.game.match.player.classes.classes;
 
 import com.cryptomorin.xseries.XMaterial;
-import com.hakan.core.item.HItemBuilder;
+import com.hakan.core.item.ItemBuilder;
 import me.buzz.woolwars.api.game.match.player.player.classes.PlayableClassType;
 import me.buzz.woolwars.api.game.match.player.team.TeamColor;
 import me.buzz.woolwars.game.WoolWars;
@@ -29,8 +29,8 @@ public class GolemPlayableClass extends PlayableClass {
     private final static Map<Integer, ItemStack> items = new HashMap<>();
 
     static {
-        items.put(0, new HItemBuilder(XMaterial.STONE_SWORD.parseMaterial()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
-        items.put(1, new HItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 32).build());
+        items.put(0, new ItemBuilder(XMaterial.STONE_SWORD.parseItem()).addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true).build());
+        items.put(1, new ItemBuilder(XMaterial.WHITE_WOOL.parseMaterial(), 32).build());
 
         items.put(8, WoolWars.get().getLanguage().getProperty(LanguageFile.GOLEM_KEYSTONE)
                 .toItemStack());
@@ -38,7 +38,7 @@ public class GolemPlayableClass extends PlayableClass {
         armor.put(ArmorSlot.HELMET, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.CHESTPLATE, new ItemStack(Material.AIR));
         armor.put(ArmorSlot.LEGGINGS, new ItemStack(Material.AIR));
-        armor.put(ArmorSlot.BOOTS, new HItemBuilder(XMaterial.GOLDEN_BOOTS.parseMaterial())
+        armor.put(ArmorSlot.BOOTS, new ItemBuilder(XMaterial.GOLDEN_BOOTS.parseItem())
                 .addEnchant(Enchantment.PROTECTION_PROJECTILE, 2)
                 .addItemFlags(ItemFlag.HIDE_UNBREAKABLE).unbreakable(true)
                 .build());

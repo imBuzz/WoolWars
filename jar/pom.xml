@@ -5,13 +5,11 @@
     <parent>
         <artifactId>WoolWars</artifactId>
         <groupId>me.buzz.woolwars</groupId>
-        <version>1.0</version>
+        <version>1.8</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-
-
-    <version>1.7</version>
-
+    <version>${project.parent.version}</version>
     <artifactId>jar</artifactId>
 
     <properties>
@@ -24,13 +22,13 @@
         <dependency>
             <groupId>me.buzz.woolwars</groupId>
             <artifactId>api</artifactId>
-            <version>1.0</version>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>me.buzz.woolwars</groupId>
             <artifactId>plugin</artifactId>
-            <version>1.0</version>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <!--
@@ -157,7 +155,6 @@
        -->
 
     </dependencies>
-
     <build>
         <plugins>
             <plugin>

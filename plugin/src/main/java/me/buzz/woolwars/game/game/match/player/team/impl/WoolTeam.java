@@ -1,6 +1,6 @@
 package me.buzz.woolwars.game.game.match.player.team.impl;
 
-import com.hakan.core.npc.HNPC;
+import com.hakan.core.npc.Npc;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -23,7 +23,7 @@ public class WoolTeam implements MatchTeam {
     private final Location spawnLocation;
 
     @Setter
-    private HNPC teamNPC;
+    private Npc teamNPC;
 
     private final List<Player> players = new ArrayList<>(4);
     private int points;
