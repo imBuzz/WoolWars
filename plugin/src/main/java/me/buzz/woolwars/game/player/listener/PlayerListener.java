@@ -1,8 +1,9 @@
 package me.buzz.woolwars.game.player.listener;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 import com.hakan.core.HCore;
-import com.hakan.core.scoreboard.Scoreboard;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
+import fr.mrmicky.fastboard.FastBoard;
 import me.buzz.woolwars.api.player.QuitGameReason;
 import me.buzz.woolwars.game.WoolWars;
 import me.buzz.woolwars.game.configuration.files.ConfigFile;
@@ -13,6 +14,7 @@ import me.buzz.woolwars.game.game.arena.settings.preset.PresetType;
 import me.buzz.woolwars.game.game.match.WoolMatch;
 import me.buzz.woolwars.game.hook.ImplementedHookType;
 import me.buzz.woolwars.game.hook.hooks.placeholderapi.PlaceholderAPIHook;
+import me.buzz.woolwars.game.hook.hooks.viaversion.ViaVersionAPIHook;
 import me.buzz.woolwars.game.player.WoolPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,9 +26,35 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerListener implements Listener {
+
+    private final WoolWars plugin = WoolWars.get();
+    private final BukkitRunnable scoreboardUpdateTask;
+
+    public PlayerListener() {
+        scoreboardUpdateTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (WoolPlayer woolPlayer : WoolPlayer.getWoolOnlinePlayers()) {
+                    FastBoard board = woolPlayer.getBoard();
+                    if (board == null)
+                        continue;
+
+                    Player player = woolPlayer.toBukkitPlayer();
+                    if (player == null)
+                        continue;
+
+                    applyScoreboardLines(getScoreboardLinesByMatchState(player,
+                            WoolWars.get().getGameManager().getInternalMatchByPlayer(player)), board);
+                }
+            }
+        };
+
+        scoreboardUpdateTask.runTaskTimerAsynchronously(WoolWars.get(), 50L, 10L);
+    }
 
     @EventHandler
     public void prepareLocation(PlayerSpawnLocationEvent event) {
@@ -37,23 +65,27 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
-        if (WoolWars.get().getSettings().getProperty(ConfigFile.ENABLE_NATIVE_SCOREBOARD)) {
-            HCore.createScoreboard(player.getUniqueId(), WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_TITLE))
-                    .setLines(getScoreboardLinesByMatchState(player, WoolWars.get().getGameManager().getInternalMatchByPlayer(player)))
-                    .update(10, scoreboard -> {
-                        scoreboard.setLines(getScoreboardLinesByMatchState(scoreboard.getPlayer(),
-                                WoolWars.get().getGameManager().getInternalMatchByPlayer(scoreboard.getPlayer())));
-                    })
-                    .show();
-        }
-
         WoolWars.get().getDataProvider().loadPlayer(player).whenComplete((woolPlayer, throwable) -> {
             if (throwable != null) {
                 throwable.printStackTrace();
             }
 
             WoolPlayer.trackPlayer(woolPlayer);
+            if (WoolWars.get().getSettings().getProperty(ConfigFile.ENABLE_NATIVE_SCOREBOARD)) {
+                FastBoard board = new FastBoard(player) {
+                    @Override
+                    protected boolean hasLinesMaxLength() {
+                        ViaVersionAPIHook viaVersionAPIHook = plugin.getHook(ImplementedHookType.VIA_VERSION);
+                        if (viaVersionAPIHook == null)
+                            return true;
+
+                        return viaVersionAPIHook.getPlayerMinecraftVersion(getPlayer()) < ProtocolVersion.v1_13.getVersion();
+                    }
+                };
+                board.updateTitle(WoolWars.get().getLanguage().getProperty(LanguageFile.SCOREBOARD_TITLE));
+
+                woolPlayer.setBoard(board);
+            }
         });
 
         for (WoolPlayer woolOnlinePlayer : WoolPlayer.getWoolOnlinePlayers()) {
@@ -69,13 +101,14 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void quit(PlayerQuitEvent event) {
         event.setQuitMessage(null);
-        HCore.getScoreboardByPlayer(event.getPlayer())
-                .delete();
 
         WoolMatch woolMatch = WoolWars.get().getGameManager().getInternalMatchByPlayer(event.getPlayer());
         if (woolMatch != null) woolMatch.quit(WoolPlayer.getWoolPlayer(event.getPlayer()), QuitGameReason.DISCONNECT);
 
-        WoolWars.get().getDataProvider().savePlayer(WoolPlayer.removePlayer(event.getPlayer()));
+        WoolPlayer woolPlayer = WoolPlayer.removePlayer(event.getPlayer());
+        woolPlayer.getBoard().delete();
+
+        WoolWars.get().getDataProvider().savePlayer(woolPlayer);
     }
 
     private List<String> getScoreboardLinesByMatchState(Player player, WoolMatch match) {
@@ -92,8 +125,14 @@ public class PlayerListener implements Listener {
                 .apply(match, player, null);
     }
 
-    private void applyScoreboardLines(List<String> lines, Scoreboard board) {
-        board.setLines(lines);
+    private void applyScoreboardLines(List<String> lines, FastBoard board) {
+        for (int i = 0; i < board.getLines().size(); i++)
+            board.removeLine(i);
+
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            board.updateLine(i, line);
+        }
     }
 
 }

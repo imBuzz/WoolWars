@@ -1,5 +1,6 @@
 package me.buzz.woolwars.game.player;
 
+import fr.mrmicky.fastboard.FastBoard;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
-@AllArgsConstructor
 public class WoolPlayer implements ApiWoolPlayer {
 
     private final static Map<String, WoolPlayer> woolPlayersByName = new ConcurrentHashMap<>();
@@ -52,6 +52,8 @@ public class WoolPlayer implements ApiWoolPlayer {
     @Setter
     private boolean inMatch;
 
+    @Getter @Setter private FastBoard board;
+
     public static Collection<WoolPlayer> getWoolOnlinePlayers() {
         return woolPlayersByName.values();
     }
@@ -59,6 +61,22 @@ public class WoolPlayer implements ApiWoolPlayer {
     public WoolPlayer(Player player) {
         this.UUID = player.getUniqueId();
         this.name = player.getName();
+    }
+
+    public WoolPlayer(UUID uuid, String name, Map<PlayableClassType, String> kitLayout, int woolPlaced, int blocksBroken, int powerUpsGotten,
+                      int wins, int played, int kills, int deaths, boolean inMatch){
+
+        this.UUID = uuid;
+        this.name = name;
+        this.kitLayout = kitLayout;
+        this.woolPlaced = woolPlaced;
+        this.blocksBroken = blocksBroken;
+        this.powerUpsGotten = powerUpsGotten;
+        this.wins = wins;
+        this.played = played;
+        this.kills = kills;
+        this.deaths = deaths;
+        this.inMatch = inMatch;
     }
 
     public String getKitLayout(PlayableClassType type) {

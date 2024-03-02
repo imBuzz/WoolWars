@@ -25,6 +25,19 @@ public class WoolCommand {
         sender.sendMessage("");
     }
 
+    @SubCommand(args = {"reload"})
+    public void reloadCommand(CommandSender sender, String[] args) {
+        woolWars.getAllFiles().forEach(file -> {
+            try {
+                file.reload();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        });
+        sender.sendMessage(woolWars.getLanguage().getProperty(LanguageFile.RELOAD_COMPLETED));
+    }
+
     @SubCommand(args = {"gui"})
     public void guiCommand(CommandSender sender, String[] args) {
         if (sender instanceof Player) {

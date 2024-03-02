@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.buzz.woolwars.game.hook.hooks.placeholderapi.PlaceholderAPIHook;
 import me.buzz.woolwars.game.hook.hooks.vault.VaultAPIHook;
+import me.buzz.woolwars.game.hook.hooks.viaversion.ViaVersionAPIHook;
 import org.bukkit.Bukkit;
 
 import java.util.function.Supplier;
@@ -13,7 +14,8 @@ import java.util.function.Supplier;
 public enum ImplementedHookType {
 
     VAULT("Vault", VaultAPIHook::new),
-    PLACEHOLDER_API("PlaceholderAPI", PlaceholderAPIHook::new);
+    PLACEHOLDER_API("PlaceholderAPI", PlaceholderAPIHook::new),
+    VIA_VERSION("ViaVersion", ViaVersionAPIHook::new);
 
     private final String pluginName;
     private final Supplier<ExternalPluginHook> supplier;

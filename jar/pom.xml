@@ -168,6 +168,10 @@
                             <shadedPattern>me.buzz.externals.xseries</shadedPattern>
                         </relocation>
                         <relocation>
+                            <pattern>fr.mrmicky.fastboard</pattern>
+                            <shadedPattern>me.buzz.externals.fastboard</shadedPattern>
+                        </relocation>
+                        <relocation>
                             <pattern>ch.jalu.configme</pattern>
                             <shadedPattern>me.buzz.externals.configme</shadedPattern>
                         </relocation>

@@ -18,6 +18,7 @@ import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
 public class LanguageFile implements SettingsHolder {
 
     public static final Property<String> COMMANDS_NO_PERMISSION = newProperty("commands.general.no-permission", "§cYou don't have the permission to do that!");
+    public static final Property<String> RELOAD_COMPLETED = newProperty("commands.reload-completed", "§aReload completed!");
     public static final Property<String> INVALID_ARGS = newProperty("commands.general.invalid-args", "§cInvalid Args!");
     public static final Property<String> TARGET_NOT_FOUND = newProperty("commands.general.target-not-found", "§cTarget not found!");
     public static final Property<String> NO_GAME_FOUND_ON_COMMAND = newProperty("commands.general.no-game-found-on-command", "§cNo game found!");

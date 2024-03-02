@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,6 +101,10 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Collection<SettingsManager> getAllFiles(){
+        return files.values();
     }
 
     private void checkForHooks() {
