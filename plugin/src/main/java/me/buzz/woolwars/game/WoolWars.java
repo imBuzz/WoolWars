@@ -34,7 +34,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
     private final Map<ConfigurationType, SettingsManager> files = new HashMap<>();
     private final Map<ImplementedHookType, ExternalPluginHook> hooks = new HashMap<>();
 
-    private Metrics metrics;
+    //private Metrics metrics;
     @Getter
     private DataProvider dataProvider;
     @Getter
@@ -68,7 +68,7 @@ public final class WoolWars extends JavaPlugin implements ApiWoolWars {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         HCore.registerCommands(new WoolCommand());
 
-        metrics = new Metrics(this, 15400);
+        //metrics = new Metrics(this, 15400);
         new UpdateChecker(this, UpdateCheckSource.SPIGET, "102486")
                 .checkEveryXHours(12)
                 .setNotifyByPermissionOnJoin("woolwars.update")

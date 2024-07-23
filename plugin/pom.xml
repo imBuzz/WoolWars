@@ -61,13 +61,6 @@
             <version>2.1.0</version>
         </dependency>
 
-        <!-- bStats -->
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-
         <!-- hCore -->
         <dependency>
             <groupId>com.github.hakan-krgn.hCore</groupId>
